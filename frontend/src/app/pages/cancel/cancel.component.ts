@@ -3,10 +3,9 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 
 @Component({
-  selector: 'app-cancel',
-  standalone: true,
-  imports: [CommonModule, RouterModule],
-  template: `
+    selector: 'app-cancel',
+    imports: [CommonModule, RouterModule],
+    template: `
     <div class="cancel-container">
       <div class="cancel-card">
         <div class="cancel-icon">✕</div>
@@ -26,7 +25,7 @@ import { RouterModule } from '@angular/router';
       </div>
     </div>
   `,
-  styles: [`
+    styles: [`
     .cancel-container {
       min-height: 100vh;
       display: flex;

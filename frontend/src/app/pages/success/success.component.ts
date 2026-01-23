@@ -3,10 +3,9 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 
 @Component({
-  selector: 'app-success',
-  standalone: true,
-  imports: [CommonModule, RouterModule],
-  template: `
+    selector: 'app-success',
+    imports: [CommonModule, RouterModule],
+    template: `
     <div class="success-container">
       <div class="success-card">
         <div class="success-icon">✓</div>
@@ -26,7 +25,7 @@ import { RouterModule } from '@angular/router';
       </div>
     </div>
   `,
-  styles: [`
+    styles: [`
     .success-container {
       min-height: 100vh;
       display: flex;
