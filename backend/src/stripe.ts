@@ -8,7 +8,7 @@ export async function createPaymentLink(
   env: Env
 ): Promise<string> {
   const stripe = new Stripe(env.STRIPE_SECRET_KEY, {
-    apiVersion: '2024-12-18.acacia',
+    apiVersion: '2025-12-15.clover',
   });
 
   // Create a payment link
@@ -43,7 +43,7 @@ export async function verifyWebhookSignature(
   env: Env
 ): Promise<Stripe.Event> {
   const stripe = new Stripe(env.STRIPE_SECRET_KEY, {
-    apiVersion: '2024-12-18.acacia',
+    apiVersion: '2025-12-15.clover',
   });
 
   try {
