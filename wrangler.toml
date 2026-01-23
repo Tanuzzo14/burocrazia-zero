@@ -6,7 +6,7 @@ compatibility_date = "2024-01-01"
 [[d1_databases]]
 binding = "DB"
 database_name = "burocrazia-zero-db"
-database_id = "YOUR_DATABASE_ID"
+database_id = "4bf3015a-bc01-497a-ae31-72f9e72847f2"
 
 # Environment variables (secrets to be set via wrangler CLI)
 # GEMINI_API_KEY - Google Gemini API key
