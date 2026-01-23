@@ -143,7 +143,7 @@ STRIPE_SECRET_KEY=sk_test_ABC123...
 TWILIO_ACCOUNT_SID=ACxxxxxxxxxxxxxxxxx
 TWILIO_AUTH_TOKEN=xxxxxxxxxxxxxxxx
 TWILIO_WHATSAPP_FROM=whatsapp:+14155238886
-OPERATOR_PHONE=whatsapp:+393331234567 (il TUO numero WhatsApp!)
+OPERATOR_PHONE=whatsapp:+393331234567 (il TUO numero WhatsApp con prefisso internazionale - es: +39 per Italia, +1 per USA, ecc.)
 ```
 
 ⚠️ **IMPORTANTE**: Queste chiavi sono SEGRETE! Non condividerle MAI con nessuno e non pubblicarle online.
@@ -184,7 +184,7 @@ sudo apt install nodejs npm
    ```bash
    node --version
    ```
-3. Dovresti vedere qualcosa tipo: `v18.17.0` o superiore
+3. Dovresti vedere qualcosa tipo: `v18.17.0`, `v20.10.0` o qualsiasi versione 18.x o superiore
 
 ✅ **Fatto!** Node.js è installato.
 
@@ -337,11 +337,11 @@ Ora useremo tutte quelle chiavi che abbiamo raccolto prima!
    ```
    GEMINI_API_KEY=AIzaSy... (la tua vera chiave)
    STRIPE_SECRET_KEY=sk_test_... (la tua vera chiave)
-   STRIPE_WEBHOOK_SECRET=whsec_... (lo configureremo dopo)
+   STRIPE_WEBHOOK_SECRET=whsec_... (lo configureremo dopo nella Parte 7.2)
    TWILIO_ACCOUNT_SID=ACxxxx... (la tua vera chiave)
    TWILIO_AUTH_TOKEN=xxxx... (il tuo vero token)
    TWILIO_WHATSAPP_FROM=whatsapp:+14155238886
-   OPERATOR_PHONE=whatsapp:+39333XXXXXXX (il TUO numero WhatsApp!)
+   OPERATOR_PHONE=whatsapp:+39333XXXXXXX (il TUO numero WhatsApp con prefisso internazionale!)
    FRONTEND_URL=http://localhost:4200
    ```
 
@@ -596,7 +596,7 @@ Dovresti vedere i lead creati!
 ### Problema: "Failed to send WhatsApp message"
 
 **Soluzione**:
-1. Verifica che il numero operatore sia nel formato: `whatsapp:+393331234567`
+1. Verifica che il numero operatore sia nel formato: `whatsapp:+393331234567` (dove +39 è il prefisso Italia - usa il prefisso del tuo paese)
 2. Assicurati di aver attivato il Twilio Sandbox for WhatsApp
 3. Verifica le credenziali Twilio
 
