@@ -26,7 +26,7 @@
 
 **Endpoint**: `POST /api/identify`
 
-**Description**: Uses Gemini AI to identify the bureaucratic operation and estimate costs.
+**Description**: Uses Gemini AI to identify bureaucratic operations and estimate costs. Returns multiple options when the query is generic, allowing users to select the most appropriate one.
 
 **Request Body**:
 ```json
@@ -35,16 +35,42 @@
 }
 ```
 
-**Response**:
+**Response** (Multiple Options):
 ```json
 {
-  "operation": "Richiesta SPID con operatore",
-  "stateCost": 12.00,
-  "commission": 10.00,
-  "totalCost": 22.00,
-  "guideUrl": "https://www.spid.gov.it/richiedi-spid"
+  "options": [
+    {
+      "operation": "Richiesta SPID con operatore",
+      "stateCost": 12.00,
+      "commission": 10.00,
+      "totalCost": 22.00,
+      "guideUrl": "https://www.spid.gov.it/richiedi-spid",
+      "isGeneric": false
+    },
+    {
+      "operation": "Consulenza Generica - Costi aggiuntivi in base all'operazione",
+      "stateCost": 0.00,
+      "commission": 10.00,
+      "totalCost": 10.00,
+      "guideUrl": "#consulenza-generica",
+      "isGeneric": true
+    }
+  ]
 }
 ```
+
+**Response Fields**:
+- `operation`: Name of the bureaucratic operation
+- `stateCost`: Government/state fees for the operation
+- `commission`: Service commission (fixed at €10)
+- `totalCost`: Total amount to be paid (stateCost + commission)
+- `guideUrl`: URL to official guide or documentation
+- `isGeneric`: Boolean indicating if this is a generic consultation option
+
+**Behavior**:
+- **Specific queries** (e.g., "richiedere SPID"): Returns 1-2 specific options plus generic consultation
+- **Generic queries** (e.g., "concorsi pubblici"): Returns 2-3 common operations for that category, sorted by relevance/date, plus generic consultation
+- **Generic consultation**: Always included as last option with `isGeneric: true`, has `stateCost: 0`, and includes disclaimer about additional costs
 
 **Error Responses**:
 - `400 Bad Request`: Missing or empty query
