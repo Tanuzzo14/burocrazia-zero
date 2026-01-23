@@ -7,14 +7,14 @@ Se la richiesta è SPECIFICA (es. "richiedere SPID", "rinnovare carta d'identit�
 
 Se la richiesta è GENERICA (es. "concorsi pubblici", "documenti per viaggio"), restituisci 2-3 opzioni specifiche comuni per quella categoria, ordinate per data/urgenza quando rilevante.
 
-SEMPRE includi come ultima opzione una "Consulenza Generica" con costo_stato: 0 e guida_url: "https://example.com/consulenza-generica".
+SEMPRE includi come ultima opzione una "Consulenza Generica" con costo_stato: 0 e guida_url: "#consulenza-generica".
 
 Rispondi in JSON:
 {
   "options": [
     { "label": string, "costo_stato": number, "guida_url": string },
     { "label": string, "costo_stato": number, "guida_url": string },
-    { "label": "Consulenza Generica - Costi aggiuntivi in base all'operazione", "costo_stato": 0, "guida_url": "https://example.com/consulenza-generica", "is_generic": true }
+    { "label": "Consulenza Generica - Costi aggiuntivi in base all'operazione", "costo_stato": 0, "guida_url": "#consulenza-generica", "is_generic": true }
   ]
 }
 

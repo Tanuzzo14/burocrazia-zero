@@ -12,12 +12,6 @@ export interface Env {
   FRONTEND_URL?: string;
 }
 
-export interface GeminiResponse {
-  label: string;
-  costo_stato: number;
-  guida_url: string;
-}
-
 export interface GeminiOption {
   label: string;
   costo_stato: number;
