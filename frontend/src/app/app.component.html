@@ -1,4 +1,7 @@
 <div class="app-wrapper" *ngIf="isHomePage()">
+  <!-- Loading Spinner Overlay -->
+  <app-loading-spinner *ngIf="isIdentifying || isBooking" [text]="loadingMessage"></app-loading-spinner>
+  
   <div class="container">
     <header>
       <h1>{{ title }}</h1>
@@ -7,16 +10,27 @@
 
     <!-- Error Message -->
     <div *ngIf="errorMessage" class="error-message">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"></circle>
+        <line x1="12" y1="8" x2="12" y2="12"></line>
+        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+      </svg>
       {{ errorMessage }}
     </div>
 
     <!-- Step 1: Operation Search -->
     <div class="search-section" *ngIf="!operationResult">
-      <h2>Cosa devi fare?</h2>
+      <h2>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"></circle>
+          <path d="m21 21-4.35-4.35"></path>
+        </svg>
+        Cosa devi fare?
+      </h2>
       <div class="search-box">
         <textarea 
           [(ngModel)]="userQuery" 
-          placeholder="Descrivi l'operazione che devi svolgere (es. 'Richiedere lo SPID', 'Rinnovare la carta d'identità')"
+          placeholder="Descrivi l'operazione che devi svolgere (es. 'Richiedere lo SPID', 'Rinnovare la carta d'identità', 'Richiesta passaporto')"
           rows="4"
           [disabled]="isIdentifying"
         ></textarea>
@@ -25,6 +39,10 @@
           [disabled]="isIdentifying || !userQuery.trim()"
           class="btn-primary"
         >
+          <svg *ngIf="!isIdentifying" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;">
+            <circle cx="11" cy="11" r="8"></circle>
+            <path d="m21 21-4.35-4.35"></path>
+          </svg>
           {{ isIdentifying ? 'Identificazione in corso...' : 'Identifica Operazione' }}
         </button>
       </div>
@@ -33,7 +51,13 @@
     <!-- Step 2: Operation Result & Booking -->
     <div class="result-section" *ngIf="operationResult">
       <div class="operation-card">
-        <h2>Operazione Identificata</h2>
+        <h2>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--success);">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+          </svg>
+          Operazione Identificata
+        </h2>
         <div class="operation-details">
           <p class="operation-name">{{ operationResult.operation }}</p>
           <div class="cost-breakdown">
@@ -55,9 +79,18 @@
 
       <!-- Lead Data Collection Form -->
       <div class="booking-form">
-        <h3>I tuoi dati</h3>
+        <h3>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px; vertical-align: middle;">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+          I tuoi dati
+        </h3>
         <div class="form-group">
-          <label for="nomeCognome">Nome e Cognome</label>
+          <label for="nomeCognome">
+            Nome e Cognome
+            <span style="color: var(--error);">*</span>
+          </label>
           <input 
             type="text" 
             id="nomeCognome"
@@ -67,7 +100,10 @@
           />
         </div>
         <div class="form-group">
-          <label for="telefono">Numero di Telefono</label>
+          <label for="telefono">
+            Numero di Telefono
+            <span style="color: var(--error);">*</span>
+          </label>
           <input 
             type="tel" 
             id="telefono"
@@ -83,6 +119,10 @@
             [disabled]="isBooking || !nomeCognome.trim() || !telefono.trim()"
             class="btn-primary"
           >
+            <svg *ngIf="!isBooking" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;">
+              <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+              <line x1="1" y1="10" x2="23" y2="10"></line>
+            </svg>
             {{ isBooking ? 'Elaborazione...' : 'Prenota e Paga' }}
           </button>
           <button 
@@ -90,6 +130,10 @@
             [disabled]="isBooking"
             class="btn-secondary"
           >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
             Annulla
           </button>
         </div>
@@ -97,7 +141,11 @@
     </div>
 
     <footer>
-      <p>Dopo il pagamento, un operatore ti contatterà su WhatsApp per completare la pratica</p>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 4px; color: var(--success);">
+        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+        <polyline points="9 22 9 12 15 12 15 22"></polyline>
+      </svg>
+      Dopo il pagamento, un operatore ti contatterà su WhatsApp per completare la pratica
     </footer>
   </div>
 </div>

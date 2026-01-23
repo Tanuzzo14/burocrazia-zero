@@ -1,11 +1,12 @@
-/* Global Styles - Institutional Design */
+/* Global Styles - Modern Professional Design */
 
-/* CSS Variables for Institutional Color Palette */
+/* CSS Variables for Modern Professional Color Palette */
 :root {
-  /* Primary institutional colors - inspired by Italian government sites */
+  /* Primary institutional colors - Modern Italian palette */
   --primary-blue: #0066CC;
   --primary-blue-dark: #004C99;
   --primary-blue-light: #E6F0FF;
+  --primary-gradient: linear-gradient(135deg, #0066CC 0%, #004C99 100%);
   
   /* Neutral grays */
   --gray-50: #F8F9FA;
@@ -22,6 +23,7 @@
   /* Semantic colors */
   --success: #28A745;
   --success-light: #D4EDDA;
+  --success-gradient: linear-gradient(135deg, #28A745 0%, #20893a 100%);
   --warning: #FFC107;
   --warning-light: #FFF3CD;
   --error: #DC3545;
@@ -30,11 +32,29 @@
   /* Text colors */
   --text-primary: #212529;
   --text-secondary: #6C757D;
+  --text-tertiary: #ADB5BD;
   
   /* Border and shadows */
   --border-color: #DEE2E6;
-  --border-radius: 4px;
-  --box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+  --border-radius: 8px;
+  --border-radius-lg: 12px;
+  --border-radius-sm: 6px;
+  --box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  --box-shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.12);
+  --box-shadow-xl: 0 20px 60px rgba(0, 0, 0, 0.15);
+  
+  /* Spacing scale */
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2rem;
+  --spacing-2xl: 3rem;
+  
+  /* Transitions */
+  --transition-fast: 0.15s ease-in-out;
+  --transition-normal: 0.3s ease-in-out;
+  --transition-slow: 0.5s ease-in-out;
 }
 
 /* Global reset and base styles */
@@ -42,11 +62,35 @@
   box-sizing: border-box;
 }
 
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
 body {
   margin: 0;
   padding: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   color: var(--text-primary);
-  background-color: var(--gray-100);
+  background: linear-gradient(to bottom, #F8F9FA 0%, #E9ECEF 100%);
   line-height: 1.6;
+  min-height: 100vh;
+  font-size: 16px;
+}
+
+/* Smooth scroll behavior */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Improved focus styles for accessibility */
+:focus-visible {
+  outline: 2px solid var(--primary-blue);
+  outline-offset: 2px;
+}
+
+/* Remove default focus outline for mouse users */
+:focus:not(:focus-visible) {
+  outline: none;
 }
