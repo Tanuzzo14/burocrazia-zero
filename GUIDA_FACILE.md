@@ -174,50 +174,68 @@ OPERATOR_PHONE=whatsapp:+393331234567 (il TUO numero WhatsApp con prefisso inter
 
 ## 🔑 PARTE 3: Configurare il Database su Cloudflare
 
-### 4.1 Creare il Database su Cloudflare
+### 3.1 Creare il Database D1
 
-1. Nel Terminale, scrivi:
-   ```bash
-   npx wrangler login
-   ```
+**Cos'è**: Un database è come un archivio digitale dove salviamo i dati dei clienti.
 
-2. Si aprirà il browser - accedi con il tuo account Cloudflare
+**Come fare**:
+1. Vai su https://dash.cloudflare.com
+2. Accedi con il tuo account Cloudflare
+3. Nel menu a sinistra, clicca su **"Workers & Pages"**
+4. Clicca sulla tab **"D1 SQL Database"** (in alto)
+5. Clicca **"Create database"**
+6. Dai un nome al database: `burocrazia-zero-db`
+7. Clicca **"Create"**
 
-3. Torna al Terminale e crea il database:
-   ```bash
-   npx wrangler d1 create burocrazia-zero-db
-   ```
-
-4. Ti verrà mostrato un **database_id** (tipo: `4bf3015a-bc01-497a-ae31-72f9e72847f2`)
-5. **COPIA QUESTO ID!**
+✅ **Fatto!** Il database è stato creato.
 
 ---
 
-### 4.2 Aggiornare il File di Configurazione
+### 3.2 Creare le Tabelle nel Database
 
-1. Apri il file `wrangler.toml` con un editor di testo (Blocco Note su Windows, TextEdit su Mac)
-   - Il file si trova nella cartella `burocrazia-zero`
+**Cos'è**: Le tabelle sono come fogli Excel dentro il database, organizzano i dati.
 
-2. Cerca questa riga:
-   ```
-   database_id = "4bf3015a-bc01-497a-ae31-72f9e72847f2"
-   ```
+**Come fare**:
+1. Clicca sul database appena creato (`burocrazia-zero-db`)
+2. Vai alla tab **"Console"**
+3. Copia e incolla questo codice nella console SQL:
 
-3. Sostituisci l'ID con quello che hai copiato prima
+```sql
+CREATE TABLE IF NOT EXISTS lead_pratiche (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    stripe_session_id TEXT UNIQUE NOT NULL,
+    nome_cognome TEXT NOT NULL,
+    telefono TEXT NOT NULL,
+    tipo_operazione TEXT NOT NULL,
+    totale_incassato REAL NOT NULL,
+    guida_url TEXT NOT NULL,
+    stato TEXT DEFAULT 'pending',
+    created_at TEXT DEFAULT (datetime('now')),
+    updated_at TEXT DEFAULT (datetime('now'))
+);
 
-4. Salva il file
-
----
-
-### 4.3 Creare le Tabelle nel Database
-
-```bash
-npx wrangler d1 execute burocrazia-zero-db --file=./schema.sql
+CREATE INDEX IF NOT EXISTS idx_stripe_session ON lead_pratiche(stripe_session_id);
+CREATE INDEX IF NOT EXISTS idx_created_at ON lead_pratiche(created_at);
 ```
 
-Dovresti vedere un messaggio di successo.
+4. Clicca **"Execute"**
+5. Dovresti vedere un messaggio di successo: "Success"
 
-✅ **Fatto!** Il database è pronto.
+✅ **Fatto!** Le tabelle sono create nel database.
+
+---
+
+### 3.3 Annotare il Database ID
+
+**Importante**: Dobbiamo salvare l'ID del database per usarlo dopo.
+
+**Come fare**:
+1. Rimani nella pagina del database `burocrazia-zero-db`
+2. In alto vedrai **"Database ID"** seguito da un codice lungo tipo: `4bf3015a-bc01-497a-ae31-72f9e72847f2`
+3. **COPIA questo ID** e salvalo in un file di testo
+4. Lo useremo nella Parte 6
+
+✅ **Fatto!** Salvato: `DATABASE_ID`
 
 ---
 
@@ -225,9 +243,9 @@ Dovresti vedere un messaggio di successo.
 
 Ora useremo tutte quelle chiavi che abbiamo raccolto nella Parte 1!
 
-### 4.1 Configurare le Chiavi nel Worker
+### 4.1 Creare il Worker
 
-**Cos'è**: Le chiavi segrete servono all'applicazione per comunicare con gli altri servizi (Gemini, Stripe, Twilio).
+**Cos'è**: Un Worker è il "cervello" dell'applicazione che gestisce le richieste.
 
 **Come fare**:
 1. Vai su https://dash.cloudflare.com
@@ -236,13 +254,21 @@ Ora useremo tutte quelle chiavi che abbiamo raccolto nella Parte 1!
 4. Clicca **"Create application"** → **"Create Worker"**
 5. Dai un nome: `burocrazia-zero-worker`
 6. Clicca **"Deploy"** (creeremo un worker vuoto per ora, lo aggiorneremo dopo)
-7. Una volta creato, clicca sul worker appena creato
-8. Vai alla tab **"Settings"** → **"Variables"**
-9. Scorri fino alla sezione **"Environment Variables"**
+
+✅ **Fatto!** Il worker è stato creato.
+
+---
+
+### 4.2 Configurare le Chiavi Segrete nel Worker
+
+**Cos'è**: Le chiavi segrete servono all'applicazione per comunicare con gli altri servizi (Gemini, Stripe, Twilio).
+
+**Come fare**:
+1. Clicca sul worker appena creato (`burocrazia-zero-worker`)
+2. Vai alla tab **"Settings"** → **"Variables"**
+3. Scorri fino alla sezione **"Environment Variables"**
 
 Ora aggiungi una alla volta tutte le chiavi segrete:
-
-**Per ogni chiave**:
 1. Clicca **"Add variable"**
 2. Seleziona **"Encrypt"** (per mantenerle segrete)
 3. Inserisci:
