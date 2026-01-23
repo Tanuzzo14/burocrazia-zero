@@ -45,6 +45,14 @@ h1 {
   background-clip: text;
 }
 
+/* Fallback for browsers that don't support background-clip: text */
+@supports not (-webkit-background-clip: text) {
+  h1 {
+    color: var(--primary-blue);
+    background: none;
+  }
+}
+
 .subtitle {
   font-size: 1.125rem;
   color: var(--text-secondary);
