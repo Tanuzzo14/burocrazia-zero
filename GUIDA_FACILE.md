@@ -444,8 +444,9 @@ Ora che abbiamo l'URL del backend online, configuriamo Stripe:
    - **Project name**: `burocrazia-zero` (o un nome a tua scelta)
    - **Production branch**: `main`
    - **Framework preset**: Seleziona **"Angular"** dal menu a tendina
-   - **Build command**: `cd frontend && npm install && npm run build`
-   - **Build output directory**: `frontend/dist/frontend/browser`
+   - **Root directory (path)**: `frontend`
+   - **Build command**: `npm install && npm run build`
+   - **Build output directory**: `dist/frontend/browser`
 9. Clicca **"Save and Deploy"**
 
 Cloudflare inizierà la build. Aspetta qualche minuto (3-5 minuti circa).
@@ -518,8 +519,11 @@ Cloudflare inizierà la build. Aspetta qualche minuto (3-5 minuti circa).
 3. Clicca sulla tab **"Deployments"**
 4. Clicca sul deployment fallito per vedere i log
 5. Verifica che i comandi di build siano corretti:
-   - Build command: `cd frontend && npm install && npm run build`
-   - Build output directory: `frontend/dist/frontend/browser`
+   - **Root directory (path)**: `frontend`
+   - **Build command**: `npm install && npm run build`
+   - **Build output directory**: `dist/frontend/browser`
+6. Se vedi l'errore "root directory not found", assicurati di aver impostato **Root directory** a `frontend` nelle impostazioni del progetto
+7. Vai su **Settings** → **Builds & deployments** per modificare la configurazione
 
 ---
 

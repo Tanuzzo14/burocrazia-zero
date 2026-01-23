@@ -9,9 +9,9 @@ When setting up your Cloudflare Pages project, use these settings:
 ### Build Configuration
 
 - **Framework preset**: Angular
-- **Build command**: `cd frontend && npm install && npm run build`
-- **Build output directory**: `frontend/dist/frontend/browser`
-- **Root directory**: `/` (leave empty or set to repository root)
+- **Build command**: `npm install && npm run build`
+- **Build output directory**: `dist/frontend/browser`
+- **Root directory**: `frontend`
 
 ### Environment Variables
 
