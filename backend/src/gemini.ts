@@ -6,7 +6,7 @@ const GEMINI_SYSTEM_PROMPT = `Sei un consulente burocratico. Per ogni richiesta 
 export async function identifyOperation(userQuery: string, env: Env): Promise<GeminiResponse> {
   try {
     const genAI = new GoogleGenerativeAI(env.GEMINI_API_KEY);
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
 
     const prompt = `${GEMINI_SYSTEM_PROMPT}\n\nRichiesta utente: ${userQuery}\n\nRispondi solo con il JSON richiesto, senza testo aggiuntivo.`;
     
