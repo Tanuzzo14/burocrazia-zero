@@ -27,7 +27,7 @@ export interface BookingResponse {
   providedIn: 'root'
 })
 export class ApiService {
-  private apiUrl = 'https://burocrazia-zero.gaetanosmario.workers.dev/api'; // Update for production
+  private apiUrl = 'https://burocrazia-zero-worker.gaetanosmario.workers.dev/api'; // Update for production
 
   constructor(private http: HttpClient) {}
 
