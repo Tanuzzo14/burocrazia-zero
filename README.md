@@ -36,6 +36,8 @@ Burocrazia-Zero semplifica la gestione delle pratiche burocratiche italiane attr
 
 ## 🚀 Quick Start
 
+> 💡 **Sei alle prime armi?** Leggi la **[GUIDA_FACILE.md](./GUIDA_FACILE.md)** - una guida completa passo-passo per principianti!
+
 ### Prerequisiti
 - Node.js 18+
 - Account Cloudflare (Workers, D1, Pages)
@@ -107,6 +109,7 @@ npm run build:frontend
 
 ## 📚 Documentazione
 
+- **[GUIDA_FACILE.md](./GUIDA_FACILE.md)**: 🌟 **Guida per principianti** - Setup passo-passo per chi non ha esperienza di programmazione
 - **[SETUP.md](./SETUP.md)**: Guida completa al setup e deployment
 - **[API_DOCUMENTATION.md](./API_DOCUMENTATION.md)**: Documentazione API endpoints
 - **[CLOUDFLARE_PAGES.md](./CLOUDFLARE_PAGES.md)**: Configurazione Cloudflare Pages
