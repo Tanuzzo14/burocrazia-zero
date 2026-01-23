@@ -4,6 +4,5 @@ import { CancelComponent } from './pages/cancel/cancel.component';
 
 export const routes: Routes = [
   { path: 'success', component: SuccessComponent },
-  { path: 'cancel', component: CancelComponent },
-  { path: '', redirectTo: '/', pathMatch: 'full' }
+  { path: 'cancel', component: CancelComponent }
 ];

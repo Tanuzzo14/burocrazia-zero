@@ -3,10 +3,11 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { ApiService, OperationIdentification } from './api.service';
+import { LoadingSpinnerComponent } from './components/loading-spinner/loading-spinner.component';
 
 @Component({
     selector: 'app-root',
-    imports: [CommonModule, FormsModule, RouterModule],
+    imports: [CommonModule, FormsModule, RouterModule, LoadingSpinnerComponent],
     templateUrl: './app.component.html',
     styleUrl: './app.component.css'
 })
@@ -25,6 +26,9 @@ export class AppComponent {
   
   // Error handling
   errorMessage = '';
+  
+  // Loading states
+  loadingMessage = '';
 
   constructor(private apiService: ApiService, private router: Router) {}
 
@@ -39,6 +43,7 @@ export class AppComponent {
     }
 
     this.isIdentifying = true;
+    this.loadingMessage = 'Identificazione operazione in corso...';
     this.errorMessage = '';
     this.operationResult = null;
 
@@ -46,10 +51,12 @@ export class AppComponent {
       next: (result) => {
         this.operationResult = result;
         this.isIdentifying = false;
+        this.loadingMessage = '';
       },
       error: (error) => {
         this.errorMessage = 'Errore durante l\'identificazione dell\'operazione. Riprova.';
         this.isIdentifying = false;
+        this.loadingMessage = '';
         console.error('Error:', error);
       }
     });
@@ -74,6 +81,7 @@ export class AppComponent {
     }
 
     this.isBooking = true;
+    this.loadingMessage = 'Creazione prenotazione e reindirizzamento al pagamento...';
     this.errorMessage = '';
 
     this.apiService.createBooking({
@@ -85,12 +93,14 @@ export class AppComponent {
     }).subscribe({
       next: (response) => {
         this.isBooking = false;
+        this.loadingMessage = '';
         // Redirect to Stripe checkout
         window.location.href = response.paymentUrl;
       },
       error: (error) => {
         this.errorMessage = 'Errore durante la prenotazione. Riprova.';
         this.isBooking = false;
+        this.loadingMessage = '';
         console.error('Error:', error);
       }
     });
