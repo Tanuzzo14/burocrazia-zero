@@ -44,15 +44,18 @@ export default {
         }
 
         const result = await identifyOperation(query, env);
-        const totalCost = result.costo_stato + parseFloat(env.COMMISSION_AMOUNT);
-
-        return jsonResponse({
-          operation: result.label,
-          stateCost: result.costo_stato,
+        
+        // Transform each option to include commission and total cost
+        const options = result.options.map(option => ({
+          operation: option.label,
+          stateCost: option.costo_stato,
           commission: parseFloat(env.COMMISSION_AMOUNT),
-          totalCost,
-          guideUrl: result.guida_url,
-        });
+          totalCost: option.costo_stato + parseFloat(env.COMMISSION_AMOUNT),
+          guideUrl: option.guida_url,
+          isGeneric: option.is_generic || false
+        }));
+
+        return jsonResponse({ options });
       }
 
       // Route: POST /api/book - Create lead and generate payment link

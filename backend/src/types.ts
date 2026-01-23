@@ -18,6 +18,17 @@ export interface GeminiResponse {
   guida_url: string;
 }
 
+export interface GeminiOption {
+  label: string;
+  costo_stato: number;
+  guida_url: string;
+  is_generic?: boolean;
+}
+
+export interface GeminiMultipleResponse {
+  options: GeminiOption[];
+}
+
 export interface Lead {
   id: string;
   nome_cognome: string;

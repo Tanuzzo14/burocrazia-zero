@@ -19,7 +19,7 @@
     </div>
 
     <!-- Step 1: Operation Search -->
-    <div class="search-section" *ngIf="!operationResult">
+    <div class="search-section" *ngIf="operationOptions.length === 0 && !selectedOperation">
       <h2>
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="11" cy="11" r="8"></circle>
@@ -30,7 +30,7 @@
       <div class="search-box">
         <textarea 
           [(ngModel)]="userQuery" 
-          placeholder="Descrivi l'operazione che devi svolgere (es. 'Richiedere lo SPID', 'Rinnovare la carta d'identità', 'Richiesta passaporto')"
+          placeholder="Descrivi l'operazione che devi svolgere (es. 'Richiedere lo SPID', 'Rinnovare la carta d'identità', 'Richiesta passaporto', 'Concorsi pubblici')"
           rows="4"
           [disabled]="isIdentifying"
         ></textarea>
@@ -48,31 +48,103 @@
       </div>
     </div>
 
+    <!-- Step 1.5: Multiple Options Display -->
+    <div class="options-section" *ngIf="operationOptions.length > 0 && !selectedOperation">
+      <h2>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 11l3 3L22 4"></path>
+          <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+        </svg>
+        Seleziona l'opzione desiderata
+      </h2>
+      <div class="options-grid">
+        <div 
+          *ngFor="let option of operationOptions" 
+          class="option-card"
+          [class.generic-option]="option.isGeneric"
+          (click)="selectOperation(option)"
+        >
+          <div class="option-header">
+            <h3>{{ option.operation }}</h3>
+            <div class="option-badge" *ngIf="option.isGeneric">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="16" x2="12" y2="12"></line>
+                <line x1="12" y1="8" x2="12.01" y2="8"></line>
+              </svg>
+            </div>
+          </div>
+          <div class="option-costs">
+            <div class="cost-row">
+              <span>Costi statali:</span>
+              <span class="amount">€{{ option.stateCost.toFixed(2) }}</span>
+            </div>
+            <div class="cost-row">
+              <span>Commissione:</span>
+              <span class="amount">€{{ option.commission.toFixed(2) }}</span>
+            </div>
+            <div class="cost-row total">
+              <span>Totale:</span>
+              <span class="amount">€{{ option.totalCost.toFixed(2) }}</span>
+            </div>
+          </div>
+          <div class="option-note" *ngIf="option.isGeneric">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="16" x2="12" y2="12"></line>
+              <line x1="12" y1="8" x2="12.01" y2="8"></line>
+            </svg>
+            Potrebbero essere richiesti costi aggiuntivi in base all'operazione specifica
+          </div>
+          <button class="btn-select">Seleziona questa opzione</button>
+        </div>
+      </div>
+      <button 
+        (click)="resetForm()" 
+        class="btn-secondary"
+        style="margin-top: 20px;"
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;">
+          <polyline points="1 4 1 10 7 10"></polyline>
+          <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+        </svg>
+        Nuova ricerca
+      </button>
+    </div>
+
     <!-- Step 2: Operation Result & Booking -->
-    <div class="result-section" *ngIf="operationResult">
+    <div class="result-section" *ngIf="selectedOperation">
       <div class="operation-card">
         <h2>
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--success);">
             <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
             <polyline points="22 4 12 14.01 9 11.01"></polyline>
           </svg>
-          Operazione Identificata
+          Operazione Selezionata
         </h2>
         <div class="operation-details">
-          <p class="operation-name">{{ operationResult.operation }}</p>
+          <p class="operation-name">{{ selectedOperation.operation }}</p>
           <div class="cost-breakdown">
             <div class="cost-item">
               <span>Costi statali:</span>
-              <span class="amount">€{{ operationResult.stateCost.toFixed(2) }}</span>
+              <span class="amount">€{{ selectedOperation.stateCost.toFixed(2) }}</span>
             </div>
             <div class="cost-item">
               <span>Commissione servizio:</span>
-              <span class="amount">€{{ operationResult.commission.toFixed(2) }}</span>
+              <span class="amount">€{{ selectedOperation.commission.toFixed(2) }}</span>
             </div>
             <div class="cost-item total">
               <span>Totale:</span>
-              <span class="amount">€{{ operationResult.totalCost.toFixed(2) }}</span>
+              <span class="amount">€{{ selectedOperation.totalCost.toFixed(2) }}</span>
             </div>
+          </div>
+          <div class="generic-warning" *ngIf="selectedOperation.isGeneric">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+              <line x1="12" y1="9" x2="12" y2="13"></line>
+              <line x1="12" y1="17" x2="12.01" y2="17"></line>
+            </svg>
+            <strong>Nota:</strong> Hai selezionato la consulenza generica. L'operatore ti contatterà per definire i costi esatti in base alla tua specifica richiesta.
           </div>
         </div>
       </div>
