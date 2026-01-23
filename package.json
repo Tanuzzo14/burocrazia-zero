@@ -1,0 +1,30 @@
+{
+  "name": "burocrazia-zero",
+  "version": "1.0.0",
+  "description": "## Visione del Prodotto Un'interfaccia \"concierge\" che permette all'utente di delegare pratiche statali. Il sistema identifica l'operazione tramite AI, incassa il pagamento (Commissione 10€ + Costi vivi statali) e mette in contatto l'utente con un operatore umano su WhatsApp per lo scambio documenti e l'esecuzione.",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "dev:backend": "wrangler dev",
+    "deploy:backend": "wrangler deploy",
+    "dev:frontend": "cd frontend && npm start",
+    "build:frontend": "cd frontend && npm run build",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20260123.0",
+    "@types/node": "^25.0.10",
+    "typescript": "^5.9.3",
+    "wrangler": "^4.60.0"
+  },
+  "dependencies": {
+    "@google/generative-ai": "^0.24.1",
+    "stripe": "^20.2.0",
+    "twilio": "^5.12.0"
+  }
+}

@@ -4,6 +4,7 @@ CREATE TABLE lead_pratiche (
     telefono TEXT NOT NULL,
     tipo_operazione TEXT,
     totale_incassato REAL,
+    guida_url TEXT,
     status TEXT DEFAULT 'PENDING', -- PENDING, PAID
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
