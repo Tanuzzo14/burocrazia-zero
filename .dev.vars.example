@@ -1,0 +1,12 @@
+# Example .dev.vars file for local development
+# Copy this file to .dev.vars and fill in your actual values
+# NEVER commit .dev.vars to version control
+
+GEMINI_API_KEY=your_gemini_api_key_here
+STRIPE_SECRET_KEY=sk_test_your_stripe_secret_key_here
+STRIPE_WEBHOOK_SECRET=whsec_your_webhook_secret_here
+TWILIO_ACCOUNT_SID=ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+TWILIO_AUTH_TOKEN=your_twilio_auth_token_here
+TWILIO_WHATSAPP_FROM=whatsapp:+14155238886
+OPERATOR_PHONE=whatsapp:+393331234567
+FRONTEND_URL=http://localhost:4200

@@ -1,0 +1,105 @@
+<div class="app-wrapper" *ngIf="isHomePage()">
+  <div class="container">
+    <header>
+      <h1>{{ title }}</h1>
+      <p class="subtitle">Delega le tue pratiche statali in modo semplice e veloce</p>
+    </header>
+
+    <!-- Error Message -->
+    <div *ngIf="errorMessage" class="error-message">
+      {{ errorMessage }}
+    </div>
+
+    <!-- Step 1: Operation Search -->
+    <div class="search-section" *ngIf="!operationResult">
+      <h2>Cosa devi fare?</h2>
+      <div class="search-box">
+        <textarea 
+          [(ngModel)]="userQuery" 
+          placeholder="Descrivi l'operazione che devi svolgere (es. 'Richiedere lo SPID', 'Rinnovare la carta d'identità')"
+          rows="4"
+          [disabled]="isIdentifying"
+        ></textarea>
+        <button 
+          (click)="searchOperation()" 
+          [disabled]="isIdentifying || !userQuery.trim()"
+          class="btn-primary"
+        >
+          {{ isIdentifying ? 'Identificazione in corso...' : 'Identifica Operazione' }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Step 2: Operation Result & Booking -->
+    <div class="result-section" *ngIf="operationResult">
+      <div class="operation-card">
+        <h2>Operazione Identificata</h2>
+        <div class="operation-details">
+          <p class="operation-name">{{ operationResult.operation }}</p>
+          <div class="cost-breakdown">
+            <div class="cost-item">
+              <span>Costi statali:</span>
+              <span class="amount">€{{ operationResult.stateCost.toFixed(2) }}</span>
+            </div>
+            <div class="cost-item">
+              <span>Commissione servizio:</span>
+              <span class="amount">€{{ operationResult.commission.toFixed(2) }}</span>
+            </div>
+            <div class="cost-item total">
+              <span>Totale:</span>
+              <span class="amount">€{{ operationResult.totalCost.toFixed(2) }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Lead Data Collection Form -->
+      <div class="booking-form">
+        <h3>I tuoi dati</h3>
+        <div class="form-group">
+          <label for="nomeCognome">Nome e Cognome</label>
+          <input 
+            type="text" 
+            id="nomeCognome"
+            [(ngModel)]="nomeCognome" 
+            placeholder="Mario Rossi"
+            [disabled]="isBooking"
+          />
+        </div>
+        <div class="form-group">
+          <label for="telefono">Numero di Telefono</label>
+          <input 
+            type="tel" 
+            id="telefono"
+            [(ngModel)]="telefono" 
+            placeholder="+393331234567"
+            [disabled]="isBooking"
+          />
+          <small>Formato internazionale (es. +39 per Italia)</small>
+        </div>
+        <div class="button-group">
+          <button 
+            (click)="bookOperation()" 
+            [disabled]="isBooking || !nomeCognome.trim() || !telefono.trim()"
+            class="btn-primary"
+          >
+            {{ isBooking ? 'Elaborazione...' : 'Prenota e Paga' }}
+          </button>
+          <button 
+            (click)="resetForm()" 
+            [disabled]="isBooking"
+            class="btn-secondary"
+          >
+            Annulla
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <p>Dopo il pagamento, un operatore ti contatterà su WhatsApp per completare la pratica</p>
+    </footer>
+  </div>
+</div>
+
+<router-outlet></router-outlet>
