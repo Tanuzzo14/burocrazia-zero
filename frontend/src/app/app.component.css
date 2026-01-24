@@ -62,6 +62,134 @@ h1 {
   line-height: 1.8;
 }
 
+/* Error Modal Styles */
+.error-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  padding: var(--spacing-md);
+  animation: fadeIn 0.2s ease-out;
+  backdrop-filter: blur(4px);
+}
+
+.error-modal {
+  background: white;
+  padding: var(--spacing-2xl);
+  border-radius: var(--border-radius-lg);
+  max-width: 500px;
+  width: 100%;
+  box-shadow: 0 20px 60px rgba(220, 53, 69, 0.3);
+  position: relative;
+  text-align: center;
+  animation: slideInScale 0.3s ease-out;
+  border: 2px solid var(--error);
+}
+
+@keyframes slideInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.error-modal-close {
+  position: absolute;
+  top: var(--spacing-md);
+  right: var(--spacing-md);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: var(--spacing-sm);
+  color: var(--text-secondary);
+  transition: all var(--transition-fast);
+  border-radius: var(--border-radius);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: auto;
+}
+
+.error-modal-close:hover {
+  background: var(--gray-100);
+  color: var(--error);
+  transform: none;
+}
+
+.error-modal-icon {
+  width: 80px;
+  height: 80px;
+  background: var(--error-light);
+  color: var(--error);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto var(--spacing-lg);
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+.error-modal-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-md);
+}
+
+.error-modal-message {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: var(--spacing-xl);
+}
+
+.error-modal-button {
+  background: var(--error);
+  color: white;
+  border: 2px solid var(--error);
+  padding: var(--spacing-md) var(--spacing-2xl);
+  border-radius: var(--border-radius);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  font-size: 1rem;
+  min-height: 48px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.error-modal-button:hover {
+  background: #C82333;
+  border-color: #C82333;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+}
+
+.error-modal-button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(220, 53, 69, 0.2);
+}
+
 .error-message {
   background-color: var(--error-light);
   color: var(--error);
@@ -667,6 +795,33 @@ footer {
   
   .cost-item.total .amount {
     font-size: 1.25rem;
+  }
+  
+  .error-modal {
+    padding: var(--spacing-xl);
+    max-width: calc(100vw - 2rem);
+  }
+  
+  .error-modal-icon {
+    width: 64px;
+    height: 64px;
+  }
+  
+  .error-modal-icon svg {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .error-modal-title {
+    font-size: 1.25rem;
+  }
+  
+  .error-modal-message {
+    font-size: 0.95rem;
+  }
+  
+  .error-modal-button {
+    width: 100%;
   }
 }
 

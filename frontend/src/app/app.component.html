@@ -2,21 +2,33 @@
   <!-- Loading Spinner Overlay -->
   <app-loading-spinner *ngIf="isIdentifying || isBooking" [text]="loadingMessage"></app-loading-spinner>
   
+  <!-- Error Modal -->
+  <div *ngIf="errorMessage" class="error-modal-overlay" (click)="closeErrorMessage()">
+    <div class="error-modal" (click)="$event.stopPropagation()">
+      <button class="error-modal-close" (click)="closeErrorMessage()" aria-label="Chiudi">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+      <div class="error-modal-icon">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="8" x2="12" y2="12"></line>
+          <line x1="12" y1="16" x2="12.01" y2="16"></line>
+        </svg>
+      </div>
+      <h3 class="error-modal-title">Attenzione</h3>
+      <p class="error-modal-message">{{ errorMessage }}</p>
+      <button class="error-modal-button" (click)="closeErrorMessage()">Ho capito</button>
+    </div>
+  </div>
+  
   <div class="container">
     <header>
       <h1>{{ title }}</h1>
       <p class="subtitle">Delega le tue pratiche statali in modo semplice e veloce</p>
     </header>
-
-    <!-- Error Message -->
-    <div *ngIf="errorMessage" class="error-message">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="12" cy="12" r="10"></circle>
-        <line x1="12" y1="8" x2="12" y2="12"></line>
-        <line x1="12" y1="16" x2="12.01" y2="16"></line>
-      </svg>
-      {{ errorMessage }}
-    </div>
 
     <!-- Step 1: Operation Search -->
     <div class="search-section" *ngIf="operationOptions.length === 0 && !selectedOperation">
@@ -194,10 +206,10 @@
             type="tel" 
             id="telefono"
             [(ngModel)]="telefono" 
-            placeholder="+393331234567"
+            placeholder="333 123 4567"
             [disabled]="isBooking"
           />
-          <small>Formato internazionale (es. +39 per Italia)</small>
+          <small>Inserisci il tuo numero di telefono italiano</small>
         </div>
         
         <!-- ALTCHA Anti-Robot Widget -->

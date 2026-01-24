@@ -43,6 +43,10 @@ export class AppComponent {
 
   constructor(private apiService: ApiService, private router: Router) {}
 
+  closeErrorMessage() {
+    this.errorMessage = '';
+  }
+
   isHomePage(): boolean {
     return this.router.url === '/' || this.router.url === '';
   }
@@ -107,10 +111,14 @@ export class AppComponent {
       return;
     }
 
-    // Validate phone number format (international)
-    const phoneRegex = /^\+[1-9]\d{1,14}$/;
-    if (!phoneRegex.test(this.telefono)) {
-      this.errorMessage = 'Numero di telefono non valido. Usa il formato internazionale (es. +393331234567)';
+    // Validate Italian phone number format (remove spaces and common separators)
+    const cleanPhone = this.telefono.replace(/[\s\-\.]/g, '');
+    // Italian mobile numbers: 3xx xxxxxxx (10 digits total)
+    // Italian landline: 0x xxx... (9-11 digits total starting with 0)
+    const italianPhoneRegex = /^(3\d{9}|0\d{8,10})$/;
+    
+    if (!italianPhoneRegex.test(cleanPhone)) {
+      this.errorMessage = 'Numero di telefono non valido. Inserisci un numero italiano valido (es. 333 123 4567)';
       return;
     }
 
@@ -133,9 +141,12 @@ export class AppComponent {
     this.loadingMessage = 'Creazione prenotazione e reindirizzamento al pagamento...';
     this.errorMessage = '';
 
+    // Add +39 prefix to the phone number before sending to backend
+    const phoneWithPrefix = '+39' + cleanPhone;
+
     this.apiService.createBooking({
       nome_cognome: this.nomeCognome,
-      telefono: this.telefono,
+      telefono: phoneWithPrefix,
       tipo_operazione: this.selectedOperation.operation,
       totale_incassato: this.selectedOperation.totalCost,
       guida_url: this.selectedOperation.guideUrl
