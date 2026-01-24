@@ -1,0 +1,91 @@
+<footer class="site-footer" role="contentinfo">
+  <div class="footer-container">
+    <!-- Company Info -->
+    <div class="footer-section">
+      <h3 class="footer-title">Burocrazia Zero</h3>
+      <p class="footer-description">
+        Semplifichiamo la burocrazia italiana con tecnologia e assistenza umana.
+      </p>
+      <div class="footer-contacts">
+        <p>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+            <polyline points="22,6 12,13 2,6"></polyline>
+          </svg>
+          <a href="mailto:info&#64;burocraziazero.it">info&#64;burocraziazero.it</a>
+        </p>
+      </div>
+    </div>
+
+    <!-- Legal Links -->
+    <div class="footer-section">
+      <h4 class="footer-subtitle">Informazioni Legali</h4>
+      <ul class="footer-links">
+        <li><a routerLink="/privacy-policy">Privacy Policy</a></li>
+        <li><a routerLink="/terms-conditions">Termini e Condizioni</a></li>
+        <li><a routerLink="/cookie-policy">Cookie Policy</a></li>
+        <li><a (click)="openCookieSettings()" class="cookie-settings-link" role="button" tabindex="0">Gestisci Cookie</a></li>
+      </ul>
+    </div>
+
+    <!-- Accessibility & Support -->
+    <div class="footer-section">
+      <h4 class="footer-subtitle">Supporto</h4>
+      <ul class="footer-links">
+        <li><a routerLink="/accessibility">Accessibilità</a></li>
+        <li><a href="mailto:support&#64;burocraziazero.it">Contattaci</a></li>
+        <li><a href="mailto:privacy&#64;burocraziazero.it">Richieste Privacy</a></li>
+      </ul>
+    </div>
+
+    <!-- Compliance Badges -->
+    <div class="footer-section">
+      <h4 class="footer-subtitle">Conformità</h4>
+      <div class="compliance-badges">
+        <div class="badge" title="Conforme GDPR">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+            <path d="M9 12l2 2 4-4"></path>
+          </svg>
+          <span>GDPR</span>
+        </div>
+        <div class="badge" title="Pagamenti sicuri con Stripe">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+            <line x1="1" y1="10" x2="23" y2="10"></line>
+          </svg>
+          <span>SSL</span>
+        </div>
+        <div class="badge" title="Accessibile WCAG 2.1 AA">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <path d="M12 16v-4"></path>
+            <path d="M12 8h.01"></path>
+          </svg>
+          <span>WCAG 2.1</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Copyright Bar -->
+  <div class="footer-bottom">
+    <p class="copyright">
+      © {{ currentYear }} Burocrazia Zero. Tutti i diritti riservati.
+    </p>
+    <p class="legal-notice">
+      P.IVA: [Da inserire] | REA: [Da inserire]
+    </p>
+  </div>
+
+  <!-- Data Protection Notice -->
+  <div class="data-protection-notice">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+    </svg>
+    <span>
+      I tuoi dati sono protetti secondo il GDPR. Non conserviamo documenti sui nostri server.
+      Tutti i documenti sono gestiti tramite WhatsApp con crittografia end-to-end.
+    </span>
+  </div>
+</footer>

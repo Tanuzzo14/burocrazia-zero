@@ -1,4 +1,4 @@
-<div class="app-wrapper" *ngIf="isHomePage()">
+<div class="app-wrapper" *ngIf="isHomePage()" id="main-content">
   <!-- Loading Spinner Overlay -->
   <app-loading-spinner *ngIf="isIdentifying || isBooking" [text]="loadingMessage"></app-loading-spinner>
   
@@ -199,10 +199,30 @@
           />
           <small>Formato internazionale (es. +39 per Italia)</small>
         </div>
+        
+        <!-- Privacy and Terms Acceptance -->
+        <div class="form-group privacy-acceptance">
+          <label class="checkbox-label">
+            <input 
+              type="checkbox" 
+              [(ngModel)]="privacyAccepted"
+              [disabled]="isBooking"
+              id="privacy-checkbox"
+            />
+            <span>
+              Ho letto e accetto la 
+              <a routerLink="/privacy-policy" target="_blank" class="legal-link">Privacy Policy</a>, 
+              i <a routerLink="/terms-conditions" target="_blank" class="legal-link">Termini e Condizioni</a> 
+              e la <a routerLink="/cookie-policy" target="_blank" class="legal-link">Cookie Policy</a>
+              <span style="color: var(--error);">*</span>
+            </span>
+          </label>
+        </div>
+        
         <div class="button-group">
           <button 
             (click)="bookOperation()" 
-            [disabled]="isBooking || !nomeCognome.trim() || !telefono.trim()"
+            [disabled]="isBooking || !nomeCognome.trim() || !telefono.trim() || !privacyAccepted"
             class="btn-primary"
           >
             <svg *ngIf="!isBooking" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;">
@@ -235,5 +255,11 @@
     </footer>
   </div>
 </div>
+
+<!-- Cookie Consent Banner -->
+<app-cookie-consent></app-cookie-consent>
+
+<!-- Footer with Legal Links -->
+<app-footer></app-footer>
 
 <router-outlet></router-outlet>

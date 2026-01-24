@@ -4,10 +4,12 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { ApiService, OperationIdentification } from './api.service';
 import { LoadingSpinnerComponent } from './components/loading-spinner/loading-spinner.component';
+import { CookieConsentComponent } from './components/cookie-consent/cookie-consent.component';
+import { FooterComponent } from './components/footer/footer.component';
 
 @Component({
     selector: 'app-root',
-    imports: [CommonModule, FormsModule, RouterModule, LoadingSpinnerComponent],
+    imports: [CommonModule, FormsModule, RouterModule, LoadingSpinnerComponent, CookieConsentComponent, FooterComponent],
     templateUrl: './app.component.html',
     styleUrl: './app.component.css'
 })
@@ -24,6 +26,9 @@ export class AppComponent {
   nomeCognome = '';
   telefono = '';
   isBooking = false;
+  
+  // Privacy and terms acceptance
+  privacyAccepted = false;
   
   // Error handling
   errorMessage = '';
@@ -91,6 +96,11 @@ export class AppComponent {
       return;
     }
 
+    if (!this.privacyAccepted) {
+      this.errorMessage = 'Devi accettare la Privacy Policy e i Termini e Condizioni per procedere';
+      return;
+    }
+
     if (!this.selectedOperation) {
       this.errorMessage = 'Devi prima selezionare un\'opzione';
       return;
@@ -128,6 +138,7 @@ export class AppComponent {
     this.selectedOperation = null;
     this.nomeCognome = '';
     this.telefono = '';
+    this.privacyAccepted = false;
     this.errorMessage = '';
   }
 }
