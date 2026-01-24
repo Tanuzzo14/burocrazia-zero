@@ -72,6 +72,12 @@ export class AppComponent {
     this.selectedOperation = operation;
   }
 
+  handleOptionClick(option: OperationIdentification) {
+    if (!option.requiresCaf) {
+      this.selectOperation(option);
+    }
+  }
+
   bookOperation() {
     if (!this.nomeCognome.trim() || !this.telefono.trim()) {
       this.errorMessage = 'Compila tutti i campi';

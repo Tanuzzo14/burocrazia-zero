@@ -9,6 +9,7 @@ export interface OperationIdentification {
   totalCost: number;
   guideUrl: string;
   isGeneric?: boolean;
+  requiresCaf?: boolean;
 }
 
 export interface IdentifyResponse {
