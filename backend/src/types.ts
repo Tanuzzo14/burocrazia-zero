@@ -12,10 +12,15 @@ export interface Env {
   FRONTEND_URL?: string;
 }
 
-export interface GeminiResponse {
+export interface GeminiOption {
   label: string;
   costo_stato: number;
   guida_url: string;
+  is_generic?: boolean;
+}
+
+export interface GeminiMultipleResponse {
+  options: GeminiOption[];
 }
 
 export interface Lead {

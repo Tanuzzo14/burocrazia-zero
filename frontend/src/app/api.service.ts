@@ -8,6 +8,11 @@ export interface OperationIdentification {
   commission: number;
   totalCost: number;
   guideUrl: string;
+  isGeneric?: boolean;
+}
+
+export interface IdentifyResponse {
+  options: OperationIdentification[];
 }
 
 export interface BookingRequest {
@@ -31,8 +36,8 @@ export class ApiService {
 
   constructor(private http: HttpClient) {}
 
-  identifyOperation(query: string): Observable<OperationIdentification> {
-    return this.http.post<OperationIdentification>(`${this.apiUrl}/identify`, { query });
+  identifyOperation(query: string): Observable<IdentifyResponse> {
+    return this.http.post<IdentifyResponse>(`${this.apiUrl}/identify`, { query });
   }
 
   createBooking(booking: BookingRequest): Observable<BookingResponse> {

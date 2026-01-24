@@ -236,6 +236,37 @@ While the MVP is complete, consider these future enhancements:
 
 ---
 
+## 🆕 Recent Updates
+
+### Multiple Results Feature (v1.1)
+✨ **Enhanced AI Response System**
+
+The system now returns multiple operation options instead of just one, improving user experience for generic queries:
+
+**Key Improvements:**
+- **Multiple Options**: Gemini returns 2-4 operation options based on query specificity
+- **Generic Consultation**: Always includes a generic consultation option with cost disclaimer
+- **Smart Selection**: Auto-selects if only one option; shows selection grid for multiple
+- **Visual Differentiation**: Generic options highlighted with special badge and warning
+- **Cost Transparency**: Clear indication that generic consultation may incur additional costs
+
+**Technical Changes:**
+- Updated type definitions to support multiple results (`GeminiMultipleResponse`)
+- Enhanced Gemini prompt to request multiple relevant options
+- New frontend UI with option cards and selection capability
+- Improved responsive design for mobile option selection
+- Added cost disclaimers for generic consultation options
+
+**User Flow:**
+1. User enters generic query (e.g., "concorsi pubblici")
+2. System displays 2-3 specific options + generic consultation
+3. User selects preferred option
+4. Proceeds with standard payment flow
+
+This feature significantly improves handling of ambiguous user queries and provides better transparency around service costs.
+
+---
+
 ## 📞 Support
 
 For questions or issues:

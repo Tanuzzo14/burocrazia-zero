@@ -17,7 +17,8 @@ export class AppComponent {
   // Step 1: Operation identification
   userQuery = '';
   isIdentifying = false;
-  operationResult: OperationIdentification | null = null;
+  operationOptions: OperationIdentification[] = [];
+  selectedOperation: OperationIdentification | null = null;
   
   // Step 2: Lead data collection
   nomeCognome = '';
@@ -45,11 +46,16 @@ export class AppComponent {
     this.isIdentifying = true;
     this.loadingMessage = 'Identificazione operazione in corso...';
     this.errorMessage = '';
-    this.operationResult = null;
+    this.operationOptions = [];
+    this.selectedOperation = null;
 
     this.apiService.identifyOperation(this.userQuery).subscribe({
       next: (result) => {
-        this.operationResult = result;
+        this.operationOptions = result.options;
+        // If only one option, auto-select it
+        if (this.operationOptions.length === 1) {
+          this.selectedOperation = this.operationOptions[0];
+        }
         this.isIdentifying = false;
         this.loadingMessage = '';
       },
@@ -60,6 +66,10 @@ export class AppComponent {
         console.error('Error:', error);
       }
     });
+  }
+
+  selectOperation(operation: OperationIdentification) {
+    this.selectedOperation = operation;
   }
 
   bookOperation() {
@@ -75,8 +85,8 @@ export class AppComponent {
       return;
     }
 
-    if (!this.operationResult) {
-      this.errorMessage = 'Devi prima identificare un\'operazione';
+    if (!this.selectedOperation) {
+      this.errorMessage = 'Devi prima selezionare un\'opzione';
       return;
     }
 
@@ -87,9 +97,9 @@ export class AppComponent {
     this.apiService.createBooking({
       nome_cognome: this.nomeCognome,
       telefono: this.telefono,
-      tipo_operazione: this.operationResult.operation,
-      totale_incassato: this.operationResult.totalCost,
-      guida_url: this.operationResult.guideUrl
+      tipo_operazione: this.selectedOperation.operation,
+      totale_incassato: this.selectedOperation.totalCost,
+      guida_url: this.selectedOperation.guideUrl
     }).subscribe({
       next: (response) => {
         this.isBooking = false;
@@ -108,7 +118,8 @@ export class AppComponent {
 
   resetForm() {
     this.userQuery = '';
-    this.operationResult = null;
+    this.operationOptions = [];
+    this.selectedOperation = null;
     this.nomeCognome = '';
     this.telefono = '';
     this.errorMessage = '';

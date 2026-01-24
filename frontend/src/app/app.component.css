@@ -114,6 +114,188 @@ h1 {
   }
 }
 
+.options-section {
+  background: white;
+  padding: var(--spacing-2xl);
+  border-radius: var(--border-radius-lg);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--box-shadow-lg);
+  animation: fadeIn 0.4s ease-out;
+}
+
+.options-section h2 {
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-xl);
+  font-weight: 700;
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.options-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--spacing-lg);
+  margin-bottom: var(--spacing-lg);
+}
+
+.option-card {
+  background: linear-gradient(135deg, #F8F9FA 0%, #FFFFFF 100%);
+  border: 2px solid var(--border-color);
+  border-radius: var(--border-radius-lg);
+  padding: var(--spacing-xl);
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  position: relative;
+  overflow: hidden;
+}
+
+.option-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--primary-gradient);
+  opacity: 0;
+  transition: opacity var(--transition-normal);
+}
+
+.option-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--box-shadow-xl);
+  border-color: var(--primary-blue);
+}
+
+.option-card:hover::before {
+  opacity: 1;
+}
+
+.option-card.generic-option {
+  border-color: #FFA500;
+  background: linear-gradient(135deg, #FFF9E6 0%, #FFFFFF 100%);
+}
+
+.option-card.generic-option::before {
+  background: linear-gradient(90deg, #FFA500 0%, #FF8C00 100%);
+}
+
+.option-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--spacing-lg);
+}
+
+.option-header h3 {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+  flex: 1;
+  line-height: 1.4;
+}
+
+.option-badge {
+  background: #FFA500;
+  color: white;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-left: var(--spacing-sm);
+}
+
+.option-costs {
+  background: white;
+  padding: var(--spacing-md);
+  border-radius: var(--border-radius);
+  margin-bottom: var(--spacing-lg);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.cost-row {
+  display: flex;
+  justify-content: space-between;
+  padding: var(--spacing-sm) 0;
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+}
+
+.cost-row.total {
+  border-top: 2px solid var(--primary-blue);
+  margin-top: var(--spacing-sm);
+  padding-top: var(--spacing-md);
+  font-weight: 700;
+  color: var(--text-primary);
+  font-size: 1.0625rem;
+}
+
+.option-note {
+  background: #FFF3CD;
+  border: 1px solid #FFA500;
+  border-radius: var(--border-radius);
+  padding: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+  font-size: 0.875rem;
+  color: #856404;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-sm);
+  line-height: 1.5;
+}
+
+.option-note svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.btn-select {
+  width: 100%;
+  background: var(--primary-gradient);
+  color: white;
+  border: 2px solid var(--primary-blue);
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-radius: var(--border-radius);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  box-shadow: 0 2px 8px rgba(0, 102, 204, 0.2);
+}
+
+.btn-select:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 102, 204, 0.3);
+}
+
+.generic-warning {
+  background: #FFF3CD;
+  border: 2px solid #FFA500;
+  border-radius: var(--border-radius);
+  padding: var(--spacing-lg);
+  margin-top: var(--spacing-lg);
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-md);
+  font-size: 0.95rem;
+  color: #856404;
+  line-height: 1.6;
+}
+
+.generic-warning svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.generic-warning strong {
+  font-weight: 700;
+}
+
 .search-section h2, .operation-card h2, .booking-form h3 {
   color: var(--text-primary);
   margin-bottom: var(--spacing-lg);
@@ -368,7 +550,16 @@ footer {
     margin-bottom: var(--spacing-xl);
   }
   
-  .search-section, .result-section { 
+  .search-section, .result-section, .options-section { 
+    padding: var(--spacing-lg);
+  }
+  
+  .options-grid {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-md);
+  }
+  
+  .option-card {
     padding: var(--spacing-lg);
   }
   
