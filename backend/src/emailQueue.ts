@@ -1,5 +1,13 @@
 import type { Env, EmailQueueItem, CreateEmailRequest } from './types';
 
+// Configuration constants
+const EMAIL_QUEUE_CONFIG = {
+  MAX_RETRIES: 5,
+  BATCH_SIZE: 50,
+  // Retry delays in seconds: 1min, 5min, 15min, 1hour, 4hours
+  RETRY_DELAYS: [60, 300, 900, 3600, 14400],
+} as const;
+
 /**
  * Queue an email for sending with automatic retry mechanism
  */
@@ -13,7 +21,7 @@ export async function queueEmail(emailData: CreateEmailRequest, env: Env): Promi
       id, lead_id, recipient_email, recipient_name, sender_email, sender_name,
       subject, html_content, text_content, status, retry_count, max_retries,
       created_at, next_retry_at
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'PENDING', 0, 5, ?, ?)`
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'PENDING', 0, ?, ?, ?)`
   )
     .bind(
       id,
@@ -25,6 +33,7 @@ export async function queueEmail(emailData: CreateEmailRequest, env: Env): Promi
       emailData.subject,
       emailData.html_content,
       emailData.text_content,
+      EMAIL_QUEUE_CONFIG.MAX_RETRIES,
       now,
       now // Try to send immediately
     )
@@ -42,15 +51,18 @@ export async function queueEmail(emailData: CreateEmailRequest, env: Env): Promi
     text_content: emailData.text_content,
     status: 'PENDING',
     retry_count: 0,
-    max_retries: 5,
+    max_retries: EMAIL_QUEUE_CONFIG.MAX_RETRIES,
     last_error: null,
     created_at: now,
     sent_at: null,
     next_retry_at: now,
   };
 
-  // Try to send immediately
-  await processPendingEmails(env);
+  // Try to send immediately in background (don't await to avoid blocking)
+  // The cron job will retry if this fails
+  processPendingEmails(env).catch(error => {
+    console.error('Background email processing failed:', error);
+  });
 
   return queuedEmail;
 }
@@ -93,11 +105,11 @@ async function sendEmailViaBrevo(email: EmailQueueItem, env: Env): Promise<void>
 
 /**
  * Calculate next retry time using exponential backoff
- * Retry delays: 1min, 5min, 15min, 1hour, 4hours
  */
 function calculateNextRetryTime(retryCount: number): string {
-  const delays = [60, 300, 900, 3600, 14400]; // in seconds
-  const delaySeconds = delays[Math.min(retryCount, delays.length - 1)];
+  const delaySeconds = EMAIL_QUEUE_CONFIG.RETRY_DELAYS[
+    Math.min(retryCount, EMAIL_QUEUE_CONFIG.RETRY_DELAYS.length - 1)
+  ];
   const nextRetry = new Date(Date.now() + delaySeconds * 1000);
   return nextRetry.toISOString();
 }
@@ -159,9 +171,9 @@ export async function processPendingEmails(env: Env): Promise<{ sent: number; fa
      WHERE status = 'PENDING' 
      AND (next_retry_at IS NULL OR next_retry_at <= ?)
      ORDER BY created_at ASC
-     LIMIT 50`
+     LIMIT ?`
   )
-    .bind(now)
+    .bind(now, EMAIL_QUEUE_CONFIG.BATCH_SIZE)
     .all<EmailQueueItem>();
 
   const emails = result.results || [];

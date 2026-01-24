@@ -27,5 +27,5 @@ CREATE TABLE email_queue (
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     sent_at DATETIME,
     next_retry_at DATETIME,
-    FOREIGN KEY (lead_id) REFERENCES lead_pratiche(id)
+    FOREIGN KEY (lead_id) REFERENCES lead_pratiche(id) ON DELETE CASCADE
 );
