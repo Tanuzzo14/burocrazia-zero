@@ -113,8 +113,8 @@ export class AppComponent {
 
     // Validate Italian phone number format (remove spaces and common separators)
     const cleanPhone = this.telefono.replace(/[\s\-\.]/g, '');
-    // Italian mobile numbers: 3xx xxxxxxx (10 digits total)
-    // Italian landline: 0x xxx... (9-11 digits total starting with 0)
+    // Italian mobile numbers: 3XX XXXXXXX (10 digits total, starts with 3)
+    // Italian landline: 0[1-9] followed by 8-10 more digits (9-11 digits total)
     const italianPhoneRegex = /^(3\d{9}|0\d{8,10})$/;
     
     if (!italianPhoneRegex.test(cleanPhone)) {

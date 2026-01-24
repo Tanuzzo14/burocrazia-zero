@@ -3,7 +3,7 @@
   <app-loading-spinner *ngIf="isIdentifying || isBooking" [text]="loadingMessage"></app-loading-spinner>
   
   <!-- Error Modal -->
-  <div *ngIf="errorMessage" class="error-modal-overlay" (click)="closeErrorMessage()">
+  <div *ngIf="errorMessage" class="error-modal-overlay" (click)="closeErrorMessage()" (keydown.escape)="closeErrorMessage()">
     <div class="error-modal" (click)="$event.stopPropagation()">
       <button class="error-modal-close" (click)="closeErrorMessage()" aria-label="Chiudi">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
