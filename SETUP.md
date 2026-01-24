@@ -6,7 +6,7 @@
 - Account Cloudflare (per Workers e D1)
 - Account Google Cloud (per Gemini API)
 - Account PayPal (per pagamenti)
-- Account Twilio (per WhatsApp)
+- Account Brevo (per notifiche email)
 
 ## 1. Setup Backend (Cloudflare Workers)
 
@@ -52,17 +52,14 @@ npx wrangler secret put PAYPAL_WEBHOOK_ID
 # PayPal API Base (sandbox o live)
 npx wrangler secret put PAYPAL_API_BASE
 
-# Twilio Account SID
-npx wrangler secret put TWILIO_ACCOUNT_SID
+# Brevo API Key
+npx wrangler secret put BREVO_API_KEY
 
-# Twilio Auth Token
-npx wrangler secret put TWILIO_AUTH_TOKEN
+# Brevo Sender Email (email verificata su Brevo)
+npx wrangler secret put BREVO_SENDER_EMAIL
 
-# Twilio WhatsApp From Number (formato: whatsapp:+1234567890)
-npx wrangler secret put TWILIO_WHATSAPP_FROM
-
-# Numero WhatsApp dell'operatore (formato: whatsapp:+1234567890)
-npx wrangler secret put OPERATOR_PHONE
+# Email operatore (dove ricevere le notifiche)
+npx wrangler secret put OPERATOR_EMAIL
 
 # URL del frontend (opzionale, default: https://burocrazia-zero.pages.dev)
 npx wrangler secret put FRONTEND_URL
@@ -163,16 +160,19 @@ npx wrangler pages deploy . --project-name=burocrazia-zero
 4. Copia il **Client ID** e il **Secret**
 4. Configurala come secret
 
-### Twilio WhatsApp
+### Brevo Email
 
-1. Vai su [Twilio Console](https://console.twilio.com/)
-2. Attiva il servizio WhatsApp
-3. Configura il Twilio Sandbox for WhatsApp
-4. Ottieni:
-   - Account SID
-   - Auth Token
-   - WhatsApp sender number (formato: `whatsapp:+14155238886`)
-5. Configura come secrets
+1. Vai su [Brevo](https://www.brevo.com/)
+2. Crea un account gratuito
+3. Vai su **Settings** → **SMTP & API**
+4. Nella sezione **API Keys**, clicca **"Create a new API key"**
+5. Dai un nome alla chiave (es: "burocrazia-zero")
+6. Copia la chiave API (inizia con `xkeysib-`)
+7. In **Senders**, aggiungi e verifica l'email mittente
+8. Configura:
+   - `BREVO_API_KEY`: La chiave API
+   - `BREVO_SENDER_EMAIL`: L'email mittente verificata
+   - `OPERATOR_EMAIL`: L'email dove ricevere le notifiche
 
 ## 5. Testing del Sistema
 
@@ -187,7 +187,7 @@ npx wrangler pages deploy . --project-name=burocrazia-zero
 7. Verifica che:
    - Il lead sia stato creato nel database D1
    - Lo status sia aggiornato a "PAID"
-   - L'operatore riceva un messaggio WhatsApp
+   - L'operatore riceva un'email con i dettagli della pratica
 
 ### Test degli Endpoint
 
@@ -226,11 +226,12 @@ npx wrangler d1 execute burocrazia-zero-db --command="SELECT status, COUNT(*) as
 - Verifica che il `PAYPAL_WEBHOOK_ID` sia configurato correttamente
 - Assicurati che l'endpoint webhook in PayPal punti all'URL corretto
 
-### Errore: "Failed to send WhatsApp message"
+### Errore: "Failed to send email via Brevo"
 
-- Verifica le credenziali Twilio
-- Assicurati che il numero operatore sia nel formato corretto (`whatsapp:+...`)
-- Controlla che il Twilio Sandbox sia attivo
+- Verifica che la chiave API di Brevo (`BREVO_API_KEY`) sia corretta
+- Assicurati che l'email mittente (`BREVO_SENDER_EMAIL`) sia stata verificata su Brevo
+- Controlla che l'email operatore (`OPERATOR_EMAIL`) sia valida
+- Verifica i log di Brevo: https://app.brevo.com/log
 
 ### Gemini non identifica correttamente le operazioni
 
@@ -245,6 +246,6 @@ npx wrangler d1 execute burocrazia-zero-db --command="SELECT status, COUNT(*) as
 - **Cloudflare Pages**: Illimitato
 - **Gemini API**: Free tier generoso
 - **PayPal**: 3.4% + €0.35 per transazione europea
-- **Twilio WhatsApp**: ~€0.005 per messaggio
+- **Brevo Email**: 300 email/giorno gratis (9.000/mese)
 
 **Totale**: Praticamente gratis fino a ~1000 pratiche/mese

@@ -14,13 +14,13 @@ A serverless TypeScript backend that handles:
 - **Database Operations** with Cloudflare D1 (SQLite)
 - **Payment Processing** through PayPal Checkout
 - **Webhook Handling** for payment confirmations
-- **WhatsApp Notifications** via Twilio API
+- **Email Notifications** via Brevo API
 
 **Files Created:**
 - `backend/src/index.ts` - Main worker entry point
 - `backend/src/gemini.ts` - AI integration
 - `backend/src/paypal.ts` - Payment processing
-- `backend/src/twilio.ts` - WhatsApp notifications
+- `backend/src/email.ts` - Email notifications via Brevo
 - `backend/src/database.ts` - D1 database operations
 - `backend/src/types.ts` - TypeScript type definitions
 
@@ -100,11 +100,11 @@ All requirements from `docs/technical_specs.md` implemented:
 ### Phase 3: Webhook & Operator Handover ✅
 - PayPal webhook confirms payment
 - Lead status updated to PAID
-- Twilio sends WhatsApp to operator with:
+- Brevo sends email to operator with:
   - Customer identity and phone
   - Budget for state costs
   - Technical guide link
-- Operator contacts customer via WhatsApp
+- Operator contacts customer via WhatsApp to collect documents
 
 ---
 
@@ -114,7 +114,7 @@ All requirements from `docs/technical_specs.md` implemented:
 - Cloudflare account (Workers, D1, Pages)
 - Google Cloud account (Gemini API)
 - PayPal account
-- Twilio account (WhatsApp enabled)
+- Brevo account (Email notifications)
 
 ### Quick Deploy
 
@@ -135,10 +135,9 @@ npx wrangler secret put PAYPAL_CLIENT_ID
 npx wrangler secret put PAYPAL_CLIENT_SECRET
 npx wrangler secret put PAYPAL_WEBHOOK_ID
 npx wrangler secret put PAYPAL_API_BASE
-npx wrangler secret put TWILIO_ACCOUNT_SID
-npx wrangler secret put TWILIO_AUTH_TOKEN
-npx wrangler secret put TWILIO_WHATSAPP_FROM
-npx wrangler secret put OPERATOR_PHONE
+npx wrangler secret put BREVO_API_KEY
+npx wrangler secret put BREVO_SENDER_EMAIL
+npx wrangler secret put OPERATOR_EMAIL
 
 # 4. Deploy backend
 npm run deploy:backend
@@ -162,11 +161,11 @@ npm run deploy:backend
 🔍 **AI-Powered Search** - Describe operation, get instant identification  
 💶 **Transparent Pricing** - See exact costs before payment  
 💳 **Secure Payment** - PayPal checkout integration  
-📱 **WhatsApp Support** - Direct contact with operator  
+📱 **WhatsApp Support** - Operator contacts via WhatsApp after payment  
 🔒 **Privacy First** - No document storage on servers  
 
 ### For Operators
-📧 **Instant Notifications** - WhatsApp alert on new paid lead  
+📧 **Instant Notifications** - Email alert on new paid lead  
 👤 **Customer Details** - Name, phone, operation type  
 💰 **Budget Info** - Amount available for state costs  
 📖 **Guide Links** - Direct link to operation instructions  
@@ -203,12 +202,12 @@ All original requirements met:
 - Database: Cloudflare D1 ✓
 - AI: Gemini 1.5 Flash ✓
 - Payments: PayPal ✓
-- WhatsApp: Twilio ✓
+- Email: Brevo ✓
 
 ✅ **Flusso Operativo**
 - Phase 1: AI Identification ✓
 - Phase 2: Lead & Payment ✓
-- Phase 3: Webhook & WhatsApp ✓
+- Phase 3: Webhook & Email Notifications ✓
 
 ✅ **Privacy & Security**
 - Minimal data collection ✓
@@ -228,7 +227,7 @@ All original requirements met:
 While the MVP is complete, consider these future enhancements:
 
 1. **Admin Dashboard** - View leads, statistics, revenue
-2. **Email Notifications** - Backup to WhatsApp for operators
+2. **SMS Notifications** - Alternative to email for urgent notifications
 3. **Multi-Operator Support** - Load balancing across operators
 4. **Operation Database** - Pre-cached common operations
 5. **Analytics Integration** - Google Analytics or Plausible
@@ -285,7 +284,7 @@ Built with:
 - **Cloudflare** - Edge computing platform
 - **Google Gemini** - AI language model
 - **PayPal** - Payment processing
-- **Twilio** - WhatsApp messaging
+- **Brevo** - Email notifications
 
 ---
 

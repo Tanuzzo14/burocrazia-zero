@@ -2,7 +2,7 @@ import type { Env } from './types';
 import { identifyOperation } from './gemini';
 import { createLead, updateLeadStatus, getLeadById } from './database';
 import { createPaymentLink, verifyWebhookSignature } from './paypal';
-import { sendWhatsAppToOperator } from './twilio';
+import { sendEmailToOperator } from './email';
 
 // CORS headers for frontend communication
 const corsHeaders = {
@@ -140,8 +140,8 @@ export default {
               return errorResponse('Lead not found', 404);
             }
 
-            // Send WhatsApp notification to operator
-            await sendWhatsAppToOperator(lead, lead.guida_url, env);
+            // Send email notification to operator
+            await sendEmailToOperator(lead, lead.guida_url, env);
 
             return jsonResponse({ received: true });
           }

@@ -1,13 +1,13 @@
 # Burocrazia-Zero
 
-Un'interfaccia "concierge" che permette all'utente di delegare pratiche statali. Il sistema identifica l'operazione tramite AI, incassa il pagamento (Commissione 10€ + Costi vivi statali) e mette in contatto l'utente con un operatore umano su WhatsApp per lo scambio documenti e l'esecuzione.
+Un'interfaccia "concierge" che permette all'utente di delegare pratiche statali. Il sistema identifica l'operazione tramite AI, incassa il pagamento (Commissione 10€ + Costi vivi statali) e mette in contatto l'utente con un operatore umano tramite WhatsApp per lo scambio documenti e l'esecuzione.
 
 ## 🎯 Visione del Prodotto
 
 Burocrazia-Zero semplifica la gestione delle pratiche burocratiche italiane attraverso:
 - **AI-powered**: Identifica automaticamente l'operazione richiesta tramite Gemini AI
 - **Pagamento sicuro**: Integrazione con PayPal per pagamenti online
-- **Zero storage documenti**: I documenti vengono gestiti tramite WhatsApp (crittografia end-to-end)
+- **Notifiche email**: L'operatore riceve notifiche email delle nuove pratiche tramite Brevo
 - **Operatore dedicato**: Contatto diretto con un operatore per completare la pratica
 
 ## 🏗️ Stack Tecnologico
@@ -17,7 +17,7 @@ Burocrazia-Zero semplifica la gestione delle pratiche burocratiche italiane attr
 - **Database**: Cloudflare D1
 - **AI Engine**: Google Gemini 1.5 Flash
 - **Pagamenti**: PayPal API
-- **Notifiche**: Twilio API (WhatsApp)
+- **Notifiche**: Brevo API (Email)
 - **Anti-Robot**: ALTCHA (proof-of-work challenge)
 
 
@@ -28,10 +28,10 @@ Burocrazia-Zero semplifica la gestione delle pratiche burocratiche italiane attr
 2. Il sistema identifica l'operazione e mostra i costi (costi statali + commissione €10)
 3. Inserisce nome, cognome e numero di telefono
 4. Effettua il pagamento tramite PayPal
-5. Riceve un messaggio WhatsApp dall'operatore per completare la pratica
+5. L'operatore viene notificato via email e contatterà il cliente su WhatsApp per completare la pratica
 
 ### Per l'Operatore
-1. Riceve notifica WhatsApp quando un pagamento è completato
+1. Riceve notifica via email quando un pagamento è completato
 2. Ottiene informazioni sul cliente e sull'operazione da svolgere
 3. Riceve il link alla guida tecnica per completare l'operazione
 4. Contatta il cliente su WhatsApp per richiedere i documenti necessari
@@ -45,7 +45,7 @@ Burocrazia-Zero semplifica la gestione delle pratiche burocratiche italiane attr
 - Account Cloudflare (Workers, D1, Pages)
 - Account Google Cloud (per Gemini API)
 - Account PayPal
-- Account Twilio (con WhatsApp abilitato)
+- Account Brevo (per notifiche email)
 
 ### Installazione
 
@@ -82,10 +82,9 @@ npx wrangler secret put PAYPAL_CLIENT_ID
 npx wrangler secret put PAYPAL_CLIENT_SECRET
 npx wrangler secret put PAYPAL_WEBHOOK_ID
 npx wrangler secret put PAYPAL_API_BASE
-npx wrangler secret put TWILIO_ACCOUNT_SID
-npx wrangler secret put TWILIO_AUTH_TOKEN
-npx wrangler secret put TWILIO_WHATSAPP_FROM
-npx wrangler secret put OPERATOR_PHONE
+npx wrangler secret put BREVO_API_KEY
+npx wrangler secret put BREVO_SENDER_EMAIL
+npx wrangler secret put OPERATOR_EMAIL
 ```
 
 ### Sviluppo Locale
@@ -129,7 +128,7 @@ burocrazia-zero/
 │       ├── index.ts          # Entry point Worker
 │       ├── gemini.ts         # Integrazione Gemini AI
 │       ├── paypal.ts         # Integrazione PayPal
-│       ├── twilio.ts         # Integrazione Twilio WhatsApp
+│       ├── email.ts          # Integrazione Brevo Email
 │       ├── database.ts       # Operazioni D1 database
 │       └── types.ts          # TypeScript types
 ├── frontend/
@@ -151,7 +150,7 @@ burocrazia-zero/
 
 ### Approccio Privacy-First
 - **Dati minimi**: Salviamo solo nome, telefono, tipo operazione e importo
-- **Zero storage documenti**: Documenti gestiti tramite WhatsApp (no server storage)
+- **Zero storage documenti**: Documenti gestiti tramite WhatsApp dall'operatore (no server storage)
 - **GDPR compliant**: Schema database ridotto al minimo necessario
 
 ### Sicurezza
@@ -171,7 +170,7 @@ Con il piano Free/Starter:
 - **Cloudflare Pages**: Gratis (illimitato)
 - **Gemini API**: Free tier generoso
 - **PayPal**: 3.4% + €0.35 per transazione europea
-- **Twilio WhatsApp**: ~€0.005 per messaggio
+- **Brevo Email**: Gratis (300 email/giorno = 9.000/mese)
 
 **Totale**: Praticamente gratis fino a ~1000 pratiche/mese
 

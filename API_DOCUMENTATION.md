@@ -117,7 +117,7 @@
 
 **Endpoint**: `POST /api/webhook/paypal`
 
-**Description**: Handles PayPal payment confirmation webhooks. Updates lead status and sends WhatsApp notification to operator.
+**Description**: Handles PayPal payment confirmation webhooks. Updates lead status and sends email notification to operator.
 
 **Headers**:
 - `paypal-transmission-id`: Transmission ID for verification
@@ -142,7 +142,7 @@
 1. Verify webhook signature
 2. Extract lead ID from session metadata
 3. Update lead status to "PAID"
-4. Send WhatsApp message to operator with:
+4. Send email to operator with:
    - Customer name and phone
    - Operation type
    - Budget for state costs
@@ -226,10 +226,9 @@ The following secrets must be configured via `wrangler secret put`:
 - `PAYPAL_CLIENT_SECRET`: PayPal Client Secret
 - `PAYPAL_WEBHOOK_ID`: PayPal Webhook ID
 - `PAYPAL_API_BASE`: PayPal API base URL
-- `TWILIO_ACCOUNT_SID`: Twilio account SID
-- `TWILIO_AUTH_TOKEN`: Twilio authentication token
-- `TWILIO_WHATSAPP_FROM`: Sender WhatsApp number (format: `whatsapp:+...`)
-- `OPERATOR_PHONE`: Operator WhatsApp number (format: `whatsapp:+...`)
+- `BREVO_API_KEY`: Brevo API key
+- `BREVO_SENDER_EMAIL`: Verified sender email on Brevo
+- `OPERATOR_EMAIL`: Operator email address for notifications
 
 ### Best Practices
 

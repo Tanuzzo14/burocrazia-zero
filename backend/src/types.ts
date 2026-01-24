@@ -6,10 +6,9 @@ export interface Env {
   PAYPAL_CLIENT_SECRET: string;
   PAYPAL_WEBHOOK_ID: string;
   PAYPAL_API_BASE: string;
-  TWILIO_ACCOUNT_SID: string;
-  TWILIO_AUTH_TOKEN: string;
-  TWILIO_WHATSAPP_FROM: string;
-  OPERATOR_PHONE: string;
+  BREVO_API_KEY: string;
+  BREVO_SENDER_EMAIL: string;
+  OPERATOR_EMAIL: string;
   COMMISSION_AMOUNT: string;
   FRONTEND_URL?: string;
 }
