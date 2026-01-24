@@ -22,5 +22,6 @@ database_id = "4bf3015a-bc01-497a-ae31-72f9e72847f2"
 [build]
 command = "npm install"
 
+# Non-secret environment variables
 [vars]
-COMMISSION_AMOUNT = "10"
+COMMISSION_AMOUNT = "10"  # Service commission amount in EUR

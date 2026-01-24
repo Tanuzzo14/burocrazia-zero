@@ -37,6 +37,48 @@ interface PayPalOrder {
   links: PayPalLink[];
 }
 
+interface PayPalWebhookEvent {
+  id: string;
+  event_type: string;
+  resource: PayPalWebhookResource;
+  [key: string]: any;
+}
+
+interface PayPalWebhookResource {
+  id?: string;
+  purchase_units?: Array<{
+    reference_id?: string;
+    [key: string]: any;
+  }>;
+  [key: string]: any;
+}
+
+interface PayPalOAuthResponse {
+  access_token: string;
+  token_type: string;
+  expires_in: number;
+}
+
+interface PayPalWebhookVerificationRequest {
+  transmission_id: string;
+  transmission_time: string;
+  cert_url: string;
+  auth_algo: string;
+  transmission_sig: string;
+  webhook_id: string;
+  webhook_event: PayPalWebhookEvent;
+}
+
+interface PayPalWebhookVerificationResponse {
+  verification_status: string;
+}
+
+interface PayPalCaptureResponse {
+  id: string;
+  status: string;
+  [key: string]: any;
+}
+
 // Get PayPal OAuth token
 async function getPayPalAccessToken(env: Env): Promise<string> {
   // Create base64 auth string using Web APIs (for Cloudflare Workers)
@@ -56,7 +98,7 @@ async function getPayPalAccessToken(env: Env): Promise<string> {
     throw new Error('Failed to get PayPal access token');
   }
 
-  const data = await response.json() as { access_token: string };
+  const data = await response.json() as PayPalOAuthResponse;
   return data.access_token;
 }
 
@@ -119,7 +161,7 @@ export async function verifyWebhookSignature(
   body: string,
   headers: Headers,
   env: Env
-): Promise<any> {
+): Promise<PayPalWebhookEvent> {
   const transmissionId = headers.get('paypal-transmission-id');
   const transmissionTime = headers.get('paypal-transmission-time');
   const transmissionSig = headers.get('paypal-transmission-sig');
@@ -132,14 +174,14 @@ export async function verifyWebhookSignature(
 
   const accessToken = await getPayPalAccessToken(env);
 
-  const verifyRequest = {
+  const verifyRequest: PayPalWebhookVerificationRequest = {
     transmission_id: transmissionId,
     transmission_time: transmissionTime,
     cert_url: certUrl,
     auth_algo: authAlgo,
     transmission_sig: transmissionSig,
     webhook_id: env.PAYPAL_WEBHOOK_ID,
-    webhook_event: JSON.parse(body),
+    webhook_event: JSON.parse(body) as PayPalWebhookEvent,
   };
 
   const response = await fetch(`${env.PAYPAL_API_BASE}/v1/notifications/verify-webhook-signature`, {
@@ -155,17 +197,17 @@ export async function verifyWebhookSignature(
     throw new Error('Failed to verify PayPal webhook signature');
   }
 
-  const verification = await response.json() as { verification_status: string };
+  const verification = await response.json() as PayPalWebhookVerificationResponse;
   
   if (verification.verification_status !== 'SUCCESS') {
     throw new Error('Invalid webhook signature');
   }
 
-  return JSON.parse(body);
+  return JSON.parse(body) as PayPalWebhookEvent;
 }
 
 // Capture payment for an order
-export async function capturePayment(orderId: string, env: Env): Promise<any> {
+export async function capturePayment(orderId: string, env: Env): Promise<PayPalCaptureResponse> {
   const accessToken = await getPayPalAccessToken(env);
 
   const response = await fetch(`${env.PAYPAL_API_BASE}/v2/checkout/orders/${orderId}/capture`, {
@@ -181,5 +223,5 @@ export async function capturePayment(orderId: string, env: Env): Promise<any> {
     throw new Error(`Failed to capture PayPal payment: ${error}`);
   }
 
-  return await response.json();
+  return await response.json() as PayPalCaptureResponse;
 }
