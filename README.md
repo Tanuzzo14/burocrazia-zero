@@ -18,6 +18,8 @@ Burocrazia-Zero semplifica la gestione delle pratiche burocratiche italiane attr
 - **AI Engine**: Google Gemini 1.5 Flash
 - **Pagamenti**: Stripe API
 - **Notifiche**: Twilio API (WhatsApp)
+- **Anti-Robot**: ALTCHA (proof-of-work challenge)
+
 
 ## 📋 Funzionalità
 
@@ -114,6 +116,7 @@ npm run build:frontend
 - **[API_DOCUMENTATION.md](./API_DOCUMENTATION.md)**: Documentazione API endpoints
 - **[CLOUDFLARE_PAGES.md](./CLOUDFLARE_PAGES.md)**: Configurazione Cloudflare Pages
 - **[docs/technical_specs.md](./docs/technical_specs.md)**: Specifiche tecniche dettagliate
+- **[docs/ALTCHA_INTEGRATION.md](./docs/ALTCHA_INTEGRATION.md)**: Guida integrazione ALTCHA (anti-robot)
 
 ## 🗂️ Struttura Progetto
 
@@ -156,6 +159,7 @@ burocrazia-zero/
 - ✅ CORS configurato correttamente
 - ✅ HTTPS obbligatorio in produzione
 - ✅ Nessuna vulnerabilità rilevata da CodeQL
+- ✅ Protezione anti-robot con ALTCHA (proof-of-work challenge)
 
 ## 💰 Costi Stimati
 

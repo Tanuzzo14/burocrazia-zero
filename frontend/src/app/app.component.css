@@ -509,6 +509,13 @@ h1 {
   font-style: italic;
 }
 
+.altcha-wrapper {
+  margin-bottom: var(--spacing-xl);
+  padding: var(--spacing-md);
+  border-radius: var(--border-radius);
+  background: var(--background-light);
+}
+
 .button-group {
   display: flex;
   gap: var(--spacing-md);
