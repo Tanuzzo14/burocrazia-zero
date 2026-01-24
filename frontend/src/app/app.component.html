@@ -63,7 +63,7 @@
           class="option-card"
           [class.generic-option]="option.isGeneric"
           [class.caf-required]="option.requiresCaf"
-          (click)="!option.requiresCaf && selectOperation(option)"
+          (click)="handleOptionClick(option)"
         >
           <div class="option-header">
             <h3>{{ option.operation }}</h3>
