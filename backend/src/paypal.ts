@@ -147,6 +147,11 @@ export async function createPaymentLink(
 
   const order = await response.json() as PayPalOrder;
   
+  // Validate links array exists
+  if (!order.links || !Array.isArray(order.links)) {
+    throw new Error('Invalid PayPal order response - missing links');
+  }
+  
   // Find the approval URL
   const approvalLink = order.links.find(link => link.rel === 'approve');
   if (!approvalLink) {
