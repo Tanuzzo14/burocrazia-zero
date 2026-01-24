@@ -18,6 +18,8 @@ Burocrazia-Zero semplifica la gestione delle pratiche burocratiche italiane attr
 - **AI Engine**: Google Gemini 1.5 Flash
 - **Pagamenti**: Stripe API
 - **Notifiche**: Twilio API (WhatsApp)
+- **Anti-Robot**: ALTCHA (proof-of-work challenge)
+
 
 ## 📋 Funzionalità
 
@@ -156,6 +158,7 @@ burocrazia-zero/
 - ✅ CORS configurato correttamente
 - ✅ HTTPS obbligatorio in produzione
 - ✅ Nessuna vulnerabilità rilevata da CodeQL
+- ✅ Protezione anti-robot con ALTCHA (proof-of-work challenge)
 
 ## 💰 Costi Stimati
 
