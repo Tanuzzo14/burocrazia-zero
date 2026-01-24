@@ -17,7 +17,7 @@ Burocrazia-Zero semplifica la gestione delle pratiche burocratiche italiane attr
 - **Database**: Cloudflare D1
 - **AI Engine**: Google Gemini 1.5 Flash
 - **Pagamenti**: PayPal API
-- **Notifiche**: Brevo API (Email)
+- **Notifiche**: Brevo API (Email) con sistema di coda e retry automatico
 - **Anti-Robot**: ALTCHA (proof-of-work challenge)
 
 
@@ -116,6 +116,8 @@ npm run build:frontend
 - **[SETUP.md](./SETUP.md)**: Guida completa al setup e deployment
 - **[API_DOCUMENTATION.md](./API_DOCUMENTATION.md)**: Documentazione API endpoints
 - **[CLOUDFLARE_PAGES.md](./CLOUDFLARE_PAGES.md)**: Configurazione Cloudflare Pages
+- **[docs/EMAIL_QUEUE_SYSTEM.md](./docs/EMAIL_QUEUE_SYSTEM.md)**: 📧 **Sistema di coda email** - Garantisce la consegna affidabile delle email
+- **[docs/EMAIL_QUEUE_MIGRATION.md](./docs/EMAIL_QUEUE_MIGRATION.md)**: Migrazione database per sistema email
 - **[docs/technical_specs.md](./docs/technical_specs.md)**: Specifiche tecniche dettagliate
 - **[docs/ALTCHA_INTEGRATION.md](./docs/ALTCHA_INTEGRATION.md)**: Guida integrazione ALTCHA (anti-robot)
 
@@ -129,6 +131,7 @@ burocrazia-zero/
 │       ├── gemini.ts         # Integrazione Gemini AI
 │       ├── paypal.ts         # Integrazione PayPal
 │       ├── email.ts          # Integrazione Brevo Email
+│       ├── emailQueue.ts     # Sistema coda email con retry
 │       ├── database.ts       # Operazioni D1 database
 │       └── types.ts          # TypeScript types
 ├── frontend/
@@ -140,7 +143,9 @@ burocrazia-zero/
 │               ├── success/                # Pagina successo pagamento
 │               └── cancel/                 # Pagina annullo pagamento
 ├── docs/
-│   └── technical_specs.md    # Specifiche tecniche
+│   ├── technical_specs.md           # Specifiche tecniche
+│   ├── EMAIL_QUEUE_SYSTEM.md        # Documentazione sistema email
+│   └── EMAIL_QUEUE_MIGRATION.md     # Guida migrazione
 ├── schema.sql                # Schema database D1
 ├── wrangler.toml            # Configurazione Cloudflare Workers
 └── package.json             # Dipendenze progetto
