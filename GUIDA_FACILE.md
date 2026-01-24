@@ -116,34 +116,54 @@ Prima di iniziare, devi creare alcuni account (sono tutti gratuiti per iniziare)
 
 ---
 
-### 1.5 Twilio (per WhatsApp)
+### 1.5 Brevo (per le email)
 
-**Cos'è**: Il servizio che permette di inviare messaggi WhatsApp automatici.
+**Cos'è**: Il servizio che permette di inviare email automatiche all'operatore quando arriva un nuovo pagamento.
 
 **Come fare**:
-1. Vai su https://www.twilio.com/try-twilio
-2. Compila il form di registrazione
-3. Verifica il tuo numero di telefono
-4. Completa il questionario iniziale (scegli "Products" → "Messaging")
+1. Vai su https://www.brevo.com/
+2. Clicca su "Sign up free" (Registrati gratis)
+3. Compila il form di registrazione con email e password
+4. Verifica il tuo indirizzo email
+5. Accedi alla Dashboard di Brevo
 
-**Ottenere le chiavi**:
-1. Nella Dashboard di Twilio, cerca la sezione **"Account Info"**
-2. Troverai:
-   - **Account SID** (inizia con `AC...`) - **COPIALO**
-   - **Auth Token** - Clicca su "Show" e **COPIALO**
-3. Salva entrambi nel tuo file di testo
+**Ottenere la chiave API**:
+1. Nella Dashboard di Brevo, vai su **"Settings"** (Impostazioni) nel menu in alto a destra
+2. Nel menu a sinistra, clicca su **"SMTP & API"**
+3. Vai alla sezione **"API Keys"** (Chiavi API)
+4. Clicca su **"Create a new API key"** (Crea una nuova chiave API)
+5. Dai un nome alla chiave (es: "burocrazia-zero")
+6. **COPIA LA CHIAVE API** immediatamente (non sarà più visibile dopo!)
+   - Sarà una stringa lunga come: `xkeysib-abc123...`
+7. Salva questa chiave nel tuo file di testo
 
-✅ **Fatto!** Salva come:
-- `TWILIO_ACCOUNT_SID`
-- `TWILIO_AUTH_TOKEN`
+✅ **Fatto!** Salva come: `BREVO_API_KEY`
 
-**Configurare WhatsApp**:
-1. Nel menu di Twilio, vai su **"Messaging"** → **"Try it out"** → **"Send a WhatsApp message"**
-2. Segui le istruzioni per attivare il Twilio Sandbox for WhatsApp
-3. Ti verrà dato un numero WhatsApp tipo: `+1 415 523 8886`
-4. **COPIA questo numero** nel formato: `whatsapp:+14155238886`
+**Configurazione SMTP (informazioni di riferimento)**:
+- **Server SMTP**: smtp-relay.brevo.com
+- **Porta**: 587
+- **Login SMTP**: a0c3ed001@smtp-brevo.com (puoi trovarlo in Settings > SMTP & API)
 
-✅ **Fatto!** Salva come: `TWILIO_WHATSAPP_FROM`
+📝 **NOTA**: Per questo progetto useremo l'API REST di Brevo (più semplice), non direttamente SMTP. Le informazioni SMTP sono fornite solo per riferimento.
+
+**Configurare l'email mittente**:
+1. In Brevo Dashboard, vai su **"Senders"** nel menu
+2. Clicca su **"Add a new sender"**
+3. Inserisci:
+   - **Name**: "Burocrazia Zero" (o il nome che preferisci)
+   - **Email**: Un'email che controlli (es: noreply@tuodominio.com)
+   - Se non hai un dominio personalizzato, puoi usare un indirizzo Gmail o simile per test
+4. Verifica l'email seguendo le istruzioni che Brevo ti invierà
+5. **COPIA L'INDIRIZZO EMAIL** verificato e salvalo
+
+✅ **Fatto!** Salva come: `BREVO_SENDER_EMAIL`
+
+**Email operatore**:
+- Decidi quale indirizzo email vuoi usare per ricevere le notifiche delle nuove pratiche
+- Può essere la tua email personale o aziendale
+- **COPIA QUESTO INDIRIZZO EMAIL** e salvalo
+
+✅ **Fatto!** Salva come: `OPERATOR_EMAIL`
 
 ---
 
@@ -155,10 +175,9 @@ A questo punto dovresti avere in un file di testo:
 GEMINI_API_KEY=AIzaSyABCDEF123456789...
 PAYPAL_CLIENT_ID=Ac-57DH8GkaMqhmy8QRBM...
 PAYPAL_CLIENT_SECRET=xxxxxxxxxxxxxxxx
-TWILIO_ACCOUNT_SID=ACxxxxxxxxxxxxxxxxx
-TWILIO_AUTH_TOKEN=xxxxxxxxxxxxxxxx
-TWILIO_WHATSAPP_FROM=whatsapp:+14155238886
-OPERATOR_PHONE=whatsapp:+393331234567 (il TUO numero WhatsApp con prefisso internazionale - es: +39 per Italia, +1 per USA, ecc.)
+BREVO_API_KEY=xkeysib-abc123...
+BREVO_SENDER_EMAIL=noreply@tuodominio.com
+OPERATOR_EMAIL=tua-email@example.com
 ```
 
 ⚠️ **IMPORTANTE**: Queste chiavi sono SEGRETE! Non condividerle MAI con nessuno e non pubblicarle online.
@@ -294,10 +313,9 @@ Ora aggiungi una alla volta tutte le chiavi segrete:
 | `PAYPAL_CLIENT_ID` | Il Client ID di PayPal (es: `Ac-57DH8GkaMqhmy8QRBM...`) | Identificativo pubblico dell'app PayPal |
 | `PAYPAL_CLIENT_SECRET` | Il Secret di PayPal | Chiave segreta dell'app PayPal - **IMPORTANTE: mantieni questa chiave al sicuro!** |
 | `PAYPAL_API_BASE` | `https://api-m.sandbox.paypal.com` | URL base delle API PayPal (usa sandbox per test, live per produzione) |
-| `TWILIO_ACCOUNT_SID` | Il SID Twilio che inizia con `AC...` | Identificativo dell'account Twilio |
-| `TWILIO_AUTH_TOKEN` | Il token Twilio | Token di autenticazione Twilio |
-| `TWILIO_WHATSAPP_FROM` | Il numero WhatsApp Twilio (es: `whatsapp:+14155238886`) | Numero WhatsApp da cui partono i messaggi |
-| `OPERATOR_PHONE` | Il TUO numero WhatsApp con prefisso internazionale (es: `whatsapp:+393331234567` per Italia) | Numero WhatsApp dove ricevi le notifiche |
+| `BREVO_API_KEY` | La chiave API di Brevo che inizia con `xkeysib-...` | Chiave API per inviare email tramite Brevo |
+| `BREVO_SENDER_EMAIL` | L'email mittente verificata su Brevo (es: `noreply@tuodominio.com`) | Email da cui partono le notifiche |
+| `OPERATOR_EMAIL` | La tua email dove ricevi le notifiche (es: `tua-email@example.com`) | Email dove ricevi le notifiche delle nuove pratiche |
 
 **⚠️ IMPORTANTE - Come inserire le chiavi su Cloudflare**:
 
@@ -537,7 +555,7 @@ Cloudflare inizierà la build. Aspetta qualche minuto (3-5 minuti circa).
 
 3. Verifica che:
    - ✅ Vieni reindirizzato alla pagina di successo
-   - ✅ L'operatore riceve un messaggio WhatsApp con i dettagli
+   - ✅ L'operatore riceve un'email con i dettagli della pratica
    - ✅ Il lead è salvato nel database
 
 ---
@@ -586,12 +604,14 @@ Cloudflare inizierà la build. Aspetta qualche minuto (3-5 minuti circa).
 
 ---
 
-### Problema: "Failed to send WhatsApp message"
+### Problema: "Failed to send email via Brevo"
 
 **Soluzione**:
-1. Verifica che il numero operatore sia nel formato corretto: `whatsapp:+393331234567` (con prefisso internazionale)
-2. Assicurati di aver attivato il **Twilio Sandbox for WhatsApp**
-3. Verifica le credenziali Twilio nel Worker (Settings → Variables)
+1. Verifica che l'email operatore (`OPERATOR_EMAIL`) sia valida
+2. Assicurati che l'email mittente (`BREVO_SENDER_EMAIL`) sia stata verificata su Brevo
+3. Controlla che la chiave API di Brevo (`BREVO_API_KEY`) sia corretta
+4. Verifica le credenziali Brevo nel Worker (Settings → Variables)
+5. Controlla i log di Brevo per eventuali limitazioni o errori: https://app.brevo.com/log
 
 ---
 
@@ -673,7 +693,7 @@ Quando vuoi modificare qualcosa:
 ### Costi
 - Il piano free di Cloudflare è sufficiente per ~1000 pratiche/mese
 - PayPal prende circa 3.4% + €0.35 per transazione in Europa
-- Twilio costa ~€0.005 per messaggio WhatsApp
+- Brevo piano gratuito include 300 email/giorno (9.000 email/mese)
 - Monitora i costi nella dashboard di ogni servizio
 
 ### Backup
@@ -712,7 +732,7 @@ Ora che l'applicazione è online, potresti voler:
 L'applicazione include:
 - ✨ Intelligenza Artificiale (Gemini)
 - 💳 Pagamenti online (PayPal)
-- 📱 Messaggistica WhatsApp (Twilio)
+- 📧 Notifiche via email (Brevo)
 - 🗄️ Database cloud (Cloudflare D1)
 - 🎨 Frontend moderno (Angular)
 
