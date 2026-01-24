@@ -52,7 +52,8 @@ export default {
           commission: parseFloat(env.COMMISSION_AMOUNT),
           totalCost: option.costo_stato + parseFloat(env.COMMISSION_AMOUNT),
           guideUrl: option.guida_url,
-          isGeneric: option.is_generic || false
+          isGeneric: option.is_generic || false,
+          requiresCaf: option.requires_caf || false
         }));
 
         return jsonResponse({ options });

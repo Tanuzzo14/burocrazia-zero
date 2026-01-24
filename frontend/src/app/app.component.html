@@ -62,16 +62,20 @@
           *ngFor="let option of operationOptions" 
           class="option-card"
           [class.generic-option]="option.isGeneric"
-          (click)="selectOperation(option)"
+          [class.caf-required]="option.requiresCaf"
+          (click)="!option.requiresCaf && selectOperation(option)"
         >
           <div class="option-header">
             <h3>{{ option.operation }}</h3>
-            <div class="option-badge" *ngIf="option.isGeneric">
+            <div class="option-badge" *ngIf="option.isGeneric && !option.requiresCaf">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="12" cy="12" r="10"></circle>
                 <line x1="12" y1="16" x2="12" y2="12"></line>
                 <line x1="12" y1="8" x2="12.01" y2="8"></line>
               </svg>
+            </div>
+            <div class="caf-badge" *ngIf="option.requiresCaf">
+              Non disponibile online
             </div>
           </div>
           <div class="option-costs">
@@ -88,7 +92,15 @@
               <span class="amount">€{{ option.totalCost.toFixed(2) }}</span>
             </div>
           </div>
-          <div class="option-note" *ngIf="option.isGeneric">
+          <div class="caf-warning" *ngIf="option.requiresCaf">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="12"></line>
+              <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+            Questa operazione richiede assistenza presso un CAF o Patronato e non può essere prenotata online tramite questo servizio.
+          </div>
+          <div class="option-note" *ngIf="option.isGeneric && !option.requiresCaf">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <circle cx="12" cy="12" r="10"></circle>
               <line x1="12" y1="16" x2="12" y2="12"></line>
@@ -96,7 +108,9 @@
             </svg>
             Potrebbero essere richiesti costi aggiuntivi in base all'operazione specifica
           </div>
-          <button class="btn-select">Seleziona questa opzione</button>
+          <button class="btn-select" [disabled]="option.requiresCaf">
+            {{ option.requiresCaf ? 'Non prenotabile' : 'Seleziona questa opzione' }}
+          </button>
         </div>
       </div>
       <button 

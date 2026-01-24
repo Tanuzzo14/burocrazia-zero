@@ -9,12 +9,14 @@ Se la richiesta è GENERICA (es. "concorsi pubblici", "documenti per viaggio"), 
 
 SEMPRE includi come ultima opzione una "Consulenza Generica" con costo_stato: 0 e guida_url: "#consulenza-generica".
 
+Per ogni operazione, determina se richiede assistenza da CAF (Centro di Assistenza Fiscale) o Patronato. Imposta "requires_caf" a true se l'operazione richiede assistenza fisica presso un CAF o Patronato (es. pratiche fiscali complesse, 730, ISEE, pensioni, disoccupazione, bonus fiscali). Imposta "requires_caf" a false se l'operazione può essere svolta interamente online o presso altri uffici.
+
 Rispondi in JSON:
 {
   "options": [
-    { "label": string, "costo_stato": number, "guida_url": string },
-    { "label": string, "costo_stato": number, "guida_url": string },
-    { "label": "Consulenza Generica - Costi aggiuntivi in base all'operazione", "costo_stato": 0, "guida_url": "#consulenza-generica", "is_generic": true }
+    { "label": string, "costo_stato": number, "guida_url": string, "requires_caf": boolean },
+    { "label": string, "costo_stato": number, "guida_url": string, "requires_caf": boolean },
+    { "label": "Consulenza Generica - Costi aggiuntivi in base all'operazione", "costo_stato": 0, "guida_url": "#consulenza-generica", "is_generic": true, "requires_caf": false }
   ]
 }
 

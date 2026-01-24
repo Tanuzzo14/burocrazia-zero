@@ -17,6 +17,7 @@ export interface GeminiOption {
   costo_stato: number;
   guida_url: string;
   is_generic?: boolean;
+  requires_caf?: boolean;
 }
 
 export interface GeminiMultipleResponse {
