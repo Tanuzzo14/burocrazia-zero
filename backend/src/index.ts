@@ -3,6 +3,7 @@ import { identifyOperation } from './gemini';
 import { createLead, updateLeadStatus, getLeadById } from './database';
 import { createPaymentLink, verifyWebhookSignature } from './paypal';
 import { sendEmailToOperator } from './email';
+import { processPendingEmails, getEmailQueueStats } from './emailQueue';
 
 // CORS headers for frontend communication
 const corsHeaders = {
@@ -156,6 +157,21 @@ export default {
       // Route: GET /api/health - Health check
       if (url.pathname === '/api/health' && request.method === 'GET') {
         return jsonResponse({ status: 'ok' });
+      }
+
+      // Route: POST /api/email/process - Manually trigger email queue processing
+      if (url.pathname === '/api/email/process' && request.method === 'POST') {
+        const result = await processPendingEmails(env);
+        return jsonResponse({
+          message: 'Email queue processed',
+          ...result
+        });
+      }
+
+      // Route: GET /api/email/stats - Get email queue statistics
+      if (url.pathname === '/api/email/stats' && request.method === 'GET') {
+        const stats = await getEmailQueueStats(env);
+        return jsonResponse(stats);
       }
 
       return errorResponse('Not found', 404);

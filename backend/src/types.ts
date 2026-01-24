@@ -43,3 +43,33 @@ export interface CreateLeadRequest {
   totale_incassato: number;
   guida_url: string;
 }
+
+export interface EmailQueueItem {
+  id: string;
+  lead_id: string;
+  recipient_email: string;
+  recipient_name: string;
+  sender_email: string;
+  sender_name: string;
+  subject: string;
+  html_content: string;
+  text_content: string;
+  status: 'PENDING' | 'SENT' | 'FAILED';
+  retry_count: number;
+  max_retries: number;
+  last_error: string | null;
+  created_at: string;
+  sent_at: string | null;
+  next_retry_at: string | null;
+}
+
+export interface CreateEmailRequest {
+  lead_id: string;
+  recipient_email: string;
+  recipient_name: string;
+  sender_email: string;
+  sender_name: string;
+  subject: string;
+  html_content: string;
+  text_content: string;
+}
