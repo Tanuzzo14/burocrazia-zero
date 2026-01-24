@@ -1,7 +1,7 @@
 import type { Env } from './types';
 import { identifyOperation } from './gemini';
 import { createLead, updateLeadStatus, getLeadById } from './database';
-import { createPaymentLink, verifyWebhookSignature } from './stripe';
+import { createPaymentLink, verifyWebhookSignature } from './paypal';
 import { sendWhatsAppToOperator } from './twilio';
 
 // CORS headers for frontend communication
@@ -92,7 +92,7 @@ export default {
           env
         );
 
-        // Generate Stripe payment link
+        // Generate PayPal payment link
         const paymentUrl = await createPaymentLink(
           body.totale_incassato,
           lead.id,
@@ -106,25 +106,20 @@ export default {
         });
       }
 
-      // Route: POST /api/webhook/stripe - Handle Stripe webhooks
-      if (url.pathname === '/api/webhook/stripe' && request.method === 'POST') {
-        const signature = request.headers.get('stripe-signature');
-        if (!signature) {
-          return errorResponse('Missing stripe signature', 400);
-        }
-
+      // Route: POST /api/webhook/paypal - Handle PayPal webhooks
+      if (url.pathname === '/api/webhook/paypal' && request.method === 'POST') {
         const body = await request.text();
         
         try {
-          const event = await verifyWebhookSignature(body, signature, env);
+          const event = await verifyWebhookSignature(body, request.headers, env);
 
-          // Handle successful payment
-          if (event.type === 'checkout.session.completed') {
-            const session = event.data.object as any;
-            const leadId = session.metadata?.lead_id;
+          // Handle successful payment - PayPal event: CHECKOUT.ORDER.APPROVED
+          if (event.event_type === 'CHECKOUT.ORDER.APPROVED') {
+            const order = event.resource;
+            const leadId = order.purchase_units?.[0]?.reference_id;
 
             if (!leadId) {
-              console.error('No lead_id in webhook metadata');
+              console.error('No reference_id in webhook data');
               return errorResponse('Invalid webhook data', 400);
             }
 

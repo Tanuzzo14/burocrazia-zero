@@ -143,7 +143,7 @@ export class AppComponent {
       next: (response) => {
         this.isBooking = false;
         this.loadingMessage = '';
-        // Redirect to Stripe checkout
+        // Redirect to PayPal checkout
         window.location.href = response.paymentUrl;
       },
       error: (error) => {

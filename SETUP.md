@@ -5,7 +5,7 @@
 - Node.js 18 o superiore
 - Account Cloudflare (per Workers e D1)
 - Account Google Cloud (per Gemini API)
-- Account Stripe (per pagamenti)
+- Account PayPal (per pagamenti)
 - Account Twilio (per WhatsApp)
 
 ## 1. Setup Backend (Cloudflare Workers)
@@ -40,11 +40,17 @@ Configura i seguenti secrets tramite Wrangler CLI:
 # Google Gemini API Key
 npx wrangler secret put GEMINI_API_KEY
 
-# Stripe Secret Key
-npx wrangler secret put STRIPE_SECRET_KEY
+# PayPal Client ID
+npx wrangler secret put PAYPAL_CLIENT_ID
 
-# Stripe Webhook Secret (ottenuto dopo aver configurato il webhook)
-npx wrangler secret put STRIPE_WEBHOOK_SECRET
+# PayPal Client Secret
+npx wrangler secret put PAYPAL_CLIENT_SECRET
+
+# PayPal Webhook ID (ottenuto dopo aver configurato il webhook)
+npx wrangler secret put PAYPAL_WEBHOOK_ID
+
+# PayPal API Base (sandbox o live)
+npx wrangler secret put PAYPAL_API_BASE
 
 # Twilio Account SID
 npx wrangler secret put TWILIO_ACCOUNT_SID
@@ -76,16 +82,16 @@ Il worker sarà disponibile su `http://localhost:8787`
 npm run deploy:backend
 ```
 
-### Configurazione Webhook Stripe
+### Configurazione Webhook PayPal
 
 1. Dopo il deploy, ottieni l'URL del worker (es. `https://burocrazia-zero-worker.your-subdomain.workers.dev`)
-2. Vai su Stripe Dashboard → Developers → Webhooks
-3. Aggiungi un nuovo endpoint: `https://your-worker-url.workers.dev/api/webhook/stripe`
-4. Seleziona l'evento: `checkout.session.completed`
-5. Copia il signing secret e configuralo come secret:
+2. Vai su PayPal Developer Dashboard → Apps & Credentials → Webhooks
+3. Aggiungi un nuovo endpoint: `https://your-worker-url.workers.dev/api/webhook/paypal`
+4. Seleziona gli eventi: `CHECKOUT.ORDER.APPROVED` e `PAYMENT.CAPTURE.COMPLETED`
+5. Copia il Webhook ID e configuralo come secret:
 
 ```bash
-npx wrangler secret put STRIPE_WEBHOOK_SECRET
+npx wrangler secret put PAYPAL_WEBHOOK_ID
 ```
 
 ## 2. Setup Frontend (Angular)
@@ -149,11 +155,12 @@ npx wrangler pages deploy . --project-name=burocrazia-zero
 3. Genera una API key
 4. Copia la chiave e configurala come secret
 
-### Stripe API
+### PayPal API
 
-1. Vai su [Stripe Dashboard](https://dashboard.stripe.com/)
-2. Vai su Developers → API keys
-3. Copia la **Secret key** (inizia con `sk_`)
+1. Vai su [PayPal Developer Dashboard](https://developer.paypal.com/)
+2. Vai su Apps & Credentials
+3. Crea una nuova app REST API o usa quella di default
+4. Copia il **Client ID** e il **Secret**
 4. Configurala come secret
 
 ### Twilio WhatsApp
@@ -176,7 +183,7 @@ npx wrangler pages deploy . --project-name=burocrazia-zero
 3. Verifica che venga identificata correttamente
 4. Inserisci i dati (nome e telefono in formato internazionale)
 5. Clicca "Prenota e Paga"
-6. Completa il pagamento su Stripe
+6. Completa il pagamento su PayPal
 7. Verifica che:
    - Il lead sia stato creato nel database D1
    - Lo status sia aggiornato a "PAID"
@@ -216,8 +223,8 @@ npx wrangler d1 execute burocrazia-zero-db --command="SELECT status, COUNT(*) as
 
 ### Errore: "Invalid webhook signature"
 
-- Verifica che il `STRIPE_WEBHOOK_SECRET` sia configurato correttamente
-- Assicurati che l'endpoint webhook in Stripe punti all'URL corretto
+- Verifica che il `PAYPAL_WEBHOOK_ID` sia configurato correttamente
+- Assicurati che l'endpoint webhook in PayPal punti all'URL corretto
 
 ### Errore: "Failed to send WhatsApp message"
 
@@ -237,7 +244,7 @@ npx wrangler d1 execute burocrazia-zero-db --command="SELECT status, COUNT(*) as
 - **Cloudflare D1**: Primo 5M righe lette/giorno gratis
 - **Cloudflare Pages**: Illimitato
 - **Gemini API**: Free tier generoso
-- **Stripe**: 1.4% + €0.25 per transazione europea
+- **PayPal**: 3.4% + €0.35 per transazione europea
 - **Twilio WhatsApp**: ~€0.005 per messaggio
 
 **Totale**: Praticamente gratis fino a ~1000 pratiche/mese

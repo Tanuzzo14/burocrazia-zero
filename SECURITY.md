@@ -78,9 +78,9 @@ The backend code was scanned using CodeQL and found to be free of known security
    - Type checking on all API inputs
 
 2. **Webhook Security**
-   - Stripe webhook signature verification
+   - PayPal webhook signature verification
    - Prevents unauthorized payment confirmations
-   - Implemented in `backend/src/stripe.ts`
+   - Implemented in `backend/src/paypal.ts`
 
 3. **Secrets Management**
    - All API keys stored as Cloudflare Worker secrets
@@ -114,7 +114,7 @@ The backend code was scanned using CodeQL and found to be free of known security
    - Clear purpose for each data field
 
 3. **Third-Party Data Handling**
-   - Stripe: Handles payment data securely (PCI-DSS compliant)
+   - PayPal: Handles payment data securely (PCI-DSS compliant)
    - Twilio: WhatsApp messages use end-to-end encryption
    - Gemini AI: Only receives operation descriptions (no personal data)
 
@@ -188,7 +188,7 @@ For security issues or concerns:
 
 ### Third-Party Services
 
-- **Stripe**: PCI-DSS Level 1 Certified
+- **PayPal**: PCI-DSS Level 1 Certified
 - **Cloudflare**: SOC 2 Type II, ISO 27001
 - **Twilio**: SOC 2 Type II, GDPR compliant
 - **Google Cloud (Gemini)**: ISO 27001, SOC 2/3

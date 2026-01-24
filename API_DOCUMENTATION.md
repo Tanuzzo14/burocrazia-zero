@@ -82,7 +82,7 @@
 
 **Endpoint**: `POST /api/book`
 
-**Description**: Creates a lead in the database and generates a Stripe payment link.
+**Description**: Creates a lead in the database and generates a PayPal payment link.
 
 **Request Body**:
 ```json
@@ -99,7 +99,7 @@
 ```json
 {
   "leadId": "550e8400-e29b-41d4-a716-446655440000",
-  "paymentUrl": "https://checkout.stripe.com/c/pay/cs_test_..."
+  "paymentUrl": "https://www.paypal.com/checkoutnow?token=..."
 }
 ```
 
@@ -109,23 +109,27 @@
 
 **Error Responses**:
 - `400 Bad Request`: Invalid phone format or missing fields
-- `500 Internal Server Error`: Database or Stripe error
+- `500 Internal Server Error`: Database or PayPal error
 
 ---
 
-### 4. Stripe Webhook
+### 4. PayPal Webhook
 
-**Endpoint**: `POST /api/webhook/stripe`
+**Endpoint**: `POST /api/webhook/paypal`
 
-**Description**: Handles Stripe payment confirmation webhooks. Updates lead status and sends WhatsApp notification to operator.
+**Description**: Handles PayPal payment confirmation webhooks. Updates lead status and sends WhatsApp notification to operator.
 
 **Headers**:
-- `stripe-signature`: Webhook signature for verification
+- `paypal-transmission-id`: Transmission ID for verification
+- `paypal-transmission-time`: Transmission time
+- `paypal-transmission-sig`: Transmission signature
+- `paypal-cert-url`: Certificate URL
+- `paypal-auth-algo`: Authentication algorithm
 
-**Request Body**: Stripe event payload
+**Request Body**: PayPal event payload
 
 **Events Handled**:
-- `checkout.session.completed`: Payment successful
+- `CHECKOUT.ORDER.APPROVED`: Payment approved
 
 **Response**:
 ```json
@@ -218,8 +222,10 @@ For production use, consider upgrading to Cloudflare Workers Paid plan for highe
 The following secrets must be configured via `wrangler secret put`:
 
 - `GEMINI_API_KEY`: Google Gemini API key
-- `STRIPE_SECRET_KEY`: Stripe secret key
-- `STRIPE_WEBHOOK_SECRET`: Stripe webhook signing secret
+- `PAYPAL_CLIENT_ID`: PayPal Client ID
+- `PAYPAL_CLIENT_SECRET`: PayPal Client Secret
+- `PAYPAL_WEBHOOK_ID`: PayPal Webhook ID
+- `PAYPAL_API_BASE`: PayPal API base URL
 - `TWILIO_ACCOUNT_SID`: Twilio account SID
 - `TWILIO_AUTH_TOKEN`: Twilio authentication token
 - `TWILIO_WHATSAPP_FROM`: Sender WhatsApp number (format: `whatsapp:+...`)
@@ -228,7 +234,7 @@ The following secrets must be configured via `wrangler secret put`:
 ### Best Practices
 
 1. Never expose secret keys in frontend code
-2. Always verify Stripe webhook signatures
+2. Always verify PayPal webhook signatures
 3. Validate and sanitize all user inputs
 4. Use HTTPS in production
 5. Monitor API usage and set up alerts
