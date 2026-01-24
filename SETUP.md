@@ -167,12 +167,11 @@ npx wrangler pages deploy . --project-name=burocrazia-zero
 
 1. Vai su [Twilio Console](https://console.twilio.com/)
 2. Verifica il tuo numero di telefono nel pannello Twilio (Verified Caller IDs)
-3. Verifica il tuo numero di telefono nel pannello Twilio (Verified Caller IDs)
-4. Ottieni:
+3. Ottieni:
    - Account SID
    - Auth Token
    - SMS sender number (formato: `+14155238886`)
-5. Configura come secrets
+4. Configura come secrets
 
 ## 5. Testing del Sistema
 
