@@ -183,4 +183,18 @@ export default {
       );
     }
   },
+
+  /**
+   * Scheduled event handler for automatic email queue processing
+   * This runs periodically (configured in wrangler.toml) to retry failed emails
+   */
+  async scheduled(event: ScheduledEvent, env: Env, ctx: ExecutionContext): Promise<void> {
+    console.log('Running scheduled email queue processing...');
+    try {
+      const result = await processPendingEmails(env);
+      console.log(`Email queue processed: sent=${result.sent}, failed=${result.failed}, pending=${result.pending}`);
+    } catch (error) {
+      console.error('Scheduled email processing error:', error);
+    }
+  },
 };
