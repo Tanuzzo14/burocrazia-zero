@@ -61,7 +61,7 @@ export async function queueEmail(emailData: CreateEmailRequest, env: Env): Promi
   // Try to send immediately in background (don't await to avoid blocking)
   // The cron job will retry if this fails
   processPendingEmails(env).catch(error => {
-    console.error('Background email processing failed:', error);
+    console.error(`Background email processing failed for email ${id} (lead: ${emailData.lead_id}):`, error);
   });
 
   return queuedEmail;

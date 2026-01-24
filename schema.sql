@@ -29,3 +29,6 @@ CREATE TABLE email_queue (
     next_retry_at DATETIME,
     FOREIGN KEY (lead_id) REFERENCES lead_pratiche(id) ON DELETE CASCADE
 );
+
+-- Index for efficient email queue processing
+CREATE INDEX idx_email_queue_processing ON email_queue(status, next_retry_at, created_at);
