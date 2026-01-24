@@ -1,4 +1,4 @@
-<div class="app-wrapper" *ngIf="isHomePage()">
+<div class="app-wrapper" *ngIf="isHomePage()" id="main-content">
   <!-- Loading Spinner Overlay -->
   <app-loading-spinner *ngIf="isIdentifying || isBooking" [text]="loadingMessage"></app-loading-spinner>
   
