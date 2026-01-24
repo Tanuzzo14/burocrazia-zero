@@ -84,7 +84,7 @@ npx wrangler secret put PAYPAL_WEBHOOK_ID
 npx wrangler secret put PAYPAL_API_BASE
 npx wrangler secret put TWILIO_ACCOUNT_SID
 npx wrangler secret put TWILIO_AUTH_TOKEN
-npx wrangler secret put TWILIO_WHATSAPP_FROM
+npx wrangler secret put TWILIO_PHONE_FROM
 npx wrangler secret put OPERATOR_PHONE
 ```
 

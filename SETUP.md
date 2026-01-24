@@ -58,10 +58,10 @@ npx wrangler secret put TWILIO_ACCOUNT_SID
 # Twilio Auth Token
 npx wrangler secret put TWILIO_AUTH_TOKEN
 
-# Twilio WhatsApp From Number (formato: whatsapp:+1234567890)
-npx wrangler secret put TWILIO_WHATSAPP_FROM
+# Twilio SMS From Number (formato: +1234567890)
+npx wrangler secret put TWILIO_PHONE_FROM
 
-# Numero WhatsApp dell'operatore (formato: whatsapp:+1234567890)
+# Numero dell'operatore (formato: +1234567890)
 npx wrangler secret put OPERATOR_PHONE
 
 # URL del frontend (opzionale, default: https://burocrazia-zero.pages.dev)
@@ -167,11 +167,11 @@ npx wrangler pages deploy . --project-name=burocrazia-zero
 
 1. Vai su [Twilio Console](https://console.twilio.com/)
 2. Attiva il servizio WhatsApp
-3. Configura il Twilio Sandbox for WhatsApp
+3. Verifica il tuo numero di telefono nel pannello Twilio (Verified Caller IDs)
 4. Ottieni:
    - Account SID
    - Auth Token
-   - WhatsApp sender number (formato: `whatsapp:+14155238886`)
+   - SMS sender number (formato: `+14155238886`)
 5. Configura come secrets
 
 ## 5. Testing del Sistema
@@ -229,8 +229,8 @@ npx wrangler d1 execute burocrazia-zero-db --command="SELECT status, COUNT(*) as
 ### Errore: "Failed to send WhatsApp message"
 
 - Verifica le credenziali Twilio
-- Assicurati che il numero operatore sia nel formato corretto (`whatsapp:+...`)
-- Controlla che il Twilio Sandbox sia attivo
+- Assicurati che il numero operatore sia nel formato corretto (`+...` senza spazi)
+- Controlla che il numero sia verificato nel pannello Twilio (Verified Caller IDs)
 
 ### Gemini non identifica correttamente le operazioni
 

@@ -228,8 +228,8 @@ The following secrets must be configured via `wrangler secret put`:
 - `PAYPAL_API_BASE`: PayPal API base URL
 - `TWILIO_ACCOUNT_SID`: Twilio account SID
 - `TWILIO_AUTH_TOKEN`: Twilio authentication token
-- `TWILIO_WHATSAPP_FROM`: Sender WhatsApp number (format: `whatsapp:+...`)
-- `OPERATOR_PHONE`: Operator WhatsApp number (format: `whatsapp:+...`)
+- `TWILIO_PHONE_FROM`: Sender SMS phone number (format: `+...`)
+- `OPERATOR_PHONE`: Operator phone number (format: `+...`)
 
 ### Best Practices
 

@@ -16,8 +16,8 @@ database_id = "4bf3015a-bc01-497a-ae31-72f9e72847f2"
 # PAYPAL_API_BASE - PayPal API base URL (sandbox: https://api-m.sandbox.paypal.com, live: https://api-m.paypal.com)
 # TWILIO_ACCOUNT_SID - Twilio account SID
 # TWILIO_AUTH_TOKEN - Twilio auth token
-# TWILIO_WHATSAPP_FROM - Twilio WhatsApp sender number (format: whatsapp:+1234567890)
-# OPERATOR_PHONE - Operator WhatsApp number (format: whatsapp:+1234567890)
+# TWILIO_PHONE_FROM - Twilio SMS sender number (format: +1234567890)
+# OPERATOR_PHONE - Operator phone number (format: +1234567890)
 
 [build]
 command = "npm install"

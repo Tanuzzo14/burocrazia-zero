@@ -137,13 +137,12 @@ Prima di iniziare, devi creare alcuni account (sono tutti gratuiti per iniziare)
 - `TWILIO_ACCOUNT_SID`
 - `TWILIO_AUTH_TOKEN`
 
-**Configurare WhatsApp**:
-1. Nel menu di Twilio, vai su **"Messaging"** → **"Try it out"** → **"Send a WhatsApp message"**
-2. Segui le istruzioni per attivare il Twilio Sandbox for WhatsApp
-3. Ti verrà dato un numero WhatsApp tipo: `+1 415 523 8886`
-4. **COPIA questo numero** nel formato: `whatsapp:+14155238886`
+**Configurare SMS**:
+1. Nel menu di Twilio, vai su **"Phone Numbers"** → **"Manage"** → **"Active numbers"**
+2. Copia il tuo numero Twilio (sarà nel formato `+1 415 523 8886`)
+3. **COPIA questo numero** nel formato: `+14155238886` (senza spazi)
 
-✅ **Fatto!** Salva come: `TWILIO_WHATSAPP_FROM`
+✅ **Fatto!** Salva come: `TWILIO_PHONE_FROM`
 
 ---
 
@@ -157,8 +156,8 @@ PAYPAL_CLIENT_ID=Ac-57DH8GkaMqhmy8QRBM...
 PAYPAL_CLIENT_SECRET=xxxxxxxxxxxxxxxx
 TWILIO_ACCOUNT_SID=ACxxxxxxxxxxxxxxxxx
 TWILIO_AUTH_TOKEN=xxxxxxxxxxxxxxxx
-TWILIO_WHATSAPP_FROM=whatsapp:+14155238886
-OPERATOR_PHONE=whatsapp:+393331234567 (il TUO numero WhatsApp con prefisso internazionale - es: +39 per Italia, +1 per USA, ecc.)
+TWILIO_PHONE_FROM=+14155238886
+OPERATOR_PHONE=+393331234567 (il TUO numero di telefono con prefisso internazionale - es: +39 per Italia, +1 per USA, ecc.)
 ```
 
 ⚠️ **IMPORTANTE**: Queste chiavi sono SEGRETE! Non condividerle MAI con nessuno e non pubblicarle online.
@@ -296,8 +295,8 @@ Ora aggiungi una alla volta tutte le chiavi segrete:
 | `PAYPAL_API_BASE` | `https://api-m.sandbox.paypal.com` | URL base delle API PayPal (usa sandbox per test, live per produzione) |
 | `TWILIO_ACCOUNT_SID` | Il SID Twilio che inizia con `AC...` | Identificativo dell'account Twilio |
 | `TWILIO_AUTH_TOKEN` | Il token Twilio | Token di autenticazione Twilio |
-| `TWILIO_WHATSAPP_FROM` | Il numero WhatsApp Twilio (es: `whatsapp:+14155238886`) | Numero WhatsApp da cui partono i messaggi |
-| `OPERATOR_PHONE` | Il TUO numero WhatsApp con prefisso internazionale (es: `whatsapp:+393331234567` per Italia) | Numero WhatsApp dove ricevi le notifiche |
+| `TWILIO_PHONE_FROM` | Il numero Twilio (es: `+14155238886`) | Numero di telefono da cui partono gli SMS |
+| `OPERATOR_PHONE` | Il TUO numero di telefono con prefisso internazionale (es: `+393331234567` per Italia) | Numero dove ricevi le notifiche via SMS |
 
 **⚠️ IMPORTANTE - Come inserire le chiavi su Cloudflare**:
 
@@ -589,8 +588,8 @@ Cloudflare inizierà la build. Aspetta qualche minuto (3-5 minuti circa).
 ### Problema: "Failed to send WhatsApp message"
 
 **Soluzione**:
-1. Verifica che il numero operatore sia nel formato corretto: `whatsapp:+393331234567` (con prefisso internazionale)
-2. Assicurati di aver attivato il **Twilio Sandbox for WhatsApp**
+1. Verifica che il numero operatore sia nel formato corretto: `+393331234567` (con prefisso internazionale, senza spazi)
+2. Assicurati che il numero sia verificato nel tuo account Twilio (nella sezione "Verified Caller IDs")
 3. Verifica le credenziali Twilio nel Worker (Settings → Variables)
 
 ---

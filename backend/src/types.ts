@@ -8,7 +8,7 @@ export interface Env {
   PAYPAL_API_BASE: string;
   TWILIO_ACCOUNT_SID: string;
   TWILIO_AUTH_TOKEN: string;
-  TWILIO_WHATSAPP_FROM: string;
+  TWILIO_PHONE_FROM: string;
   OPERATOR_PHONE: string;
   COMMISSION_AMOUNT: string;
   FRONTEND_URL?: string;
