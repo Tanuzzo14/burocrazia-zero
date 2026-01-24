@@ -1,0 +1,102 @@
+<!-- Cookie Consent Banner -->
+<div class="cookie-banner" *ngIf="showBanner && !showSettings" role="dialog" aria-labelledby="cookie-banner-title" aria-describedby="cookie-banner-description">
+  <div class="cookie-content">
+    <div class="cookie-icon">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"></circle>
+        <circle cx="12" cy="12" r="1" fill="currentColor"></circle>
+        <circle cx="8" cy="8" r="1" fill="currentColor"></circle>
+        <circle cx="16" cy="8" r="1" fill="currentColor"></circle>
+        <circle cx="8" cy="16" r="1" fill="currentColor"></circle>
+        <circle cx="16" cy="16" r="1" fill="currentColor"></circle>
+      </svg>
+    </div>
+    <div class="cookie-text">
+      <h3 id="cookie-banner-title">🍪 Il tuo consenso ai cookie</h3>
+      <p id="cookie-banner-description">
+        Utilizziamo cookie essenziali per far funzionare il nostro sito e cookie di terze parti per i pagamenti sicuri.
+        Non utilizziamo cookie di tracciamento o pubblicità.
+        <a routerLink="/cookie-policy" class="cookie-link">Scopri di più</a>
+      </p>
+    </div>
+  </div>
+  <div class="cookie-actions">
+    <button class="btn-cookie btn-reject" (click)="rejectAll()" aria-label="Rifiuta cookie non necessari">
+      Solo Necessari
+    </button>
+    <button class="btn-cookie btn-settings" (click)="openSettings()" aria-label="Personalizza preferenze cookie">
+      Personalizza
+    </button>
+    <button class="btn-cookie btn-accept" (click)="acceptAll()" aria-label="Accetta tutti i cookie">
+      Accetta Tutti
+    </button>
+  </div>
+</div>
+
+<!-- Cookie Settings Modal -->
+<div class="cookie-modal-overlay" *ngIf="showSettings" (click)="closeSettings()" role="dialog" aria-labelledby="cookie-settings-title" aria-modal="true">
+  <div class="cookie-modal" (click)="$event.stopPropagation()">
+    <div class="cookie-modal-header">
+      <h3 id="cookie-settings-title">Preferenze Cookie</h3>
+      <button class="btn-close" (click)="closeSettings()" aria-label="Chiudi impostazioni cookie">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+    <div class="cookie-modal-body">
+      <p class="modal-description">
+        Qui puoi personalizzare le tue preferenze sui cookie. I cookie necessari sono sempre attivi perché
+        essenziali per il funzionamento del sito.
+      </p>
+
+      <!-- Necessary Cookies -->
+      <div class="cookie-category">
+        <div class="category-header">
+          <div class="category-info">
+            <h4>Cookie Necessari</h4>
+            <p>Essenziali per il funzionamento del sito (autenticazione, sicurezza, preferenze)</p>
+          </div>
+          <label class="toggle-switch disabled" aria-label="Cookie necessari sempre attivi">
+            <input type="checkbox" [checked]="preferences.necessary" disabled>
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Functional Cookies -->
+      <div class="cookie-category">
+        <div class="category-header">
+          <div class="category-info">
+            <h4>Cookie Funzionali</h4>
+            <p>Migliorano l'esperienza utente (preferenze di visualizzazione, lingua)</p>
+          </div>
+          <label class="toggle-switch" aria-label="Attiva o disattiva cookie funzionali">
+            <input type="checkbox" [(ngModel)]="preferences.functional">
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Analytics Cookies (currently not used) -->
+      <div class="cookie-category">
+        <div class="category-header">
+          <div class="category-info">
+            <h4>Cookie di Terze Parti</h4>
+            <p>Cookie di servizi esterni come Stripe (pagamenti) e Cloudflare (sicurezza)</p>
+          </div>
+          <label class="toggle-switch" aria-label="Attiva o disattiva cookie di terze parti">
+            <input type="checkbox" [(ngModel)]="preferences.analytics">
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
+    </div>
+    <div class="cookie-modal-footer">
+      <button class="btn-cookie btn-save" (click)="savePreferences()">
+        Salva Preferenze
+      </button>
+    </div>
+  </div>
+</div>
