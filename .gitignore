@@ -16,3 +16,6 @@ frontend/node_modules/
 .idea/
 *.swp
 *.swo
+
+# Auto-generated
+worker-configuration.d.ts
