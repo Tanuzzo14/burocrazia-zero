@@ -6,7 +6,7 @@
 - Account Cloudflare (per Workers e D1)
 - Account Google Cloud (per Gemini API)
 - Account PayPal (per pagamenti)
-- Account Twilio (per WhatsApp)
+- Account Twilio (per SMS)
 
 ## 1. Setup Backend (Cloudflare Workers)
 
@@ -163,10 +163,10 @@ npx wrangler pages deploy . --project-name=burocrazia-zero
 4. Copia il **Client ID** e il **Secret**
 4. Configurala come secret
 
-### Twilio WhatsApp
+### Twilio SMS
 
 1. Vai su [Twilio Console](https://console.twilio.com/)
-2. Attiva il servizio WhatsApp
+2. Verifica il tuo numero di telefono nel pannello Twilio (Verified Caller IDs)
 3. Verifica il tuo numero di telefono nel pannello Twilio (Verified Caller IDs)
 4. Ottieni:
    - Account SID
@@ -187,7 +187,7 @@ npx wrangler pages deploy . --project-name=burocrazia-zero
 7. Verifica che:
    - Il lead sia stato creato nel database D1
    - Lo status sia aggiornato a "PAID"
-   - L'operatore riceva un messaggio WhatsApp
+   - L'operatore riceva un SMS
 
 ### Test degli Endpoint
 
@@ -226,7 +226,7 @@ npx wrangler d1 execute burocrazia-zero-db --command="SELECT status, COUNT(*) as
 - Verifica che il `PAYPAL_WEBHOOK_ID` sia configurato correttamente
 - Assicurati che l'endpoint webhook in PayPal punti all'URL corretto
 
-### Errore: "Failed to send WhatsApp message"
+### Errore: "Failed to send SMS message"
 
 - Verifica le credenziali Twilio
 - Assicurati che il numero operatore sia nel formato corretto (`+...` senza spazi)
@@ -245,6 +245,6 @@ npx wrangler d1 execute burocrazia-zero-db --command="SELECT status, COUNT(*) as
 - **Cloudflare Pages**: Illimitato
 - **Gemini API**: Free tier generoso
 - **PayPal**: 3.4% + €0.35 per transazione europea
-- **Twilio WhatsApp**: ~€0.005 per messaggio
+- **Twilio SMS**: Gratuito per numeri verificati nel piano trial
 
 **Totale**: Praticamente gratis fino a ~1000 pratiche/mese

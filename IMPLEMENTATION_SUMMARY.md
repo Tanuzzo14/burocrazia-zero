@@ -14,13 +14,13 @@ A serverless TypeScript backend that handles:
 - **Database Operations** with Cloudflare D1 (SQLite)
 - **Payment Processing** through PayPal Checkout
 - **Webhook Handling** for payment confirmations
-- **WhatsApp Notifications** via Twilio API
+- **SMS Notifications** via Twilio API
 
 **Files Created:**
 - `backend/src/index.ts` - Main worker entry point
 - `backend/src/gemini.ts` - AI integration
 - `backend/src/paypal.ts` - Payment processing
-- `backend/src/twilio.ts` - WhatsApp notifications
+- `backend/src/twilio.ts` - SMS notifications
 - `backend/src/database.ts` - D1 database operations
 - `backend/src/types.ts` - TypeScript type definitions
 
@@ -100,7 +100,7 @@ All requirements from `docs/technical_specs.md` implemented:
 ### Phase 3: Webhook & Operator Handover ✅
 - PayPal webhook confirms payment
 - Lead status updated to PAID
-- Twilio sends WhatsApp to operator with:
+- Twilio sends SMS to operator with:
   - Customer identity and phone
   - Budget for state costs
   - Technical guide link
@@ -114,7 +114,7 @@ All requirements from `docs/technical_specs.md` implemented:
 - Cloudflare account (Workers, D1, Pages)
 - Google Cloud account (Gemini API)
 - PayPal account
-- Twilio account (WhatsApp enabled)
+- Twilio account
 
 ### Quick Deploy
 
@@ -162,11 +162,11 @@ npm run deploy:backend
 🔍 **AI-Powered Search** - Describe operation, get instant identification  
 💶 **Transparent Pricing** - See exact costs before payment  
 💳 **Secure Payment** - PayPal checkout integration  
-📱 **WhatsApp Support** - Direct contact with operator  
+📱 **SMS Support** - Direct contact with operator  
 🔒 **Privacy First** - No document storage on servers  
 
 ### For Operators
-📧 **Instant Notifications** - WhatsApp alert on new paid lead  
+📧 **Instant Notifications** - SMS alert on new paid lead  
 👤 **Customer Details** - Name, phone, operation type  
 💰 **Budget Info** - Amount available for state costs  
 📖 **Guide Links** - Direct link to operation instructions  
@@ -203,12 +203,12 @@ All original requirements met:
 - Database: Cloudflare D1 ✓
 - AI: Gemini 1.5 Flash ✓
 - Payments: PayPal ✓
-- WhatsApp: Twilio ✓
+- SMS: Twilio ✓
 
 ✅ **Flusso Operativo**
 - Phase 1: AI Identification ✓
 - Phase 2: Lead & Payment ✓
-- Phase 3: Webhook & WhatsApp ✓
+- Phase 3: Webhook & SMS ✓
 
 ✅ **Privacy & Security**
 - Minimal data collection ✓
@@ -285,7 +285,7 @@ Built with:
 - **Cloudflare** - Edge computing platform
 - **Google Gemini** - AI language model
 - **PayPal** - Payment processing
-- **Twilio** - WhatsApp messaging
+- **Twilio** - SMS messaging
 
 ---
 

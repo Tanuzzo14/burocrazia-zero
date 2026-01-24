@@ -17,7 +17,7 @@ Burocrazia-Zero semplifica la gestione delle pratiche burocratiche italiane attr
 - **Database**: Cloudflare D1
 - **AI Engine**: Google Gemini 1.5 Flash
 - **Pagamenti**: PayPal API
-- **Notifiche**: Twilio API (WhatsApp)
+- **Notifiche**: Twilio API (SMS)
 - **Anti-Robot**: ALTCHA (proof-of-work challenge)
 
 
@@ -45,7 +45,7 @@ Burocrazia-Zero semplifica la gestione delle pratiche burocratiche italiane attr
 - Account Cloudflare (Workers, D1, Pages)
 - Account Google Cloud (per Gemini API)
 - Account PayPal
-- Account Twilio (con WhatsApp abilitato)
+- Account Twilio
 
 ### Installazione
 
@@ -129,7 +129,7 @@ burocrazia-zero/
 │       ├── index.ts          # Entry point Worker
 │       ├── gemini.ts         # Integrazione Gemini AI
 │       ├── paypal.ts         # Integrazione PayPal
-│       ├── twilio.ts         # Integrazione Twilio WhatsApp
+│       ├── twilio.ts         # Integrazione Twilio SMS
 │       ├── database.ts       # Operazioni D1 database
 │       └── types.ts          # TypeScript types
 ├── frontend/
@@ -171,7 +171,7 @@ Con il piano Free/Starter:
 - **Cloudflare Pages**: Gratis (illimitato)
 - **Gemini API**: Free tier generoso
 - **PayPal**: 3.4% + €0.35 per transazione europea
-- **Twilio WhatsApp**: ~€0.005 per messaggio
+- **Twilio SMS**: Gratuito per numeri verificati nel piano trial
 
 **Totale**: Praticamente gratis fino a ~1000 pratiche/mese
 

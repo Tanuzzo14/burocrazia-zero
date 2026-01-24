@@ -117,7 +117,7 @@
 
 **Endpoint**: `POST /api/webhook/paypal`
 
-**Description**: Handles PayPal payment confirmation webhooks. Updates lead status and sends WhatsApp notification to operator.
+**Description**: Handles PayPal payment confirmation webhooks. Updates lead status and sends SMS notification to operator.
 
 **Headers**:
 - `paypal-transmission-id`: Transmission ID for verification
@@ -142,7 +142,7 @@
 1. Verify webhook signature
 2. Extract lead ID from session metadata
 3. Update lead status to "PAID"
-4. Send WhatsApp message to operator with:
+4. Send SMS message to operator with:
    - Customer name and phone
    - Operation type
    - Budget for state costs

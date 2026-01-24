@@ -116,9 +116,9 @@ Prima di iniziare, devi creare alcuni account (sono tutti gratuiti per iniziare)
 
 ---
 
-### 1.5 Twilio (per WhatsApp)
+### 1.5 Twilio (per SMS)
 
-**Cos'è**: Il servizio che permette di inviare messaggi WhatsApp automatici.
+**Cos'è**: Il servizio che permette di inviare SMS automatici.
 
 **Come fare**:
 1. Vai su https://www.twilio.com/try-twilio
@@ -451,7 +451,7 @@ Ora che abbiamo l'URL del backend online, configuriamo PayPal per ricevere notif
 **🔐 Cosa succede ora**:
 - Quando un cliente completa un pagamento su PayPal, PayPal invia automaticamente una notifica al tuo Worker
 - Il Worker verifica che la notifica sia autentica usando il Webhook ID
-- Se tutto è ok, aggiorna lo stato del lead a "PAID" e invia un messaggio WhatsApp all'operatore
+- Se tutto è ok, aggiorna lo stato del lead a "PAID" e invia un SMS all'operatore
 
 📝 **NOTA IMPORTANTE**: Quando passerai dalla Sandbox alla produzione (Live), dovrai creare un nuovo webhook nella sezione "Live" di PayPal e aggiornare il `PAYPAL_WEBHOOK_ID` su Cloudflare con il nuovo ID.
 
@@ -536,7 +536,7 @@ Cloudflare inizierà la build. Aspetta qualche minuto (3-5 minuti circa).
 
 3. Verifica che:
    - ✅ Vieni reindirizzato alla pagina di successo
-   - ✅ L'operatore riceve un messaggio WhatsApp con i dettagli
+   - ✅ L'operatore riceve un SMS con i dettagli
    - ✅ Il lead è salvato nel database
 
 ---
@@ -585,7 +585,7 @@ Cloudflare inizierà la build. Aspetta qualche minuto (3-5 minuti circa).
 
 ---
 
-### Problema: "Failed to send WhatsApp message"
+### Problema: "Failed to send SMS message"
 
 **Soluzione**:
 1. Verifica che il numero operatore sia nel formato corretto: `+393331234567` (con prefisso internazionale, senza spazi)
@@ -672,7 +672,7 @@ Quando vuoi modificare qualcosa:
 ### Costi
 - Il piano free di Cloudflare è sufficiente per ~1000 pratiche/mese
 - PayPal prende circa 3.4% + €0.35 per transazione in Europa
-- Twilio costa ~€0.005 per messaggio WhatsApp
+- Twilio offre SMS gratuiti per numeri verificati nel piano trial
 - Monitora i costi nella dashboard di ogni servizio
 
 ### Backup
@@ -711,7 +711,7 @@ Ora che l'applicazione è online, potresti voler:
 L'applicazione include:
 - ✨ Intelligenza Artificiale (Gemini)
 - 💳 Pagamenti online (PayPal)
-- 📱 Messaggistica WhatsApp (Twilio)
+- 📱 Messaggistica SMS (Twilio)
 - 🗄️ Database cloud (Cloudflare D1)
 - 🎨 Frontend moderno (Angular)
 
