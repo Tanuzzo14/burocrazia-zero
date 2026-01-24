@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
@@ -11,7 +11,8 @@ import { FooterComponent } from './components/footer/footer.component';
     selector: 'app-root',
     imports: [CommonModule, FormsModule, RouterModule, LoadingSpinnerComponent, CookieConsentComponent, FooterComponent],
     templateUrl: './app.component.html',
-    styleUrl: './app.component.css'
+    styleUrl: './app.component.css',
+    schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class AppComponent {
   title = 'Burocrazia Zero';
@@ -30,6 +31,10 @@ export class AppComponent {
   // Privacy and terms acceptance
   privacyAccepted = false;
   
+  // ALTCHA verification
+  altchaVerified = false;
+  altchaPayload = '';
+  
   // Error handling
   errorMessage = '';
   
@@ -40,6 +45,19 @@ export class AppComponent {
 
   isHomePage(): boolean {
     return this.router.url === '/' || this.router.url === '';
+  }
+
+  onAltchaVerified(event: any) {
+    this.altchaVerified = true;
+    this.altchaPayload = event.detail.payload;
+    console.log('ALTCHA verified:', this.altchaPayload);
+  }
+
+  onAltchaStateChange(event: any) {
+    if (event.detail.state === 'error') {
+      this.altchaVerified = false;
+      this.altchaPayload = '';
+    }
   }
 
   searchOperation() {
@@ -101,6 +119,11 @@ export class AppComponent {
       return;
     }
 
+    if (!this.altchaVerified) {
+      this.errorMessage = 'Completa la verifica anti-robot prima di procedere';
+      return;
+    }
+
     if (!this.selectedOperation) {
       this.errorMessage = 'Devi prima selezionare un\'opzione';
       return;
@@ -139,6 +162,8 @@ export class AppComponent {
     this.nomeCognome = '';
     this.telefono = '';
     this.privacyAccepted = false;
+    this.altchaVerified = false;
+    this.altchaPayload = '';
     this.errorMessage = '';
   }
 }
