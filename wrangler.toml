@@ -10,8 +10,10 @@ database_id = "4bf3015a-bc01-497a-ae31-72f9e72847f2"
 
 # Environment variables (secrets to be set via wrangler CLI)
 # GEMINI_API_KEY - Google Gemini API key
-# STRIPE_SECRET_KEY - Stripe secret key
-# STRIPE_WEBHOOK_SECRET - Stripe webhook signing secret
+# PAYPAL_CLIENT_ID - PayPal Client ID
+# PAYPAL_CLIENT_SECRET - PayPal Client Secret
+# PAYPAL_WEBHOOK_ID - PayPal Webhook ID
+# PAYPAL_API_BASE - PayPal API base URL (sandbox: https://api-m.sandbox.paypal.com, live: https://api-m.paypal.com)
 # TWILIO_ACCOUNT_SID - Twilio account SID
 # TWILIO_AUTH_TOKEN - Twilio auth token
 # TWILIO_WHATSAPP_FROM - Twilio WhatsApp sender number (format: whatsapp:+1234567890)
@@ -20,5 +22,6 @@ database_id = "4bf3015a-bc01-497a-ae31-72f9e72847f2"
 [build]
 command = "npm install"
 
+# Non-secret environment variables
 [vars]
-COMMISSION_AMOUNT = "10"
+COMMISSION_AMOUNT = "10"  # Service commission amount in EUR

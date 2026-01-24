@@ -10,7 +10,7 @@ Un'interfaccia "concierge" che permette all'utente di delegare pratiche statali.
 * **Backend:** **Cloudflare Workers** (TypeScript).
 * **Database:** **Cloudflare D1** (per log contatti e transazioni).
 * **AI Engine:** **Gemini 1.5 Flash API**.
-* **Pagamenti:** **Stripe / Nexi API**.
+* **Pagamenti:** **PayPal API**.
 * **Notifiche:** **Twilio API** (per invio WhatsApp all'operatore).
 
 ---
@@ -33,14 +33,14 @@ Un'interfaccia "concierge" che permette all'utente di delegare pratiche statali.
 1. L'utente inserisce **Nome, Cognome e Numero di Telefono**.
 2. Al click su "Prenota", il Worker esegue:
 * **Salvataggio su D1:** Crea un record con i soli dati di contatto e lo stato `PENDING`.
-* **Stripe Integration:** Genera un link di pagamento per l'importo totale.
+* **PayPal Integration:** Genera un link di pagamento per l'importo totale.
 
 
 3. L'utente viene reindirizzato al checkout.
 
 ### Fase 3: Webhook & Handover Operatore
 
-1. Stripe invia un Webhook di conferma al Worker.
+1. PayPal invia un Webhook di conferma al Worker.
 2. Il Worker aggiorna il record su D1 a `PAID`.
 3. Il Worker attiva **Twilio** per inviare un WhatsApp all'operatore con:
 * Identità dell'utente e numero di telefono.
@@ -89,5 +89,5 @@ Lo sviluppatore dovrà configurare Gemini con questo set di istruzioni:
 ## 7. Note per lo Sviluppatore
 
 * **Angular:** Implementare la validazione del numero di telefono (formato internazionale) per evitare errori nei link `wa.me`.
-* **Cloudflare:** Configurare le variabili d'ambiente segrete (`STRIPE_KEY`, `GEMINI_API_KEY`, `TWILIO_AUTH`) tramite la dashboard Cloudflare per la sicurezza.
+* **Cloudflare:** Configurare le variabili d'ambiente segrete (`PAYPAL_CLIENT_ID`, `PAYPAL_CLIENT_SECRET`, `GEMINI_API_KEY`, `TWILIO_AUTH`) tramite la dashboard Cloudflare per la sicurezza.
 * **Error Handling:** Se il pagamento fallisce, il contatto deve restare nel DB come `PENDING` per permettere un eventuale ricontatto commerciale manuale.

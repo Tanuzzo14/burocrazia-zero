@@ -79,28 +79,40 @@ Prima di iniziare, devi creare alcuni account (sono tutti gratuiti per iniziare)
 
 ---
 
-### 1.4 Stripe (per i pagamenti)
+### 1.4 PayPal (per i pagamenti)
 
-**Cos'è**: Il sistema che gestisce i pagamenti con carta di credito.
+**Cos'è**: Il sistema che gestisce i pagamenti con carta di credito e altri metodi di pagamento.
 
 **Come fare**:
-1. Vai su https://dashboard.stripe.com/register
-2. Inserisci email e password
-3. Conferma la tua email
-4. Completa il profilo base (puoi saltare i dettagli bancari per ora)
+1. Vai su https://developer.paypal.com/
+2. Clicca su "Log in to Dashboard" in alto a destra
+3. Se non hai un account PayPal, clicca su "Sign Up" e crea un account
+4. Accedi con le tue credenziali PayPal
 
 **Ottenere le chiavi API**:
-1. Nella Dashboard di Stripe, clicca su **"Developers"** (in alto)
-2. Clicca su **"API keys"**
-3. Vedrai due chiavi:
-   - **Publishable key** (inizia con `pk_test_...`) - NON ti serve
-   - **Secret key** - Clicca su "Reveal test key" e **COPIALA**
-4. **COPIA LA SECRET KEY** e salvala nel tuo file di testo
-   - Sarà qualcosa tipo: `sk_test_ABC123...`
+1. Nella Dashboard di PayPal Developer, clicca su **"Apps & Credentials"** nel menu in alto
+2. Assicurati di essere nella scheda **"Sandbox"** (per test)
+3. Nella sezione **"REST API apps"**, vedrai un'app di default oppure clicca su **"Create App"** per crearne una nuova:
+   - Nome app: `burocrazia-zero` (o un nome a tua scelta)
+   - Tipo app: Merchant
+   - Clicca "Create App"
+4. Nella pagina dell'app, vedrai due chiavi importanti:
+   - **Client ID** (sempre visibile) - **COPIALO**
+   - **Secret** - Clicca su "Show" per vedere la chiave segreta e **COPIALA**
+5. **COPIA ENTRAMBE LE CHIAVI** e salvale nel tuo file di testo
+   - Client ID sarà qualcosa tipo: `Ac-57DH8GkaMqhmy8QRBM...`
+   - Secret sarà una stringa lunga nascosta con pallini
 
-✅ **Fatto!** Salva questa chiave come: `STRIPE_SECRET_KEY`
+✅ **Fatto!** Salva queste chiavi come:
+- `PAYPAL_CLIENT_ID`
+- `PAYPAL_CLIENT_SECRET`
 
-📝 **NOTA**: Per ora useremo le chiavi di test. Più avanti, quando tutto funziona, potrai passare alle chiavi live per accettare pagamenti reali.
+📝 **NOTA IMPORTANTE**: Per ora useremo le chiavi della **Sandbox** (ambiente di test). Questo ti permette di fare test senza usare soldi veri. Più avanti, quando tutto funziona, potrai passare alle chiavi **Live** per accettare pagamenti reali cambiando dalla tab "Sandbox" alla tab "Live" nella dashboard.
+
+📝 **DOVE TROVARE LE CHIAVI**: Le chiavi si trovano esattamente come mostrato nell'immagine che ti è stata fornita:
+- Vai su PayPal Developer Dashboard
+- Clicca su "Apps & Credentials"
+- Nella sezione "REST API apps" vedrai la tua app con Client ID e Secret
 
 ---
 
@@ -141,7 +153,8 @@ A questo punto dovresti avere in un file di testo:
 
 ```
 GEMINI_API_KEY=AIzaSyABCDEF123456789...
-STRIPE_SECRET_KEY=sk_test_ABC123...
+PAYPAL_CLIENT_ID=Ac-57DH8GkaMqhmy8QRBM...
+PAYPAL_CLIENT_SECRET=xxxxxxxxxxxxxxxx
 TWILIO_ACCOUNT_SID=ACxxxxxxxxxxxxxxxxx
 TWILIO_AUTH_TOKEN=xxxxxxxxxxxxxxxx
 TWILIO_WHATSAPP_FROM=whatsapp:+14155238886
@@ -202,19 +215,17 @@ OPERATOR_PHONE=whatsapp:+393331234567 (il TUO numero WhatsApp con prefisso inter
 
 ```sql
 CREATE TABLE IF NOT EXISTS lead_pratiche (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    stripe_session_id TEXT UNIQUE NOT NULL,
+    id TEXT PRIMARY KEY,
     nome_cognome TEXT NOT NULL,
     telefono TEXT NOT NULL,
     tipo_operazione TEXT NOT NULL,
     totale_incassato REAL NOT NULL,
     guida_url TEXT NOT NULL,
-    stato TEXT DEFAULT 'pending',
+    status TEXT DEFAULT 'PENDING',
     created_at TEXT DEFAULT (datetime('now')),
     updated_at TEXT DEFAULT (datetime('now'))
 );
 
-CREATE INDEX IF NOT EXISTS idx_stripe_session ON lead_pratiche(stripe_session_id);
 CREATE INDEX IF NOT EXISTS idx_created_at ON lead_pratiche(created_at);
 ```
 
@@ -261,7 +272,7 @@ Ora useremo tutte quelle chiavi che abbiamo raccolto nella Parte 1!
 
 ### 4.2 Configurare le Chiavi Segrete nel Worker
 
-**Cos'è**: Le chiavi segrete servono all'applicazione per comunicare con gli altri servizi (Gemini, Stripe, Twilio).
+**Cos'è**: Le chiavi segrete servono all'applicazione per comunicare con gli altri servizi (Gemini, PayPal, Twilio).
 
 **Come fare**:
 1. Clicca sul worker appena creato (`burocrazia-zero-worker`)
@@ -275,22 +286,45 @@ Ora aggiungi una alla volta tutte le chiavi segrete:
    - **Variable name**: il nome della chiave (vedi sotto)
    - **Value**: il valore che hai salvato nella Parte 1
 
-**Le chiavi da configurare**:
+**Le chiavi da configurare su Cloudflare**:
 
-| Variable name | Valore da inserire |
-|---------------|-------------------|
-| `GEMINI_API_KEY` | La chiave Gemini che inizia con `AIzaSy...` |
-| `STRIPE_SECRET_KEY` | La chiave Stripe che inizia con `sk_test_...` |
-| `TWILIO_ACCOUNT_SID` | Il SID Twilio che inizia con `AC...` |
-| `TWILIO_AUTH_TOKEN` | Il token Twilio |
-| `TWILIO_WHATSAPP_FROM` | Il numero WhatsApp Twilio (es: `whatsapp:+14155238886`) |
-| `OPERATOR_PHONE` | Il TUO numero WhatsApp con prefisso internazionale (es: `whatsapp:+393331234567` per Italia) |
+| Variable name | Valore da inserire | Descrizione |
+|---------------|-------------------|-------------|
+| `GEMINI_API_KEY` | La chiave Gemini che inizia con `AIzaSy...` | Chiave API di Google Gemini per l'intelligenza artificiale |
+| `PAYPAL_CLIENT_ID` | Il Client ID di PayPal (es: `Ac-57DH8GkaMqhmy8QRBM...`) | Identificativo pubblico dell'app PayPal |
+| `PAYPAL_CLIENT_SECRET` | Il Secret di PayPal | Chiave segreta dell'app PayPal - **IMPORTANTE: mantieni questa chiave al sicuro!** |
+| `PAYPAL_API_BASE` | `https://api-m.sandbox.paypal.com` | URL base delle API PayPal (usa sandbox per test, live per produzione) |
+| `TWILIO_ACCOUNT_SID` | Il SID Twilio che inizia con `AC...` | Identificativo dell'account Twilio |
+| `TWILIO_AUTH_TOKEN` | Il token Twilio | Token di autenticazione Twilio |
+| `TWILIO_WHATSAPP_FROM` | Il numero WhatsApp Twilio (es: `whatsapp:+14155238886`) | Numero WhatsApp da cui partono i messaggi |
+| `OPERATOR_PHONE` | Il TUO numero WhatsApp con prefisso internazionale (es: `whatsapp:+393331234567` per Italia) | Numero WhatsApp dove ricevi le notifiche |
 
-10. Dopo aver aggiunto tutte le chiavi, clicca **"Save and deploy"**
+**⚠️ IMPORTANTE - Come inserire le chiavi su Cloudflare**:
 
-📝 **NOTA**: La `STRIPE_WEBHOOK_SECRET` la configureremo dopo, quando avremo l'URL online (Parte 7).
+Per ogni chiave, ripeti questi passaggi:
+1. Clicca su **"Add variable"**
+2. In "Variable name" inserisci **esattamente** il nome dalla tabella (es: `PAYPAL_CLIENT_ID`)
+3. Seleziona la checkbox **"Encrypt"** per proteggere il valore
+4. In "Value" incolla il valore corrispondente che hai salvato
+5. Clicca **"Save"**
 
-✅ **Fatto!** Le chiavi segrete sono configurate!
+**📝 Esempio pratico per PAYPAL_CLIENT_SECRET**:
+- Variable name: `PAYPAL_CLIENT_SECRET` (copia esattamente questo)
+- ✅ Encrypt: Selezionato
+- Value: Incolla qui la chiave segreta che hai copiato dalla dashboard PayPal (quella con i pallini •••)
+
+**🔐 Note sulla sicurezza per Cloudflare**:
+- ✅ Le variabili con "Encrypt" selezionato sono chiamate "Secret Variables"
+- ✅ Una volta salvate, non potrai più vedere i valori (per sicurezza)
+- ✅ Se sbagli a inserire una chiave, dovrai eliminarla e ricrearla
+- ✅ Queste chiavi sono accessibili solo al tuo Worker e non sono visibili pubblicamente
+- ✅ Cloudflare le conserva in modo sicuro e crittografato
+
+10. Dopo aver aggiunto tutte le chiavi, clicca **"Save and deploy"** in fondo alla pagina
+
+📝 **NOTA**: Il `PAYPAL_WEBHOOK_ID` lo configureremo dopo, quando avremo l'URL online e avremo creato il webhook su PayPal (Parte 7).
+
+✅ **Fatto!** Le chiavi segrete sono configurate in modo sicuro su Cloudflare!
 
 ---
 
@@ -366,43 +400,61 @@ Cloudflare inizierà automaticamente il deploy. Aspetta qualche minuto.
 
 ---
 
-## 🌍 PARTE 7: Configurare Stripe Webhook
+## 🌍 PARTE 7: Configurare PayPal Webhook
 
-Ora che abbiamo l'URL del backend online, configuriamo Stripe:
+Ora che abbiamo l'URL del backend online, configuriamo PayPal per ricevere notifiche quando un pagamento viene completato:
 
-### 7.1 Configurare il Webhook di Stripe
+### 7.1 Configurare il Webhook di PayPal
 
-1. Vai sulla Dashboard di Stripe: https://dashboard.stripe.com
-2. Clicca su **"Developers"** → **"Webhooks"**
-3. Clicca su **"Add endpoint"**
-4. Inserisci l'URL:
+1. Vai sulla Dashboard di PayPal Developer: https://developer.paypal.com/dashboard/
+2. Accedi con il tuo account PayPal
+3. Nel menu in alto, clicca su **"Apps & Credentials"**
+4. Assicurati di essere nella scheda **"Sandbox"** (per i test)
+5. Nella sezione **"Webhooks"**, clicca su **"Add Webhook"**
+6. Compila il form del webhook:
+   
+   **Webhook URL**: Inserisci l'URL del tuo worker seguito da `/api/webhook/paypal`:
    ```
-   https://burocrazia-zero-worker.YOUR-SUBDOMAIN.workers.dev/api/webhook/stripe
+   https://burocrazia-zero-worker.YOUR-SUBDOMAIN.workers.dev/api/webhook/paypal
    ```
-   (sostituisci con il TUO URL del backend che hai copiato nella Parte 6)
-5. Clicca su **"Select events"**
-6. Cerca e seleziona: `checkout.session.completed`
-7. Clicca **"Add endpoint"**
-8. Clicca sull'endpoint appena creato
-9. Nella sezione "Signing secret", clicca su **"Reveal"**
-10. **COPIA questo valore** (inizia con `whsec_...`)
+   ⚠️ **IMPORTANTE**: Sostituisci `YOUR-SUBDOMAIN` con il TUO URL del backend che hai copiato nella Parte 6!
+   
+   **Event types**: Scorri la lista e seleziona questi eventi:
+   - ✅ `CHECKOUT.ORDER.APPROVED` - Quando l'ordine viene approvato
+   - ✅ `PAYMENT.CAPTURE.COMPLETED` - Quando il pagamento viene catturato
+   
+7. Clicca **"Save"**
+
+8. Dopo aver salvato, verrai reindirizzato alla pagina del webhook. Qui vedrai:
+   - **Webhook ID**: Una stringa che inizia con qualcosa tipo `5AB12345...`
+   - **COPIA QUESTO WEBHOOK ID** - lo userai nel prossimo step
 
 ---
 
-### 7.2 Aggiungere il Webhook Secret al Worker
+### 7.2 Aggiungere il Webhook ID al Worker su Cloudflare
 
+**Cos'è**: Il Webhook ID serve a verificare che le notifiche provengano davvero da PayPal e non da qualcun altro.
+
+**Come fare**:
 1. Vai su https://dash.cloudflare.com
 2. Nel menu, clicca su **"Workers & Pages"**
 3. Clicca sul worker `burocrazia-zero-worker`
 4. Vai alla tab **"Settings"** → **"Variables"**
-5. Nella sezione **"Environment Variables"**, clicca **"Add variable"**
-6. Seleziona **"Encrypt"**
-7. Inserisci:
-   - **Variable name**: `STRIPE_WEBHOOK_SECRET`
-   - **Value**: il valore che hai copiato (inizia con `whsec_...`)
-8. Clicca **"Save and deploy"**
+5. Nella sezione **"Environment Variables"**, scorri fino in fondo e clicca **"Add variable"**
+6. Compila:
+   - **Variable name**: `PAYPAL_WEBHOOK_ID` (copia esattamente questo nome)
+   - ✅ Seleziona **"Encrypt"**
+   - **Value**: Incolla il Webhook ID che hai copiato dal passo precedente
+7. Clicca **"Save and deploy"**
 
-✅ **Fatto!** Stripe è configurato!
+✅ **Fatto!** PayPal è configurato e ora può inviare notifiche al tuo backend quando un pagamento viene completato!
+
+**🔐 Cosa succede ora**:
+- Quando un cliente completa un pagamento su PayPal, PayPal invia automaticamente una notifica al tuo Worker
+- Il Worker verifica che la notifica sia autentica usando il Webhook ID
+- Se tutto è ok, aggiorna lo stato del lead a "PAID" e invia un messaggio WhatsApp all'operatore
+
+📝 **NOTA IMPORTANTE**: Quando passerai dalla Sandbox alla produzione (Live), dovrai creare un nuovo webhook nella sezione "Live" di PayPal e aggiornare il `PAYPAL_WEBHOOK_ID` su Cloudflare con il nuovo ID.
 
 ---
 
@@ -477,10 +529,11 @@ Cloudflare inizierà la build. Aspetta qualche minuto (3-5 minuti circa).
    - Verifica che riconosca correttamente l'operazione
    - Inserisci nome, cognome e telefono (formato internazionale: +393331234567)
    - Clicca "Prenota e Paga"
-   - Usa una **carta di test** di Stripe: `4242 4242 4242 4242`
-     - Data: qualsiasi data futura (es: 12/25)
-     - CVC: qualsiasi 3 cifre (es: 123)
-   - Completa il pagamento
+   - Verrai reindirizzato a PayPal
+   - Usa le **credenziali di test PayPal Sandbox**:
+     - Email: Puoi creare un account test nella PayPal Developer Dashboard oppure usa un account personale PayPal in modalità Sandbox
+     - Per creare un account test: vai su PayPal Developer Dashboard → Sandbox → Accounts
+   - Completa il pagamento su PayPal
 
 3. Verifica che:
    - ✅ Vieni reindirizzato alla pagina di successo
@@ -523,12 +576,13 @@ Cloudflare inizierà la build. Aspetta qualche minuto (3-5 minuti circa).
 
 ---
 
-### Problema: "Invalid webhook signature" su Stripe
+### Problema: "Invalid webhook signature" su PayPal
 
 **Soluzione**:
-1. Verifica di aver configurato il `STRIPE_WEBHOOK_SECRET` correttamente nel Worker
-2. Assicurati che l'URL del webhook in Stripe punti esattamente al tuo worker: `https://tuoworker.workers.dev/api/webhook/stripe`
-3. Ricontrolla di aver selezionato l'evento giusto: `checkout.session.completed`
+1. Verifica di aver configurato il `PAYPAL_WEBHOOK_ID` correttamente nel Worker
+2. Assicurati che l'URL del webhook in PayPal punti esattamente al tuo worker: `https://tuoworker.workers.dev/api/webhook/paypal`
+3. Ricontrolla di aver selezionato gli eventi giusti: `CHECKOUT.ORDER.APPROVED` e `PAYMENT.CAPTURE.COMPLETED`
+4. Assicurati che il `PAYPAL_API_BASE` sia impostato correttamente (`https://api-m.sandbox.paypal.com` per sandbox)
 
 ---
 
@@ -618,7 +672,7 @@ Quando vuoi modificare qualcosa:
 
 ### Costi
 - Il piano free di Cloudflare è sufficiente per ~1000 pratiche/mese
-- Stripe prende 1.4% + €0.25 per transazione
+- PayPal prende circa 3.4% + €0.35 per transazione in Europa
 - Twilio costa ~€0.005 per messaggio WhatsApp
 - Monitora i costi nella dashboard di ogni servizio
 
@@ -636,7 +690,7 @@ Ora che l'applicazione è online, potresti voler:
 
 1. **Personalizzare il design**: Modifica i file in `frontend/src/app/` su GitHub
 2. **Aggiungere nuove operazioni**: Espandi il sistema in `backend/src/gemini.ts`
-3. **Passare a produzione Stripe**: Cambia le chiavi da test a live
+3. **Passare a produzione PayPal**: Cambia le chiavi da Sandbox a Live nella PayPal Developer Dashboard
 4. **Monitorare le performance**: Usa Cloudflare Analytics
 5. **Aggiungere un dominio personalizzato**: Configura un dominio su Cloudflare Pages
 
@@ -657,7 +711,7 @@ Ora che l'applicazione è online, potresti voler:
 
 L'applicazione include:
 - ✨ Intelligenza Artificiale (Gemini)
-- 💳 Pagamenti online (Stripe)
+- 💳 Pagamenti online (PayPal)
 - 📱 Messaggistica WhatsApp (Twilio)
 - 🗄️ Database cloud (Cloudflare D1)
 - 🎨 Frontend moderno (Angular)

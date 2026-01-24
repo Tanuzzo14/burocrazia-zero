@@ -6,7 +6,7 @@ Un'interfaccia "concierge" che permette all'utente di delegare pratiche statali.
 
 Burocrazia-Zero semplifica la gestione delle pratiche burocratiche italiane attraverso:
 - **AI-powered**: Identifica automaticamente l'operazione richiesta tramite Gemini AI
-- **Pagamento sicuro**: Integrazione con Stripe per pagamenti online
+- **Pagamento sicuro**: Integrazione con PayPal per pagamenti online
 - **Zero storage documenti**: I documenti vengono gestiti tramite WhatsApp (crittografia end-to-end)
 - **Operatore dedicato**: Contatto diretto con un operatore per completare la pratica
 
@@ -16,7 +16,7 @@ Burocrazia-Zero semplifica la gestione delle pratiche burocratiche italiane attr
 - **Backend**: Cloudflare Workers (TypeScript)
 - **Database**: Cloudflare D1
 - **AI Engine**: Google Gemini 1.5 Flash
-- **Pagamenti**: Stripe API
+- **Pagamenti**: PayPal API
 - **Notifiche**: Twilio API (WhatsApp)
 - **Anti-Robot**: ALTCHA (proof-of-work challenge)
 
@@ -27,7 +27,7 @@ Burocrazia-Zero semplifica la gestione delle pratiche burocratiche italiane attr
 1. Descrive l'operazione desiderata (es. "Richiedere lo SPID")
 2. Il sistema identifica l'operazione e mostra i costi (costi statali + commissione €10)
 3. Inserisce nome, cognome e numero di telefono
-4. Effettua il pagamento tramite Stripe
+4. Effettua il pagamento tramite PayPal
 5. Riceve un messaggio WhatsApp dall'operatore per completare la pratica
 
 ### Per l'Operatore
@@ -44,7 +44,7 @@ Burocrazia-Zero semplifica la gestione delle pratiche burocratiche italiane attr
 - Node.js 18+
 - Account Cloudflare (Workers, D1, Pages)
 - Account Google Cloud (per Gemini API)
-- Account Stripe
+- Account PayPal
 - Account Twilio (con WhatsApp abilitato)
 
 ### Installazione
@@ -78,8 +78,10 @@ npx wrangler d1 execute burocrazia-zero-db --file=./schema.sql
 ```bash
 # Configura le chiavi API (una alla volta)
 npx wrangler secret put GEMINI_API_KEY
-npx wrangler secret put STRIPE_SECRET_KEY
-npx wrangler secret put STRIPE_WEBHOOK_SECRET
+npx wrangler secret put PAYPAL_CLIENT_ID
+npx wrangler secret put PAYPAL_CLIENT_SECRET
+npx wrangler secret put PAYPAL_WEBHOOK_ID
+npx wrangler secret put PAYPAL_API_BASE
 npx wrangler secret put TWILIO_ACCOUNT_SID
 npx wrangler secret put TWILIO_AUTH_TOKEN
 npx wrangler secret put TWILIO_WHATSAPP_FROM
@@ -126,7 +128,7 @@ burocrazia-zero/
 │   └── src/
 │       ├── index.ts          # Entry point Worker
 │       ├── gemini.ts         # Integrazione Gemini AI
-│       ├── stripe.ts         # Integrazione Stripe
+│       ├── paypal.ts         # Integrazione PayPal
 │       ├── twilio.ts         # Integrazione Twilio WhatsApp
 │       ├── database.ts       # Operazioni D1 database
 │       └── types.ts          # TypeScript types
@@ -154,7 +156,7 @@ burocrazia-zero/
 
 ### Sicurezza
 - ✅ Validazione input utente (telefono internazionale)
-- ✅ Verifica firma webhook Stripe
+- ✅ Verifica firma webhook PayPal
 - ✅ Secrets gestiti via Cloudflare (no hardcoded)
 - ✅ CORS configurato correttamente
 - ✅ HTTPS obbligatorio in produzione
@@ -168,7 +170,7 @@ Con il piano Free/Starter:
 - **Cloudflare D1**: Gratis (primi 5M righe lette/giorno)
 - **Cloudflare Pages**: Gratis (illimitato)
 - **Gemini API**: Free tier generoso
-- **Stripe**: 1.4% + €0.25 per transazione
+- **PayPal**: 3.4% + €0.35 per transazione europea
 - **Twilio WhatsApp**: ~€0.005 per messaggio
 
 **Totale**: Praticamente gratis fino a ~1000 pratiche/mese

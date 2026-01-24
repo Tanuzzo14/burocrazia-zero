@@ -12,14 +12,14 @@ All requirements from the technical specification have been successfully impleme
 A serverless TypeScript backend that handles:
 - **AI Operation Identification** via Google Gemini 1.5 Flash
 - **Database Operations** with Cloudflare D1 (SQLite)
-- **Payment Processing** through Stripe Checkout
+- **Payment Processing** through PayPal Checkout
 - **Webhook Handling** for payment confirmations
 - **WhatsApp Notifications** via Twilio API
 
 **Files Created:**
 - `backend/src/index.ts` - Main worker entry point
 - `backend/src/gemini.ts` - AI integration
-- `backend/src/stripe.ts` - Payment processing
+- `backend/src/paypal.ts` - Payment processing
 - `backend/src/twilio.ts` - WhatsApp notifications
 - `backend/src/database.ts` - D1 database operations
 - `backend/src/types.ts` - TypeScript type definitions
@@ -29,7 +29,7 @@ A modern, responsive web application with:
 - **Search Interface** for operation description
 - **AI-Powered Results** showing costs and details
 - **Lead Collection Form** with phone validation
-- **Payment Flow** integration with Stripe
+- **Payment Flow** integration with PayPal
 - **Success/Cancel Pages** for post-payment
 
 **Files Created:**
@@ -69,7 +69,7 @@ CREATE TABLE lead_pratiche (
 ✅ **CodeQL Analysis**: 0 vulnerabilities  
 ✅ **Code Review**: Passed  
 ✅ **Input Validation**: International phone format  
-✅ **Webhook Security**: Stripe signature verification  
+✅ **Webhook Security**: PayPal signature verification  
 ✅ **Secrets Management**: All keys in environment variables  
 
 ### Testing Results
@@ -94,11 +94,11 @@ All requirements from `docs/technical_specs.md` implemented:
 - User enters name, surname, phone number
 - Phone validation (international format)
 - Lead saved to D1 with PENDING status
-- Stripe payment link generated
-- User redirected to Stripe checkout
+- PayPal payment link generated
+- User redirected to PayPal checkout
 
 ### Phase 3: Webhook & Operator Handover ✅
-- Stripe webhook confirms payment
+- PayPal webhook confirms payment
 - Lead status updated to PAID
 - Twilio sends WhatsApp to operator with:
   - Customer identity and phone
@@ -113,7 +113,7 @@ All requirements from `docs/technical_specs.md` implemented:
 ### Prerequisites
 - Cloudflare account (Workers, D1, Pages)
 - Google Cloud account (Gemini API)
-- Stripe account
+- PayPal account
 - Twilio account (WhatsApp enabled)
 
 ### Quick Deploy
@@ -131,8 +131,10 @@ npx wrangler d1 execute burocrazia-zero-db --file=./schema.sql
 
 # 3. Configure secrets
 npx wrangler secret put GEMINI_API_KEY
-npx wrangler secret put STRIPE_SECRET_KEY
-npx wrangler secret put STRIPE_WEBHOOK_SECRET
+npx wrangler secret put PAYPAL_CLIENT_ID
+npx wrangler secret put PAYPAL_CLIENT_SECRET
+npx wrangler secret put PAYPAL_WEBHOOK_ID
+npx wrangler secret put PAYPAL_API_BASE
 npx wrangler secret put TWILIO_ACCOUNT_SID
 npx wrangler secret put TWILIO_AUTH_TOKEN
 npx wrangler secret put TWILIO_WHATSAPP_FROM
@@ -148,7 +150,7 @@ npm run deploy:backend
 ```
 
 ### Post-Deployment
-1. Configure Stripe webhook endpoint
+1. Configure PayPal webhook endpoint
 2. Update frontend API URL in `api.service.ts`
 3. Test complete flow end-to-end
 
@@ -159,7 +161,7 @@ npm run deploy:backend
 ### For Users
 🔍 **AI-Powered Search** - Describe operation, get instant identification  
 💶 **Transparent Pricing** - See exact costs before payment  
-💳 **Secure Payment** - Stripe checkout integration  
+💳 **Secure Payment** - PayPal checkout integration  
 📱 **WhatsApp Support** - Direct contact with operator  
 🔒 **Privacy First** - No document storage on servers  
 
@@ -200,7 +202,7 @@ All original requirements met:
 - Backend: Cloudflare Workers ✓
 - Database: Cloudflare D1 ✓
 - AI: Gemini 1.5 Flash ✓
-- Payments: Stripe ✓
+- Payments: PayPal ✓
 - WhatsApp: Twilio ✓
 
 ✅ **Flusso Operativo**
@@ -282,7 +284,7 @@ Built with:
 - **Angular** - Modern frontend framework
 - **Cloudflare** - Edge computing platform
 - **Google Gemini** - AI language model
-- **Stripe** - Payment processing
+- **PayPal** - Payment processing
 - **Twilio** - WhatsApp messaging
 
 ---
