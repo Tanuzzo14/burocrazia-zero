@@ -116,6 +116,7 @@ npm run build:frontend
 - **[API_DOCUMENTATION.md](./API_DOCUMENTATION.md)**: Documentazione API endpoints
 - **[CLOUDFLARE_PAGES.md](./CLOUDFLARE_PAGES.md)**: Configurazione Cloudflare Pages
 - **[docs/technical_specs.md](./docs/technical_specs.md)**: Specifiche tecniche dettagliate
+- **[docs/ALTCHA_INTEGRATION.md](./docs/ALTCHA_INTEGRATION.md)**: Guida integrazione ALTCHA (anti-robot)
 
 ## 🗂️ Struttura Progetto
 
