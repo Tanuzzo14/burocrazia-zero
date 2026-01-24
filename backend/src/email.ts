@@ -65,6 +65,5 @@ Contatta il cliente su WhatsApp per richiedere i documenti e completare la prati
     throw new Error(`Failed to send email via Brevo: ${response.statusText}`);
   }
 
-  const result = await response.json();
-  console.log('Email notification sent to operator via Brevo:', result);
+  console.log('Email notification sent to operator via Brevo');
 }
