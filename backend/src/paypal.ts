@@ -39,12 +39,14 @@ interface PayPalOrder {
 
 // Get PayPal OAuth token
 async function getPayPalAccessToken(env: Env): Promise<string> {
-  const auth = Buffer.from(`${env.PAYPAL_CLIENT_ID}:${env.PAYPAL_CLIENT_SECRET}`).toString('base64');
+  // Create base64 auth string using Web APIs (for Cloudflare Workers)
+  const credentials = `${env.PAYPAL_CLIENT_ID}:${env.PAYPAL_CLIENT_SECRET}`;
+  const base64Auth = btoa(credentials);
   
   const response = await fetch(`${env.PAYPAL_API_BASE}/v1/oauth2/token`, {
     method: 'POST',
     headers: {
-      'Authorization': `Basic ${auth}`,
+      'Authorization': `Basic ${base64Auth}`,
       'Content-Type': 'application/x-www-form-urlencoded',
     },
     body: 'grant_type=client_credentials',
