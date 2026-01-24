@@ -41,16 +41,16 @@ interface PayPalWebhookEvent {
   id: string;
   event_type: string;
   resource: PayPalWebhookResource;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 interface PayPalWebhookResource {
   id?: string;
   purchase_units?: Array<{
     reference_id?: string;
-    [key: string]: any;
+    [key: string]: unknown;
   }>;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 interface PayPalOAuthResponse {
@@ -76,7 +76,7 @@ interface PayPalWebhookVerificationResponse {
 interface PayPalCaptureResponse {
   id: string;
   status: string;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 // Get PayPal OAuth token
@@ -172,6 +172,14 @@ export async function verifyWebhookSignature(
     throw new Error('Missing PayPal webhook headers');
   }
 
+  // Parse the body once to avoid security issues
+  let webhookEvent: PayPalWebhookEvent;
+  try {
+    webhookEvent = JSON.parse(body) as PayPalWebhookEvent;
+  } catch (error) {
+    throw new Error('Invalid JSON in webhook body');
+  }
+
   const accessToken = await getPayPalAccessToken(env);
 
   const verifyRequest: PayPalWebhookVerificationRequest = {
@@ -181,7 +189,7 @@ export async function verifyWebhookSignature(
     auth_algo: authAlgo,
     transmission_sig: transmissionSig,
     webhook_id: env.PAYPAL_WEBHOOK_ID,
-    webhook_event: JSON.parse(body) as PayPalWebhookEvent,
+    webhook_event: webhookEvent,
   };
 
   const response = await fetch(`${env.PAYPAL_API_BASE}/v1/notifications/verify-webhook-signature`, {
@@ -203,7 +211,7 @@ export async function verifyWebhookSignature(
     throw new Error('Invalid webhook signature');
   }
 
-  return JSON.parse(body) as PayPalWebhookEvent;
+  return webhookEvent;
 }
 
 // Capture payment for an order

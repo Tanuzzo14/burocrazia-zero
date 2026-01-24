@@ -116,7 +116,14 @@ export default {
           // Handle successful payment - PayPal event: CHECKOUT.ORDER.APPROVED
           if (event.event_type === 'CHECKOUT.ORDER.APPROVED') {
             const order = event.resource;
-            const leadId = order.purchase_units?.[0]?.reference_id;
+            
+            // Validate purchase_units exists and has at least one element
+            if (!order.purchase_units || order.purchase_units.length === 0) {
+              console.error('No purchase_units in webhook data');
+              return errorResponse('Invalid webhook data', 400);
+            }
+            
+            const leadId = order.purchase_units[0].reference_id;
 
             if (!leadId) {
               console.error('No reference_id in webhook data');
