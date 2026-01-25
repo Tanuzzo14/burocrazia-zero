@@ -8,6 +8,10 @@ binding = "DB"
 database_name = "burocrazia-zero-db"
 database_id = "4bf3015a-bc01-497a-ae31-72f9e72847f2"
 
+# Cron trigger for email queue processing (runs every 5 minutes)
+[triggers]
+crons = ["*/5 * * * *"]
+
 # Environment variables (secrets to be set via wrangler CLI)
 # GEMINI_API_KEY - Google Gemini API key
 # PAYPAL_CLIENT_ID - PayPal Client ID

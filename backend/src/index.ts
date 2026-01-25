@@ -3,6 +3,7 @@ import { identifyOperation } from './gemini';
 import { createLead, updateLeadStatus, getLeadById } from './database';
 import { createPaymentLink, verifyWebhookSignature } from './paypal';
 import { sendEmailToOperator } from './email';
+import { processPendingEmails, getEmailQueueStats } from './emailQueue';
 
 // CORS headers for frontend communication
 const corsHeaders = {
@@ -158,6 +159,21 @@ export default {
         return jsonResponse({ status: 'ok' });
       }
 
+      // Route: POST /api/email/process - Manually trigger email queue processing
+      if (url.pathname === '/api/email/process' && request.method === 'POST') {
+        const result = await processPendingEmails(env);
+        return jsonResponse({
+          message: 'Email queue processed',
+          ...result
+        });
+      }
+
+      // Route: GET /api/email/stats - Get email queue statistics
+      if (url.pathname === '/api/email/stats' && request.method === 'GET') {
+        const stats = await getEmailQueueStats(env);
+        return jsonResponse(stats);
+      }
+
       return errorResponse('Not found', 404);
     } catch (error) {
       console.error('Request error:', error);
@@ -165,6 +181,20 @@ export default {
         error instanceof Error ? error.message : 'Internal server error',
         500
       );
+    }
+  },
+
+  /**
+   * Scheduled event handler for automatic email queue processing
+   * This runs periodically (configured in wrangler.toml) to retry failed emails
+   */
+  async scheduled(event: ScheduledEvent, env: Env, ctx: ExecutionContext): Promise<void> {
+    console.log('Running scheduled email queue processing...');
+    try {
+      const result = await processPendingEmails(env);
+      console.log(`Email queue processed: sent=${result.sent}, failed=${result.failed}, pending=${result.pending}`);
+    } catch (error) {
+      console.error('Scheduled email processing error:', error);
     }
   },
 };

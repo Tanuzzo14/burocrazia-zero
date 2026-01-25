@@ -1,4 +1,5 @@
 import type { Env, Lead } from './types';
+import { queueEmail } from './emailQueue';
 
 export async function sendEmailToOperator(lead: Lead, guideUrl: string, env: Env): Promise<void> {
   const message = `
@@ -33,37 +34,17 @@ export async function sendEmailToOperator(lead: Lead, guideUrl: string, env: Env
 
 Contatta il cliente su WhatsApp per richiedere i documenti e completare la pratica.`;
 
-  const emailData = {
-    sender: {
-      name: "Burocrazia Zero",
-      email: env.BREVO_SENDER_EMAIL
-    },
-    to: [
-      {
-        email: env.OPERATOR_EMAIL,
-        name: "Operatore"
-      }
-    ],
+  // Queue the email for reliable delivery with automatic retry
+  await queueEmail({
+    lead_id: lead.id,
+    recipient_email: env.OPERATOR_EMAIL,
+    recipient_name: 'Operatore',
+    sender_email: env.BREVO_SENDER_EMAIL,
+    sender_name: 'Burocrazia Zero',
     subject: `Nuova pratica: ${lead.tipo_operazione} - ${lead.nome_cognome}`,
-    htmlContent: message,
-    textContent: textMessage
-  };
+    html_content: message,
+    text_content: textMessage,
+  }, env);
 
-  const response = await fetch('https://api.brevo.com/v3/smtp/email', {
-    method: 'POST',
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json',
-      'api-key': env.BREVO_API_KEY,
-    },
-    body: JSON.stringify(emailData),
-  });
-
-  if (!response.ok) {
-    const errorText = await response.text();
-    console.error('Brevo API error:', errorText);
-    throw new Error(`Failed to send email via Brevo: ${response.statusText}`);
-  }
-
-  console.log('Email notification sent to operator via Brevo');
+  console.log(`Email queued for lead ${lead.id} to ${env.OPERATOR_EMAIL}`);
 }
