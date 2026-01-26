@@ -5,8 +5,10 @@ CREATE TABLE lead_pratiche (
     tipo_operazione TEXT,
     totale_incassato REAL,
     guida_url TEXT,
+    email_queue_id TEXT,
     status TEXT DEFAULT 'PENDING', -- PENDING, PAID
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (email_queue_id) REFERENCES email_queue(id) ON DELETE SET NULL
 );
 
 -- Email queue table for reliable email delivery with retry mechanism

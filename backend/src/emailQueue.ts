@@ -61,12 +61,6 @@ export async function queueEmail(emailData: CreateEmailRequest, env: Env): Promi
     next_retry_at: now,
   };
 
-  // Try to send immediately in background (don't await to avoid blocking)
-  // The cron job will retry if this fails
-  processPendingEmails(env).catch(error => {
-    console.error(`Background email processing failed for email ${id} (lead: ${emailData.lead_id}):`, error);
-  });
-
   return queuedEmail;
 }
 
@@ -305,4 +299,80 @@ export async function getEmailQueueStats(env: Env): Promise<{
     sent: sent?.count || 0,
     failed: failed?.count || 0,
   };
+}
+
+/**
+ * Get an email from the queue by ID
+ */
+export async function getEmailById(emailId: string, env: Env): Promise<EmailQueueItem | null> {
+  const result = await env.DB.prepare(
+    `SELECT * FROM email_queue WHERE id = ?`
+  )
+    .bind(emailId)
+    .first<EmailQueueItem>();
+
+  return result;
+}
+
+/**
+ * Delete an email from the queue
+ */
+export async function deleteEmailFromQueue(emailId: string, env: Env): Promise<void> {
+  await env.DB.prepare(
+    `DELETE FROM email_queue WHERE id = ?`
+  )
+    .bind(emailId)
+    .run();
+}
+
+/**
+ * Send a specific email by ID and delete it from queue
+ * This is used when payment is confirmed via webhook
+ */
+export async function sendAndDeleteEmail(emailId: string, env: Env): Promise<void> {
+  console.log(`Attempting to send and delete email: ${emailId}`);
+  
+  // Get the email from queue
+  const email = await getEmailById(emailId, env);
+  
+  if (!email) {
+    console.error(`Email ${emailId} not found in queue`);
+    throw new Error(`Email ${emailId} not found in queue`);
+  }
+  
+  // Validate email configuration before sending
+  try {
+    validateEmailConfig(env);
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    console.error('Email configuration validation failed:', errorMessage);
+    throw error;
+  }
+  
+  // Send the email via Brevo
+  try {
+    await sendEmailViaBrevo(email, env);
+    console.log(`Email ${emailId} sent successfully, marking as sent and deleting from queue`);
+    
+    // Mark as sent BEFORE deleting to ensure consistency
+    await markEmailAsSent(emailId, env);
+    
+    // Delete the email from queue after successful send
+    await deleteEmailFromQueue(emailId, env);
+    console.log(`Email ${emailId} deleted from queue`);
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    console.error(`Failed to send email ${emailId}:`, errorMessage);
+    
+    // Mark as failed but don't delete - let the retry mechanism handle it
+    await markEmailAsFailed(
+      emailId,
+      errorMessage,
+      email.retry_count,
+      email.max_retries,
+      env
+    );
+    
+    throw error; // Re-throw to let caller know it failed
+  }
 }
