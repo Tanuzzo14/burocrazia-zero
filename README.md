@@ -73,7 +73,15 @@ npx wrangler d1 create burocrazia-zero-db
 npx wrangler d1 execute burocrazia-zero-db --file=./schema.sql
 ```
 
-### Configurazione Secrets
+### Configurazione
+
+**1. Aggiorna i valori in wrangler.toml:**
+
+Prima di fare il deploy, aggiorna i valori delle email nel file `wrangler.toml`:
+- `BREVO_SENDER_EMAIL`: La tua email verificata su Brevo
+- `OPERATOR_EMAIL`: L'email dove ricevere le notifiche
+
+**2. Configura i secrets:**
 
 ```bash
 # Configura le chiavi API (una alla volta)
@@ -83,8 +91,6 @@ npx wrangler secret put PAYPAL_CLIENT_SECRET
 npx wrangler secret put PAYPAL_WEBHOOK_ID
 npx wrangler secret put PAYPAL_API_BASE
 npx wrangler secret put BREVO_API_KEY
-npx wrangler secret put BREVO_SENDER_EMAIL
-npx wrangler secret put OPERATOR_EMAIL
 ```
 
 ### Sviluppo Locale

@@ -24,6 +24,8 @@ crons = ["*/5 * * * *"]
 command = "npm install"
 
 # Non-secret environment variables
+# Note: Update these values with your actual email addresses before deployment
+# These are stored in plaintext in version control, which is acceptable for non-sensitive configuration
 [vars]
 COMMISSION_AMOUNT = "10"  # Service commission amount in EUR
 BREVO_SENDER_EMAIL = "noreply@yourdomain.com"  # Sender email address (must be verified in your Brevo account)
