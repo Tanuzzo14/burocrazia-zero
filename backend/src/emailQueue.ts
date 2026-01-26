@@ -352,7 +352,10 @@ export async function sendAndDeleteEmail(emailId: string, env: Env): Promise<voi
   // Send the email via Brevo
   try {
     await sendEmailViaBrevo(email, env);
-    console.log(`Email ${emailId} sent successfully, deleting from queue`);
+    console.log(`Email ${emailId} sent successfully, marking as sent and deleting from queue`);
+    
+    // Mark as sent BEFORE deleting to ensure consistency
+    await markEmailAsSent(emailId, env);
     
     // Delete the email from queue after successful send
     await deleteEmailFromQueue(emailId, env);

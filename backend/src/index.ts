@@ -190,7 +190,9 @@ export default {
                 await sendAndDeleteEmail(lead.email_queue_id, env);
                 console.log(`Email sent and deleted for lead ${leadId}, email_queue_id ${lead.email_queue_id}`);
               } catch (error) {
-                console.error(`Failed to send email for lead ${leadId}:`, error);
+                const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+                const errorStack = error instanceof Error ? error.stack : '';
+                console.error(`Failed to send email for lead ${leadId}, email_queue_id ${lead.email_queue_id}:`, errorMessage, errorStack);
                 // Don't fail the webhook - the retry mechanism will handle it
               }
             } else {
