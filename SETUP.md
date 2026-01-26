@@ -32,7 +32,19 @@ npx wrangler d1 create burocrazia-zero-db
 npx wrangler d1 execute burocrazia-zero-db --file=./schema.sql
 ```
 
-### Configurazione Variabili d'Ambiente (Secrets)
+### Configurazione Variabili d'Ambiente
+
+#### Variabili in wrangler.toml (vars)
+
+Le seguenti variabili sono configurate nel file `wrangler.toml` nella sezione `[vars]` e devono essere aggiornate con i tuoi valori reali prima del deployment:
+
+- `BREVO_SENDER_EMAIL`: Email mittente verificata su Brevo (es: noreply@tuodominio.com)
+- `OPERATOR_EMAIL`: Email operatore per ricevere le notifiche (es: operator@example.com)
+- `COMMISSION_AMOUNT`: Importo commissione in EUR (default: "10")
+
+**IMPORTANTE**: Aggiorna questi valori nel file `wrangler.toml` con i tuoi indirizzi email reali prima di fare il deploy.
+
+#### Secrets
 
 Configura i seguenti secrets tramite Wrangler CLI:
 
@@ -54,12 +66,6 @@ npx wrangler secret put PAYPAL_API_BASE
 
 # Brevo API Key
 npx wrangler secret put BREVO_API_KEY
-
-# Brevo Sender Email (email verificata su Brevo)
-npx wrangler secret put BREVO_SENDER_EMAIL
-
-# Email operatore (dove ricevere le notifiche)
-npx wrangler secret put OPERATOR_EMAIL
 
 # URL del frontend (opzionale, default: https://burocrazia-zero.pages.dev)
 npx wrangler secret put FRONTEND_URL
@@ -170,9 +176,9 @@ npx wrangler pages deploy . --project-name=burocrazia-zero
 6. Copia la chiave API (inizia con `xkeysib-`)
 7. In **Senders**, aggiungi e verifica l'email mittente
 8. Configura:
-   - `BREVO_API_KEY`: La chiave API
-   - `BREVO_SENDER_EMAIL`: L'email mittente verificata
-   - `OPERATOR_EMAIL`: L'email dove ricevere le notifiche
+   - `BREVO_API_KEY`: La chiave API (configurala come secret)
+   - `BREVO_SENDER_EMAIL`: L'email mittente verificata (aggiornala in `wrangler.toml`)
+   - `OPERATOR_EMAIL`: L'email dove ricevere le notifiche (aggiornala in `wrangler.toml`)
 
 ## 5. Testing del Sistema
 
