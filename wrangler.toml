@@ -28,5 +28,5 @@ command = "npm install"
 # These are stored in plaintext in version control, which is acceptable for non-sensitive configuration
 [vars]
 COMMISSION_AMOUNT = "10"  # Service commission amount in EUR
-BREVO_SENDER_EMAIL = "noreply@yourdomain.com"  # Sender email address (must be verified in your Brevo account)
-OPERATOR_EMAIL = "operator@example.com"  # Operator's email address to receive payment notifications
+BREVO_SENDER_EMAIL = "gaetanosmario@gmail.com"  # Sender email address (must be verified in your Brevo account)
+OPERATOR_EMAIL = "gaetanosmario@gmail.com"  # Operator's email address to receive payment notifications
