@@ -8,6 +8,9 @@ const EMAIL_QUEUE_CONFIG = {
   RETRY_DELAYS: [60, 300, 900, 3600, 14400],
 } as const;
 
+// Email validation regex (shared across validation functions)
+export const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 /**
  * Queue an email for sending with automatic retry mechanism
  */
@@ -70,7 +73,7 @@ export async function queueEmail(emailData: CreateEmailRequest, env: Env): Promi
 /**
  * Validate email environment variables
  */
-function validateEmailConfig(env: Env): void {
+export function validateEmailConfig(env: Env): void {
   const missingVars: string[] = [];
   
   if (!env.BREVO_API_KEY) {
@@ -92,21 +95,19 @@ function validateEmailConfig(env: Env): void {
   }
   
   // Validate email format for sender and operator
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRegex.test(env.BREVO_SENDER_EMAIL)) {
+  if (!EMAIL_REGEX.test(env.BREVO_SENDER_EMAIL)) {
     throw new Error(`BREVO_SENDER_EMAIL has invalid format: ${env.BREVO_SENDER_EMAIL}`);
   }
-  if (!emailRegex.test(env.OPERATOR_EMAIL)) {
+  if (!EMAIL_REGEX.test(env.OPERATOR_EMAIL)) {
     throw new Error(`OPERATOR_EMAIL has invalid format: ${env.OPERATOR_EMAIL}`);
   }
 }
 
 /**
  * Send an email via Brevo API
+ * Note: Configuration validation is performed once by processPendingEmails() before batch processing
  */
 async function sendEmailViaBrevo(email: EmailQueueItem, env: Env): Promise<void> {
-  // Validate configuration before attempting to send
-  validateEmailConfig(env);
   
   const emailData = {
     sender: {
