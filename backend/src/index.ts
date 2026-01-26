@@ -3,7 +3,7 @@ import { identifyOperation } from './gemini';
 import { createLead, updateLeadStatus, getLeadById } from './database';
 import { createPaymentLink, verifyWebhookSignature } from './paypal';
 import { sendEmailToOperator } from './email';
-import { processPendingEmails, getEmailQueueStats } from './emailQueue';
+import { processPendingEmails, getEmailQueueStats, validateEmailConfig, EMAIL_REGEX } from './emailQueue';
 
 // CORS headers for frontend communication
 const corsHeaders = {
@@ -11,6 +11,26 @@ const corsHeaders = {
   'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
   'Access-Control-Allow-Headers': 'Content-Type',
 };
+
+// Type for email health check response
+interface EmailHealthResponse {
+  status: 'healthy' | 'warning' | 'error';
+  timestamp: string;
+  configuration: {
+    brevo_api_key: boolean;
+    brevo_sender_email: boolean;
+    operator_email: boolean;
+  };
+  validation: {
+    errors: string[];
+    warnings: string[];
+  };
+  queue_stats?: {
+    pending: number;
+    sent: number;
+    failed: number;
+  };
+}
 
 function jsonResponse(data: any, status = 200) {
   return new Response(JSON.stringify(data), {
@@ -157,6 +177,70 @@ export default {
       // Route: GET /api/health - Health check
       if (url.pathname === '/api/health' && request.method === 'GET') {
         return jsonResponse({ status: 'ok' });
+      }
+
+      // Route: GET /api/email/health - Email system health check
+      if (url.pathname === '/api/email/health' && request.method === 'GET') {
+        const health: EmailHealthResponse = {
+          status: 'unknown' as any, // Will be set based on validation
+          timestamp: new Date().toISOString(),
+          configuration: {
+            brevo_api_key: false,
+            brevo_sender_email: false,
+            operator_email: false,
+          },
+          validation: {
+            errors: [],
+            warnings: [],
+          },
+        };
+
+        // Check environment variables
+        health.configuration.brevo_api_key = !!env.BREVO_API_KEY;
+        health.configuration.brevo_sender_email = !!env.BREVO_SENDER_EMAIL;
+        health.configuration.operator_email = !!env.OPERATOR_EMAIL;
+
+        // Validate configuration
+        try {
+          if (!env.BREVO_API_KEY) {
+            health.validation.errors.push('BREVO_API_KEY is not configured');
+          }
+          if (!env.BREVO_SENDER_EMAIL) {
+            health.validation.errors.push('BREVO_SENDER_EMAIL is not configured');
+          } else if (!EMAIL_REGEX.test(env.BREVO_SENDER_EMAIL)) {
+            health.validation.errors.push('BREVO_SENDER_EMAIL has invalid format');
+          }
+          if (!env.OPERATOR_EMAIL) {
+            health.validation.errors.push('OPERATOR_EMAIL is not configured');
+          } else if (!EMAIL_REGEX.test(env.OPERATOR_EMAIL)) {
+            health.validation.errors.push('OPERATOR_EMAIL has invalid format');
+          }
+
+          // Get queue statistics
+          const stats = await getEmailQueueStats(env);
+          health.queue_stats = stats;
+
+          if (stats.failed > 0) {
+            health.validation.warnings.push(`${stats.failed} emails permanently failed`);
+          }
+          if (stats.pending > 10) {
+            health.validation.warnings.push(`${stats.pending} emails pending (high queue)`);
+          }
+
+          // Determine overall status
+          if (health.validation.errors.length > 0) {
+            health.status = 'error';
+          } else if (health.validation.warnings.length > 0) {
+            health.status = 'warning';
+          } else {
+            health.status = 'healthy';
+          }
+        } catch (error) {
+          health.status = 'error';
+          health.validation.errors.push(error instanceof Error ? error.message : 'Unknown error');
+        }
+
+        return jsonResponse(health, health.status === 'error' ? 500 : 200);
       }
 
       // Route: POST /api/email/process - Manually trigger email queue processing

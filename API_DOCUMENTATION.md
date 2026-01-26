@@ -155,6 +155,131 @@
 
 ---
 
+### 4. Email Queue Statistics
+
+**Endpoint**: `GET /api/email/stats`
+
+**Description**: Get statistics about the email queue (pending, sent, failed).
+
+**Response**:
+```json
+{
+  "pending": 2,
+  "sent": 15,
+  "failed": 0
+}
+```
+
+**Response Fields**:
+- `pending`: Number of emails waiting to be sent
+- `sent`: Number of successfully sent emails
+- `failed`: Number of permanently failed emails (after max retries)
+
+---
+
+### 5. Process Email Queue
+
+**Endpoint**: `POST /api/email/process`
+
+**Description**: Manually trigger processing of pending emails in the queue. Useful for debugging or forcing immediate delivery.
+
+**Response**:
+```json
+{
+  "message": "Email queue processed",
+  "sent": 3,
+  "failed": 0,
+  "pending": 1
+}
+```
+
+**Response Fields**:
+- `sent`: Number of emails successfully sent in this batch
+- `failed`: Number of emails that failed permanently
+- `pending`: Number of emails that failed but will be retried
+
+**Note**: This endpoint is automatically triggered by a cron job every 5 minutes. Use this for manual intervention only.
+
+---
+
+### 6. Email System Health Check
+
+**Endpoint**: `GET /api/email/health`
+
+**Description**: Comprehensive health check for the email system. Validates configuration, checks environment variables, and reports queue statistics.
+
+**Response** (Healthy):
+```json
+{
+  "status": "healthy",
+  "timestamp": "2026-01-26T11:00:00.000Z",
+  "configuration": {
+    "brevo_api_key": true,
+    "brevo_sender_email": true,
+    "operator_email": true
+  },
+  "validation": {
+    "errors": [],
+    "warnings": []
+  },
+  "queue_stats": {
+    "pending": 0,
+    "sent": 15,
+    "failed": 0
+  }
+}
+```
+
+**Response** (Configuration Error):
+```json
+{
+  "status": "error",
+  "timestamp": "2026-01-26T11:00:00.000Z",
+  "configuration": {
+    "brevo_api_key": false,
+    "brevo_sender_email": false,
+    "operator_email": true
+  },
+  "validation": {
+    "errors": [
+      "BREVO_API_KEY is not configured",
+      "BREVO_SENDER_EMAIL is not configured"
+    ],
+    "warnings": []
+  },
+  "queue_stats": {
+    "pending": 5,
+    "sent": 0,
+    "failed": 2
+  }
+}
+```
+
+**Response Fields**:
+- `status`: Overall health status (`healthy`, `warning`, or `error`)
+- `timestamp`: Current server timestamp
+- `configuration`: Boolean flags for each required environment variable
+- `validation.errors`: Array of configuration errors that must be fixed
+- `validation.warnings`: Array of non-critical warnings
+- `queue_stats`: Current email queue statistics
+
+**Status Values**:
+- `healthy`: All configuration correct, no issues
+- `warning`: Configuration OK but some warnings (e.g., high pending queue, some failed emails)
+- `error`: Configuration errors that prevent email sending
+
+**HTTP Status Codes**:
+- `200 OK`: System is healthy or has warnings
+- `500 Internal Server Error`: System has configuration errors
+
+**Use Cases**:
+- Verify email system setup before going live
+- Monitor email system health in production
+- Troubleshoot email delivery issues
+- Check if environment variables are properly configured
+
+---
+
 ## Data Models
 
 ### Lead (Database Schema)
