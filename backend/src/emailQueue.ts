@@ -328,21 +328,31 @@ export async function getEmailByLeadId(leadId: string, env: Env): Promise<EmailQ
     .bind(leadId)
     .first<EmailQueueItem>();
 
-  return result;
+  return result || null;
 }
 
 /**
- * Check if any email (in any status) exists for a lead
+ * Get email status information for a lead
+ * Returns status info about emails for a lead without fetching the full email data
  * Used to distinguish between "email never created" vs "email already processed" scenarios
  */
-export async function hasAnyEmailForLead(leadId: string, env: Env): Promise<boolean> {
+export async function getEmailStatusForLead(leadId: string, env: Env): Promise<{
+  hasPending: boolean;
+  hasAny: boolean;
+}> {
   const result = await env.DB.prepare(
-    `SELECT COUNT(*) as count FROM email_queue WHERE lead_id = ?`
+    `SELECT 
+      COUNT(*) as total_count,
+      SUM(CASE WHEN status = 'PENDING' THEN 1 ELSE 0 END) as pending_count
+     FROM email_queue WHERE lead_id = ?`
   )
     .bind(leadId)
-    .first<{ count: number }>();
+    .first<{ total_count: number; pending_count: number }>();
 
-  return (result?.count || 0) > 0;
+  return {
+    hasPending: (result?.pending_count || 0) > 0,
+    hasAny: (result?.total_count || 0) > 0,
+  };
 }
 
 /**

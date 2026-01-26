@@ -3,7 +3,7 @@ import { identifyOperation } from './gemini';
 import { createLead, updateLeadStatus, getLeadById } from './database';
 import { createPaymentLink, verifyWebhookSignature } from './paypal';
 import { prepareOperatorEmailData } from './email';
-import { processPendingEmails, getEmailQueueStats, validateEmailConfig, EMAIL_REGEX, queueEmail, sendAndDeleteEmail, getEmailByLeadId, hasAnyEmailForLead } from './emailQueue';
+import { processPendingEmails, getEmailQueueStats, validateEmailConfig, EMAIL_REGEX, queueEmail, sendAndDeleteEmail, getEmailByLeadId, getEmailStatusForLead } from './emailQueue';
 
 // CORS headers for frontend communication
 const corsHeaders = {
@@ -167,12 +167,12 @@ export default {
             // Find the queued email for this lead using lead_id (only PENDING emails)
             const queuedEmail = await getEmailByLeadId(leadId, env);
             if (!queuedEmail) {
-              // Check if any email exists for this lead to distinguish between scenarios
-              const hasEmail = await hasAnyEmailForLead(leadId, env);
-              if (hasEmail) {
+              // Get email status to provide better logging
+              const emailStatus = await getEmailStatusForLead(leadId, env);
+              if (emailStatus.hasAny && !emailStatus.hasPending) {
                 // Email exists but not pending - already processed
                 console.log(`Email for lead ${leadId} already processed (sent or failed)`);
-              } else {
+              } else if (!emailStatus.hasAny) {
                 // No email found at all - this is unexpected and might indicate a data issue
                 console.error(`No email record found for lead ${leadId} - possible data inconsistency`);
               }
