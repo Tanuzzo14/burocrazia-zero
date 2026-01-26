@@ -15,7 +15,7 @@ import { FooterComponent } from './components/footer/footer.component';
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class AppComponent {
-  title = 'Burocrazia Zero';
+  title = 'Burocrazia Zero - Gestione Pratiche con AI';
   
   // Step 1: Operation identification
   userQuery = '';

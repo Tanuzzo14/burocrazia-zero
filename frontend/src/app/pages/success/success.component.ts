@@ -16,8 +16,17 @@ import { RouterModule } from '@angular/router';
         </div>
         <h1>Operazione Completata con Successo!</h1>
         <p class="success-message">
-          Il tuo pagamento è stato elaborato correttamente.
+          Il tuo pagamento è stato elaborato correttamente. Un operatore ti contatterà a breve per completare la tua pratica.
         </p>
+        <div class="refund-guarantee">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px; flex-shrink: 0;">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+            <path d="m9 12 2 2 4-4"></path>
+          </svg>
+          <div>
+            <strong>Garanzia di Rimborso Totale:</strong> Se l'intelligenza artificiale dovesse commettere un errore e l'operazione richiesta non fosse effettivamente completabile online, riceverai il rimborso completo dell'importo pagato.
+          </div>
+        </div>
         <a routerLink="/" class="btn-home">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;">
             <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
@@ -129,9 +138,40 @@ import { RouterModule } from '@angular/router';
     .success-message {
       color: var(--text-secondary, #6C757D);
       font-size: 1.25rem;
-      margin-bottom: var(--spacing-xl, 2rem);
+      margin-bottom: var(--spacing-lg, 1.5rem);
       line-height: 1.8;
       max-width: 600px;
+    }
+
+    .refund-guarantee {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--spacing-md, 0.75rem);
+      background: linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 100%);
+      border: 2px solid #4CAF50;
+      border-radius: var(--border-radius, 8px);
+      padding: var(--spacing-lg, 1.5rem);
+      margin-bottom: var(--spacing-xl, 2rem);
+      max-width: 700px;
+      box-shadow: 0 4px 12px rgba(76, 175, 80, 0.15);
+    }
+
+    .refund-guarantee svg {
+      color: #4CAF50;
+      margin-top: 2px;
+    }
+
+    .refund-guarantee strong {
+      color: var(--text-primary, #212529);
+      display: block;
+      margin-bottom: 4px;
+      font-size: 1.125rem;
+    }
+
+    .refund-guarantee div {
+      color: var(--text-secondary, #424242);
+      line-height: 1.6;
+      font-size: 1rem;
     }
 
     .btn-home {
@@ -255,6 +295,15 @@ import { RouterModule } from '@angular/router';
 
       .footer-content li {
         font-size: 0.95rem;
+      }
+
+      .refund-guarantee {
+        padding: var(--spacing-md, 1rem);
+        font-size: 0.95rem;
+      }
+
+      .refund-guarantee strong {
+        font-size: 1.0625rem;
       }
     }
   `]
