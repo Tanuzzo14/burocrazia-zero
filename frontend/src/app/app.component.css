@@ -932,3 +932,46 @@ footer {
   cursor: not-allowed;
   opacity: 0.7;
 }
+
+/* Refund Guarantee Styles */
+.refund-guarantee {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-md, 0.75rem);
+  background: linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 100%);
+  border: 2px solid #4CAF50;
+  border-radius: var(--border-radius, 8px);
+  padding: var(--spacing-lg, 1.5rem);
+  margin-bottom: var(--spacing-xl, 2rem);
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.15);
+}
+
+.refund-guarantee svg {
+  color: #4CAF50;
+  margin-top: 2px;
+}
+
+.refund-guarantee strong {
+  color: var(--text-primary, #212529);
+  display: block;
+  margin-bottom: 4px;
+  font-size: 1.0625rem;
+  font-weight: 700;
+}
+
+.refund-guarantee div {
+  color: var(--text-secondary, #424242);
+  line-height: 1.6;
+  font-size: 0.95rem;
+}
+
+@media (max-width: 768px) {
+  .refund-guarantee {
+    padding: var(--spacing-md, 1rem);
+    font-size: 0.875rem;
+  }
+
+  .refund-guarantee strong {
+    font-size: 1rem;
+  }
+}
