@@ -12,15 +12,13 @@ database_id = "4bf3015a-bc01-497a-ae31-72f9e72847f2"
 [triggers]
 crons = ["*/5 * * * *"]
 
-# Environment variables (secrets to be set via wrangler CLI or Cloudflare Dashboard)
+# Secrets (to be set via wrangler CLI or Cloudflare Dashboard)
 # GEMINI_API_KEY - Google Gemini API key for AI operation identification
 # PAYPAL_CLIENT_ID - PayPal Client ID for payment processing
 # PAYPAL_CLIENT_SECRET - PayPal Client Secret for payment processing
 # PAYPAL_WEBHOOK_ID - PayPal Webhook ID for webhook signature verification
 # PAYPAL_API_BASE - PayPal API base URL (sandbox: https://api-m.sandbox.paypal.com, live: https://api-m.paypal.com)
 # BREVO_API_KEY - Brevo API key for sending email notifications (get from https://app.brevo.com)
-# BREVO_SENDER_EMAIL - Sender email address (must be verified in your Brevo account)
-# OPERATOR_EMAIL - Operator's email address to receive payment notifications
 
 [build]
 command = "npm install"
@@ -28,3 +26,5 @@ command = "npm install"
 # Non-secret environment variables
 [vars]
 COMMISSION_AMOUNT = "10"  # Service commission amount in EUR
+BREVO_SENDER_EMAIL = "noreply@yourdomain.com"  # Sender email address (must be verified in your Brevo account)
+OPERATOR_EMAIL = "operator@example.com"  # Operator's email address to receive payment notifications
