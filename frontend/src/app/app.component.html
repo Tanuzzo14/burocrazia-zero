@@ -75,6 +75,7 @@
           class="option-card"
           [class.generic-option]="option.isGeneric"
           [class.caf-required]="option.requiresCaf"
+          [class.state-costs-found]="option.stateCost > 0 && !option.isGeneric"
           (click)="handleOptionClick(option)"
         >
           <div class="option-header">
@@ -103,6 +104,14 @@
               <span>Totale:</span>
               <span class="amount">€{{ option.totalCost.toFixed(2) }}</span>
             </div>
+          </div>
+          <div class="state-costs-warning" *ngIf="option.stateCost === 0 && !option.isGeneric && !option.requiresCaf">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+              <line x1="12" y1="9" x2="12" y2="13"></line>
+              <line x1="12" y1="17" x2="12.01" y2="17"></line>
+            </svg>
+            Non sono stati trovati costi statali, ma l'AI può sbagliare. L'operatore comunicherà eventuali costi statali.
           </div>
           <div class="caf-warning" *ngIf="option.requiresCaf">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -140,7 +149,7 @@
 
     <!-- Step 2: Operation Result & Booking -->
     <div class="result-section" *ngIf="selectedOperation">
-      <div class="operation-card">
+      <div class="operation-card" [class.state-costs-found]="selectedOperation.stateCost > 0 && !selectedOperation.isGeneric">
         <h2>
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--success);">
             <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
@@ -163,6 +172,14 @@
               <span>Totale:</span>
               <span class="amount">€{{ selectedOperation.totalCost.toFixed(2) }}</span>
             </div>
+          </div>
+          <div class="state-costs-warning" *ngIf="selectedOperation.stateCost === 0 && !selectedOperation.isGeneric && !selectedOperation.requiresCaf">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+              <line x1="12" y1="9" x2="12" y2="13"></line>
+              <line x1="12" y1="17" x2="12.01" y2="17"></line>
+            </svg>
+            <strong>Attenzione:</strong> Non sono stati trovati costi statali, ma l'AI può sbagliare. L'operatore comunicherà eventuali costi statali.
           </div>
           <div class="generic-warning" *ngIf="selectedOperation.isGeneric">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
