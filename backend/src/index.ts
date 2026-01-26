@@ -3,7 +3,7 @@ import { identifyOperation } from './gemini';
 import { createLead, updateLeadStatus, getLeadById } from './database';
 import { createPaymentLink, verifyWebhookSignature } from './paypal';
 import { prepareOperatorEmailData } from './email';
-import { processPendingEmails, getEmailQueueStats, validateEmailConfig, EMAIL_REGEX, queueEmail, sendAndDeleteEmail } from './emailQueue';
+import { processPendingEmails, getEmailQueueStats, validateEmailConfig, EMAIL_REGEX, queueEmail, sendAndDeleteEmail, getEmailByLeadId, getEmailStatusForLead } from './emailQueue';
 
 // CORS headers for frontend communication
 const corsHeaders = {
@@ -104,25 +104,7 @@ export default {
         // Generate lead ID upfront
         const leadId = crypto.randomUUID();
 
-        // Create a temporary lead object for email preparation
-        const tempLead = {
-          id: leadId,
-          nome_cognome: body.nome_cognome,
-          telefono: body.telefono,
-          tipo_operazione: body.tipo_operazione,
-          totale_incassato: body.totale_incassato,
-          guida_url: body.guida_url,
-          email_queue_id: null,
-          status: 'PENDING' as const,
-          created_at: new Date().toISOString(),
-        };
-
-        // Prepare and queue email BEFORE payment
-        const emailData = prepareOperatorEmailData(tempLead, body.guida_url, env);
-        const queuedEmail = await queueEmail(emailData, env);
-        console.log(`Email queued with ID ${queuedEmail.id} for lead ${leadId}`);
-
-        // Create lead in database with the same ID and email_queue_id
+        // STEP 1: Create lead in database FIRST (without email_queue_id)
         const lead = await createLead(
           {
             nome_cognome: body.nome_cognome,
@@ -130,11 +112,16 @@ export default {
             tipo_operazione: body.tipo_operazione,
             totale_incassato: body.totale_incassato,
             guida_url: body.guida_url,
-            email_queue_id: queuedEmail.id,
           },
           env,
           leadId
         );
+        console.log(`Lead created with ID ${lead.id}`);
+
+        // STEP 2: Queue email AFTER lead is created (FOREIGN KEY can now reference lead_id)
+        const emailData = prepareOperatorEmailData(lead, body.guida_url, env);
+        const queuedEmail = await queueEmail(emailData, env);
+        console.log(`Email queued with ID ${queuedEmail.id} for lead ${leadId}`);
 
         // Generate PayPal payment link
         const paymentUrl = await createPaymentLink(
@@ -177,26 +164,30 @@ export default {
             // Update lead status to PAID
             await updateLeadStatus(leadId, 'PAID', env);
 
-            // Get lead details (including email_queue_id)
-            const lead = await getLeadById(leadId, env);
-            if (!lead) {
-              console.error('Lead not found:', leadId);
-              return errorResponse('Lead not found', 404);
+            // Find the queued email for this lead using lead_id (only PENDING emails)
+            const queuedEmail = await getEmailByLeadId(leadId, env);
+            if (!queuedEmail) {
+              // Get email status to provide better logging
+              const emailStatus = await getEmailStatusForLead(leadId, env);
+              if (emailStatus.hasAny && !emailStatus.hasPending) {
+                // Email exists but not pending - already processed
+                console.log(`Email for lead ${leadId} already processed (sent or failed)`);
+              } else if (!emailStatus.hasAny) {
+                // No email found at all - this is unexpected and might indicate a data issue
+                console.error(`No email record found for lead ${leadId} - possible data inconsistency`);
+              }
+              return jsonResponse({ received: true });
             }
 
-            // Send the queued email using the email_queue_id
-            if (lead.email_queue_id) {
-              try {
-                await sendAndDeleteEmail(lead.email_queue_id, env);
-                console.log(`Email sent and deleted for lead ${leadId}, email_queue_id ${lead.email_queue_id}`);
-              } catch (error) {
-                const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-                const errorStack = error instanceof Error ? error.stack : '';
-                console.error(`Failed to send email for lead ${leadId}, email_queue_id ${lead.email_queue_id}:`, errorMessage, errorStack);
-                // Don't fail the webhook - the retry mechanism will handle it
-              }
-            } else {
-              console.warn(`Lead ${leadId} has no email_queue_id - email cannot be sent`);
+            // Send the queued email
+            try {
+              await sendAndDeleteEmail(queuedEmail.id, env);
+              console.log(`Email sent and deleted for lead ${leadId}, email_queue_id ${queuedEmail.id}`);
+            } catch (error) {
+              const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+              const errorStack = error instanceof Error ? error.stack : '';
+              console.error(`Failed to send email for lead ${leadId}, email_queue_id ${queuedEmail.id}:`, errorMessage, errorStack);
+              // Don't fail the webhook - the retry mechanism will handle it
             }
 
             return jsonResponse({ received: true });

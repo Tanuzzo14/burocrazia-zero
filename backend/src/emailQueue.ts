@@ -315,6 +315,47 @@ export async function getEmailById(emailId: string, env: Env): Promise<EmailQueu
 }
 
 /**
+ * Get a pending email from the queue by lead ID
+ * Returns the most recently created pending email for the given lead.
+ * Only returns emails with status 'PENDING' to avoid processing already sent/failed emails.
+ * Note: Current business logic creates only one email per lead, but this function
+ * orders by created_at DESC for robustness in case of future changes or edge cases.
+ */
+export async function getEmailByLeadId(leadId: string, env: Env): Promise<EmailQueueItem | null> {
+  const result = await env.DB.prepare(
+    `SELECT * FROM email_queue WHERE lead_id = ? AND status = 'PENDING' ORDER BY created_at DESC LIMIT 1`
+  )
+    .bind(leadId)
+    .first<EmailQueueItem>();
+
+  return result || null;
+}
+
+/**
+ * Get email status information for a lead
+ * Returns status info about emails for a lead without fetching the full email data
+ * Used to distinguish between "email never created" vs "email already processed" scenarios
+ */
+export async function getEmailStatusForLead(leadId: string, env: Env): Promise<{
+  hasPending: boolean;
+  hasAny: boolean;
+}> {
+  const result = await env.DB.prepare(
+    `SELECT 
+      COUNT(*) as total_count,
+      SUM(CASE WHEN status = 'PENDING' THEN 1 ELSE 0 END) as pending_count
+     FROM email_queue WHERE lead_id = ?`
+  )
+    .bind(leadId)
+    .first<{ total_count: number; pending_count: number }>();
+
+  return {
+    hasPending: (result?.pending_count || 0) > 0,
+    hasAny: (result?.total_count || 0) > 0,
+  };
+}
+
+/**
  * Delete an email from the queue
  */
 export async function deleteEmailFromQueue(emailId: string, env: Env): Promise<void> {
