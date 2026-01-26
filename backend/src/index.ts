@@ -167,9 +167,10 @@ export default {
             // Find the queued email for this lead using lead_id
             const queuedEmail = await getEmailByLeadId(leadId, env);
             if (!queuedEmail) {
-              // This might happen if the email was already sent/deleted or if the lead was created without queuing an email.
-              // The scheduled email processor will handle any pending emails via the retry mechanism.
-              console.warn(`No queued email found for lead ${leadId} - may have been processed already or not yet queued`);
+              // This might happen if:
+              // 1. The email was already sent and deleted by a previous webhook call or the scheduled processor
+              // 2. Race condition between webhook processing and scheduled email processing
+              console.warn(`No queued email found for lead ${leadId} - may have been processed already`);
               return jsonResponse({ received: true });
             }
 
