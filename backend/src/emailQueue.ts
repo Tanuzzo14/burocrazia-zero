@@ -315,6 +315,19 @@ export async function getEmailById(emailId: string, env: Env): Promise<EmailQueu
 }
 
 /**
+ * Get an email from the queue by lead ID
+ */
+export async function getEmailByLeadId(leadId: string, env: Env): Promise<EmailQueueItem | null> {
+  const result = await env.DB.prepare(
+    `SELECT * FROM email_queue WHERE lead_id = ? ORDER BY created_at DESC LIMIT 1`
+  )
+    .bind(leadId)
+    .first<EmailQueueItem>();
+
+  return result;
+}
+
+/**
  * Delete an email from the queue
  */
 export async function deleteEmailFromQueue(emailId: string, env: Env): Promise<void> {

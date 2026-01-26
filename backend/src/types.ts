@@ -32,7 +32,6 @@ export interface Lead {
   tipo_operazione: string;
   totale_incassato: number;
   guida_url: string;
-  email_queue_id: string | null;
   status: 'PENDING' | 'PAID';
   created_at: string;
 }
@@ -43,7 +42,6 @@ export interface CreateLeadRequest {
   tipo_operazione: string;
   totale_incassato: number;
   guida_url: string;
-  email_queue_id?: string;
 }
 
 export interface EmailQueueItem {
