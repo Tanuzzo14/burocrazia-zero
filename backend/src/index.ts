@@ -2,8 +2,8 @@ import type { Env } from './types';
 import { identifyOperation } from './gemini';
 import { createLead, updateLeadStatus, getLeadById } from './database';
 import { createPaymentLink, verifyWebhookSignature } from './paypal';
-import { sendEmailToOperator } from './email';
-import { processPendingEmails, getEmailQueueStats, validateEmailConfig, EMAIL_REGEX } from './emailQueue';
+import { prepareOperatorEmailData } from './email';
+import { processPendingEmails, getEmailQueueStats, validateEmailConfig, EMAIL_REGEX, queueEmail, sendAndDeleteEmail } from './emailQueue';
 
 // CORS headers for frontend communication
 const corsHeaders = {
@@ -101,7 +101,28 @@ export default {
           return errorResponse('Missing required fields');
         }
 
-        // Create lead in database
+        // Generate lead ID upfront
+        const leadId = crypto.randomUUID();
+
+        // Create a temporary lead object for email preparation
+        const tempLead = {
+          id: leadId,
+          nome_cognome: body.nome_cognome,
+          telefono: body.telefono,
+          tipo_operazione: body.tipo_operazione,
+          totale_incassato: body.totale_incassato,
+          guida_url: body.guida_url,
+          email_queue_id: null,
+          status: 'PENDING' as const,
+          created_at: new Date().toISOString(),
+        };
+
+        // Prepare and queue email BEFORE payment
+        const emailData = prepareOperatorEmailData(tempLead, body.guida_url, env);
+        const queuedEmail = await queueEmail(emailData, env);
+        console.log(`Email queued with ID ${queuedEmail.id} for lead ${leadId}`);
+
+        // Create lead in database with the same ID and email_queue_id
         const lead = await createLead(
           {
             nome_cognome: body.nome_cognome,
@@ -109,8 +130,10 @@ export default {
             tipo_operazione: body.tipo_operazione,
             totale_incassato: body.totale_incassato,
             guida_url: body.guida_url,
+            email_queue_id: queuedEmail.id,
           },
-          env
+          env,
+          leadId
         );
 
         // Generate PayPal payment link
@@ -154,15 +177,25 @@ export default {
             // Update lead status to PAID
             await updateLeadStatus(leadId, 'PAID', env);
 
-            // Get lead details
+            // Get lead details (including email_queue_id)
             const lead = await getLeadById(leadId, env);
             if (!lead) {
               console.error('Lead not found:', leadId);
               return errorResponse('Lead not found', 404);
             }
 
-            // Send email notification to operator
-            await sendEmailToOperator(lead, lead.guida_url, env);
+            // Send the queued email using the email_queue_id
+            if (lead.email_queue_id) {
+              try {
+                await sendAndDeleteEmail(lead.email_queue_id, env);
+                console.log(`Email sent and deleted for lead ${leadId}, email_queue_id ${lead.email_queue_id}`);
+              } catch (error) {
+                console.error(`Failed to send email for lead ${leadId}:`, error);
+                // Don't fail the webhook - the retry mechanism will handle it
+              }
+            } else {
+              console.warn(`Lead ${leadId} has no email_queue_id - email cannot be sent`);
+            }
 
             return jsonResponse({ received: true });
           }
