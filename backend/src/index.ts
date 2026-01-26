@@ -159,6 +159,72 @@ export default {
         return jsonResponse({ status: 'ok' });
       }
 
+      // Route: GET /api/email/health - Email system health check
+      if (url.pathname === '/api/email/health' && request.method === 'GET') {
+        const health: any = {
+          status: 'unknown',
+          timestamp: new Date().toISOString(),
+          configuration: {
+            brevo_api_key: false,
+            brevo_sender_email: false,
+            operator_email: false,
+          },
+          validation: {
+            errors: [] as string[],
+            warnings: [] as string[],
+          },
+        };
+
+        // Check environment variables
+        health.configuration.brevo_api_key = !!env.BREVO_API_KEY;
+        health.configuration.brevo_sender_email = !!env.BREVO_SENDER_EMAIL;
+        health.configuration.operator_email = !!env.OPERATOR_EMAIL;
+
+        // Validate configuration
+        try {
+          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+          
+          if (!env.BREVO_API_KEY) {
+            health.validation.errors.push('BREVO_API_KEY is not configured');
+          }
+          if (!env.BREVO_SENDER_EMAIL) {
+            health.validation.errors.push('BREVO_SENDER_EMAIL is not configured');
+          } else if (!emailRegex.test(env.BREVO_SENDER_EMAIL)) {
+            health.validation.errors.push('BREVO_SENDER_EMAIL has invalid format');
+          }
+          if (!env.OPERATOR_EMAIL) {
+            health.validation.errors.push('OPERATOR_EMAIL is not configured');
+          } else if (!emailRegex.test(env.OPERATOR_EMAIL)) {
+            health.validation.errors.push('OPERATOR_EMAIL has invalid format');
+          }
+
+          // Get queue statistics
+          const stats = await getEmailQueueStats(env);
+          health.queue_stats = stats;
+
+          if (stats.failed > 0) {
+            health.validation.warnings.push(`${stats.failed} emails permanently failed`);
+          }
+          if (stats.pending > 10) {
+            health.validation.warnings.push(`${stats.pending} emails pending (high queue)`);
+          }
+
+          // Determine overall status
+          if (health.validation.errors.length > 0) {
+            health.status = 'error';
+          } else if (health.validation.warnings.length > 0) {
+            health.status = 'warning';
+          } else {
+            health.status = 'healthy';
+          }
+        } catch (error) {
+          health.status = 'error';
+          health.validation.errors.push(error instanceof Error ? error.message : 'Unknown error');
+        }
+
+        return jsonResponse(health, health.status === 'error' ? 500 : 200);
+      }
+
       // Route: POST /api/email/process - Manually trigger email queue processing
       if (url.pathname === '/api/email/process' && request.method === 'POST') {
         const result = await processPendingEmails(env);

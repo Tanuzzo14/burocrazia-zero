@@ -560,7 +560,70 @@ Cloudflare inizierà la build. Aspetta qualche minuto (3-5 minuti circa).
 
 ---
 
-### 9.2 Verificare il Database
+### 9.2 Verificare il Sistema Email
+
+**Prima di testare il flusso completo, verifica che il sistema email sia configurato correttamente!**
+
+**Come fare**:
+1. Apri il browser e vai all'URL del tuo worker seguito da `/api/email/health`:
+   ```
+   https://burocrazia-zero-worker.YOUR-SUBDOMAIN.workers.dev/api/email/health
+   ```
+   (sostituisci `YOUR-SUBDOMAIN` con il tuo URL del backend)
+
+2. Dovresti vedere una risposta JSON simile a questa:
+   ```json
+   {
+     "status": "healthy",
+     "timestamp": "2026-01-26T11:00:00.000Z",
+     "configuration": {
+       "brevo_api_key": true,
+       "brevo_sender_email": true,
+       "operator_email": true
+     },
+     "validation": {
+       "errors": [],
+       "warnings": []
+     },
+     "queue_stats": {
+       "pending": 0,
+       "sent": 0,
+       "failed": 0
+     }
+   }
+   ```
+
+3. **Interpretare i risultati**:
+   - ✅ **`status: "healthy"`** - Tutto OK! Il sistema email è configurato correttamente
+   - ⚠️ **`status: "warning"`** - Configurazione OK ma ci sono avvisi (es: email in coda)
+   - ❌ **`status: "error"`** - Ci sono problemi! Guarda l'array `validation.errors`
+
+4. **Se vedi errori**:
+   - Leggi i messaggi nell'array `validation.errors`
+   - Risolvi i problemi seguendo le istruzioni nella sezione "Risoluzione Problemi Comuni"
+   - Ricarica la pagina `/api/email/health` per verificare che gli errori siano risolti
+
+**Esempio di errore**:
+```json
+{
+  "status": "error",
+  "validation": {
+    "errors": [
+      "BREVO_API_KEY is not configured",
+      "BREVO_SENDER_EMAIL is not configured"
+    ]
+  }
+}
+```
+**Soluzione**: Vai su Cloudflare Dashboard → Worker → Settings → Variables e aggiungi le variabili mancanti.
+
+✅ **Solo quando `/api/email/health` mostra `status: "healthy"`, procedi con il test del flusso completo!**
+
+---
+
+### 9.3 Verificare il Database
+
+### 9.3 Verificare il Database
 
 **Come fare**:
 1. Vai su https://dash.cloudflare.com
@@ -574,6 +637,16 @@ Cloudflare inizierà la build. Aspetta qualche minuto (3-5 minuti circa).
    ```
 7. Clicca **"Execute"**
 8. Dovresti vedere i lead creati con tutte le informazioni!
+
+**Come verificare la coda email**:
+1. Nella stessa console del database, esegui:
+   ```sql
+   SELECT * FROM email_queue ORDER BY created_at DESC LIMIT 10
+   ```
+2. Dovresti vedere le email inviate con:
+   - `status = 'SENT'` per email inviate con successo
+   - `status = 'PENDING'` per email in attesa
+   - `status = 'FAILED'` per email fallite (se ce ne sono)
 
 ✅ **COMPLIMENTI!** L'applicazione è online e funzionante! 🎉
 
@@ -612,6 +685,54 @@ Cloudflare inizierà la build. Aspetta qualche minuto (3-5 minuti circa).
 3. Controlla che la chiave API di Brevo (`BREVO_API_KEY`) sia corretta
 4. Verifica le credenziali Brevo nel Worker (Settings → Variables)
 5. Controlla i log di Brevo per eventuali limitazioni o errori: https://app.brevo.com/log
+
+**Come verificare lo stato del sistema email**:
+1. Vai su `https://tuo-worker.workers.dev/api/email/health`
+2. Controlla la risposta JSON per vedere lo stato della configurazione
+3. Se `status` è `error`, guarda l'array `validation.errors` per i dettagli
+4. Risolvi tutti gli errori elencati
+
+**Come testare l'invio email manualmente**:
+1. Vai su Cloudflare Dashboard → Workers & Pages → tuo worker
+2. Vai su Logs → Begin log stream
+3. Vai su `https://tuo-worker.workers.dev/api/email/process` (usa POST)
+4. Guarda i log per vedere se ci sono errori durante l'invio
+
+**Errori comuni**:
+
+❌ **"Missing required email environment variables"**
+- **Causa**: Le variabili `BREVO_API_KEY`, `BREVO_SENDER_EMAIL` o `OPERATOR_EMAIL` non sono configurate
+- **Soluzione**: Vai su Cloudflare Dashboard → Worker → Settings → Variables e aggiungi le variabili mancanti
+
+❌ **"BREVO_SENDER_EMAIL has invalid format"**
+- **Causa**: L'email mittente non è in un formato valido
+- **Soluzione**: Assicurati che sia un indirizzo email valido (es: `noreply@tuodominio.com`)
+
+❌ **"Brevo API error (401)"**
+- **Causa**: La chiave API di Brevo non è valida o è scaduta
+- **Soluzione**: Vai su Brevo → Settings → SMTP & API → API Keys e verifica che la chiave sia corretta
+
+❌ **"Brevo API error (400)"**
+- **Causa**: L'email mittente non è stata verificata nel tuo account Brevo
+- **Soluzione**: 
+  1. Vai su Brevo Dashboard → Senders
+  2. Verifica che l'email in `BREVO_SENDER_EMAIL` sia nella lista e marcata come "Verified"
+  3. Se non è verificata, clicca "Add a new sender" e segui la procedura di verifica
+
+❌ **"Email permanently failed after 5 attempts"**
+- **Causa**: L'email ha fallito 5 tentativi di invio
+- **Soluzione**:
+  1. Controlla i log per vedere l'errore specifico
+  2. Risolvi il problema (es: configurazione errata, account Brevo sospeso)
+  3. Le email fallite devono essere reinviate manualmente
+
+**Monitoraggio della coda email**:
+1. Controlla le statistiche: `GET https://tuo-worker.workers.dev/api/email/stats`
+2. La risposta mostra:
+   - `pending`: Email in attesa di invio
+   - `sent`: Email inviate con successo
+   - `failed`: Email permanentemente fallite
+3. Se `failed > 0`, verifica il database per i dettagli degli errori
 
 ---
 
