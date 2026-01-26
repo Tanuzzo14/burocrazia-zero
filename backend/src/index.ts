@@ -167,7 +167,9 @@ export default {
             // Find the queued email for this lead using lead_id
             const queuedEmail = await getEmailByLeadId(leadId, env);
             if (!queuedEmail) {
-              console.warn(`No queued email found for lead ${leadId}`);
+              // This might happen if the email was already sent/deleted or if the lead was created without queuing an email.
+              // The scheduled email processor will handle any pending emails via the retry mechanism.
+              console.warn(`No queued email found for lead ${leadId} - may have been processed already or not yet queued`);
               return jsonResponse({ received: true });
             }
 

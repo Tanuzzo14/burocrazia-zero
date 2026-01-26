@@ -316,6 +316,8 @@ export async function getEmailById(emailId: string, env: Env): Promise<EmailQueu
 
 /**
  * Get an email from the queue by lead ID
+ * Returns the most recently created email for the given lead.
+ * If multiple emails exist for a lead, returns the newest one (highest created_at).
  */
 export async function getEmailByLeadId(leadId: string, env: Env): Promise<EmailQueueItem | null> {
   const result = await env.DB.prepare(
