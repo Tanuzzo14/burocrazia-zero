@@ -315,19 +315,34 @@ export async function getEmailById(emailId: string, env: Env): Promise<EmailQueu
 }
 
 /**
- * Get an email from the queue by lead ID
- * Returns the most recently created email for the given lead.
+ * Get a pending email from the queue by lead ID
+ * Returns the most recently created pending email for the given lead.
+ * Only returns emails with status 'PENDING' to avoid processing already sent/failed emails.
  * Note: Current business logic creates only one email per lead, but this function
  * orders by created_at DESC for robustness in case of future changes or edge cases.
  */
 export async function getEmailByLeadId(leadId: string, env: Env): Promise<EmailQueueItem | null> {
   const result = await env.DB.prepare(
-    `SELECT * FROM email_queue WHERE lead_id = ? ORDER BY created_at DESC LIMIT 1`
+    `SELECT * FROM email_queue WHERE lead_id = ? AND status = 'PENDING' ORDER BY created_at DESC LIMIT 1`
   )
     .bind(leadId)
     .first<EmailQueueItem>();
 
   return result;
+}
+
+/**
+ * Check if any email (in any status) exists for a lead
+ * Used to distinguish between "email never created" vs "email already processed" scenarios
+ */
+export async function hasAnyEmailForLead(leadId: string, env: Env): Promise<boolean> {
+  const result = await env.DB.prepare(
+    `SELECT COUNT(*) as count FROM email_queue WHERE lead_id = ?`
+  )
+    .bind(leadId)
+    .first<{ count: number }>();
+
+  return (result?.count || 0) > 0;
 }
 
 /**

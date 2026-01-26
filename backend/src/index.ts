@@ -3,7 +3,7 @@ import { identifyOperation } from './gemini';
 import { createLead, updateLeadStatus, getLeadById } from './database';
 import { createPaymentLink, verifyWebhookSignature } from './paypal';
 import { prepareOperatorEmailData } from './email';
-import { processPendingEmails, getEmailQueueStats, validateEmailConfig, EMAIL_REGEX, queueEmail, sendAndDeleteEmail, getEmailByLeadId } from './emailQueue';
+import { processPendingEmails, getEmailQueueStats, validateEmailConfig, EMAIL_REGEX, queueEmail, sendAndDeleteEmail, getEmailByLeadId, hasAnyEmailForLead } from './emailQueue';
 
 // CORS headers for frontend communication
 const corsHeaders = {
@@ -164,13 +164,18 @@ export default {
             // Update lead status to PAID
             await updateLeadStatus(leadId, 'PAID', env);
 
-            // Find the queued email for this lead using lead_id
+            // Find the queued email for this lead using lead_id (only PENDING emails)
             const queuedEmail = await getEmailByLeadId(leadId, env);
             if (!queuedEmail) {
-              // This might happen if:
-              // 1. The email was already sent and deleted by a previous webhook call or the scheduled processor
-              // 2. Race condition between webhook processing and scheduled email processing
-              console.warn(`No queued email found for lead ${leadId} - may have been processed already`);
+              // Check if any email exists for this lead to distinguish between scenarios
+              const hasEmail = await hasAnyEmailForLead(leadId, env);
+              if (hasEmail) {
+                // Email exists but not pending - already processed
+                console.log(`Email for lead ${leadId} already processed (sent or failed)`);
+              } else {
+                // No email found at all - this is unexpected and might indicate a data issue
+                console.error(`No email record found for lead ${leadId} - possible data inconsistency`);
+              }
               return jsonResponse({ received: true });
             }
 
