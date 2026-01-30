@@ -8,6 +8,9 @@
   padding: 1.5rem;
   z-index: 9999;
   animation: slideUp 0.3s ease-out;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow-x: hidden;
 }
 
 @keyframes slideUp {
@@ -24,6 +27,8 @@
   gap: 1rem;
   margin-bottom: 1rem;
   align-items: flex-start;
+  max-width: 100%;
+  overflow: hidden;
 }
 
 .cookie-icon {
@@ -33,6 +38,9 @@
 
 .cookie-text {
   flex: 1;
+  min-width: 0;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
 }
 
 .cookie-text h3 {
@@ -64,6 +72,7 @@
   gap: 0.75rem;
   flex-wrap: wrap;
   justify-content: flex-end;
+  max-width: 100%;
 }
 
 .btn-cookie {
@@ -74,6 +83,8 @@
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
+  white-space: nowrap;
+  box-sizing: border-box;
 }
 
 .btn-accept {
@@ -302,6 +313,7 @@ input:checked + .slider:before {
 @media (max-width: 768px) {
   .cookie-banner {
     padding: 1rem;
+    max-width: 100vw;
   }
 
   .cookie-content {
@@ -311,23 +323,29 @@ input:checked + .slider:before {
 
   .cookie-text h3 {
     font-size: 1rem;
+    word-wrap: break-word;
   }
 
   .cookie-text p {
     font-size: 0.9rem;
+    word-wrap: break-word;
   }
 
   .cookie-actions {
     flex-direction: column;
+    gap: 0.5rem;
   }
 
   .btn-cookie {
     width: 100%;
     justify-content: center;
+    padding: 0.75rem 1rem;
+    font-size: 0.9rem;
   }
 
   .cookie-modal {
     margin: 1rem;
+    max-width: calc(100vw - 2rem);
   }
 
   .cookie-modal-header {
