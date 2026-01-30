@@ -82,79 +82,10 @@
   }
 }
 
-.navbar-toggle {
-  display: none;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  padding: 0.5rem;
-  border-radius: 8px;
-  transition: background 0.3s ease;
-  -webkit-tap-highlight-color: transparent;
-  touch-action: manipulation;
-}
-
-.navbar-toggle:hover {
-  background: rgba(0, 102, 204, 0.1);
-}
-
-.navbar-toggle:active {
-  background: rgba(0, 102, 204, 0.15);
-}
-
-.navbar-toggle-icon {
-  display: block;
-  width: 28px;
-  height: 2px;
-  background: var(--primary-blue);
-  position: relative;
-  transition: all 0.3s ease;
-}
-
-.navbar-toggle-icon::before,
-.navbar-toggle-icon::after {
-  content: '';
-  position: absolute;
-  width: 28px;
-  height: 2px;
-  background: var(--primary-blue);
-  transition: all 0.3s ease;
-}
-
-.navbar-toggle-icon::before {
-  top: -8px;
-}
-
-.navbar-toggle-icon::after {
-  bottom: -8px;
-}
-
-.navbar-toggle-icon.open {
-  background: transparent;
-}
-
-.navbar-toggle-icon.open::before {
-  transform: rotate(45deg);
-  top: 0;
-}
-
-.navbar-toggle-icon.open::after {
-  transform: rotate(-45deg);
-  bottom: 0;
-}
-
 .navbar-menu {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-}
-
-.navbar-menu-header {
-  display: none;
-}
-
-.navbar-menu-close {
-  display: none;
 }
 
 .navbar-link {
@@ -209,115 +140,8 @@
     height: 45px;
   }
 
-  .navbar-toggle {
-    display: block;
-    flex-shrink: 0;
-  }
-
-  .navbar-backdrop {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 11998; /* Increased to be above other elements */
-    animation: fadeIn 0.3s ease;
-    -webkit-tap-highlight-color: transparent;
-    touch-action: none; /* Prevent touch scrolling on backdrop */
-  }
-
   .navbar-menu {
-    position: fixed;
-    /* Ensure menu takes full viewport height using top/bottom positioning */
-    top: 0;
-    right: 0;
-    bottom: 0;
-    width: 280px;
-    max-width: 85vw;
-    background: white;
-    box-shadow: -4px 0 20px rgba(0, 0, 0, 0.15);
-    flex-direction: column;
-    align-items: stretch;
-    gap: 0;
-    padding: 0;
-    transform: translateX(100%);
-    transition: transform 0.3s ease;
-    overflow-y: auto;
-    overflow-x: hidden;
-    -webkit-overflow-scrolling: touch;
-    overscroll-behavior: contain; /* Prevent scroll chaining */
-    touch-action: pan-y; /* Allow vertical scrolling only within the menu */
-    z-index: 11999; /* Increased to ensure it's above all other elements */
-  }
-
-  .navbar-menu.active {
-    transform: translateX(0);
-  }
-
-  .navbar-menu-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1.5rem;
-    border-bottom: 1px solid var(--border-color);
-    position: sticky;
-    top: 0;
-    background: white;
-    z-index: 1;
-  }
-
-  .navbar-menu-title {
-    font-size: 1.25rem;
-    font-weight: 700;
-    color: var(--text-primary);
-  }
-
-  .navbar-menu-close {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    padding: 0.5rem;
-    border-radius: 8px;
-    transition: background 0.3s ease;
-    color: var(--text-secondary);
-    -webkit-tap-highlight-color: transparent;
-    touch-action: manipulation;
-  }
-
-  /* Hover effects only for devices with hover capability */
-  @media (hover: hover) {
-    .navbar-menu-close:hover {
-      background: rgba(0, 102, 204, 0.1);
-      color: var(--primary-blue);
-    }
-  }
-
-  .navbar-menu-close:active {
-    background: rgba(0, 102, 204, 0.15);
-  }
-
-  .navbar-link {
-    padding: 1rem 1.5rem;
-    border-radius: 0;
-    border-left: 3px solid transparent;
-    -webkit-tap-highlight-color: transparent;
-  }
-
-  /* Hover effects only for devices with hover capability */
-  @media (hover: hover) {
-    .navbar-link:hover {
-      border-left-color: var(--primary-blue);
-      background: linear-gradient(90deg, rgba(0, 102, 204, 0.05) 0%, transparent 100%);
-    }
-  }
-
-  /* Active state for touch feedback */
-  .navbar-link:active {
-    background: linear-gradient(90deg, rgba(0, 102, 204, 0.1) 0%, transparent 100%);
+    display: none;
   }
 }
 
