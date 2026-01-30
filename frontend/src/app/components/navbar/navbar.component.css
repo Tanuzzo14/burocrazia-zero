@@ -221,7 +221,7 @@
     right: 0;
     bottom: 0;
     background: rgba(0, 0, 0, 0.5);
-    z-index: 10990;
+    z-index: 11998; /* Increased to be above other elements */
     animation: fadeIn 0.3s ease;
     -webkit-tap-highlight-color: transparent;
     touch-action: none; /* Prevent touch scrolling on backdrop */
@@ -235,6 +235,8 @@
     bottom: 0;
     width: 280px;
     max-width: 85vw;
+    height: 100vh; /* Explicitly set viewport height */
+    height: 100dvh; /* Use dynamic viewport height for better mobile support */
     background: white;
     box-shadow: -4px 0 20px rgba(0, 0, 0, 0.15);
     flex-direction: column;
@@ -244,10 +246,11 @@
     transform: translateX(100%);
     transition: transform 0.3s ease;
     overflow-y: auto;
+    overflow-x: hidden;
     -webkit-overflow-scrolling: touch;
     overscroll-behavior: contain; /* Prevent scroll chaining */
     touch-action: pan-y; /* Allow vertical scrolling only within the menu */
-    z-index: 11010;
+    z-index: 11999; /* Increased to ensure it's above all other elements */
   }
 
   .navbar-menu.active {
