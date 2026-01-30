@@ -28,6 +28,10 @@ export class NavbarComponent implements OnDestroy {
     }
   }
 
+  /**
+   * Updates body scroll behavior based on menu state.
+   * Prevents background scrolling when mobile menu is open.
+   */
   private updateBodyScroll() {
     if (this.isMenuOpen) {
       document.body.style.overflow = 'hidden';

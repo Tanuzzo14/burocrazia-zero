@@ -227,7 +227,6 @@
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
     z-index: 999;
-    touch-action: pan-y;
   }
 
   .navbar-menu.active {
@@ -239,14 +238,17 @@
     border-radius: 0;
     border-left: 3px solid transparent;
     -webkit-tap-highlight-color: transparent;
-    touch-action: manipulation;
   }
 
-  .navbar-link:hover {
-    border-left-color: var(--primary-blue);
-    background: linear-gradient(90deg, rgba(0, 102, 204, 0.05) 0%, transparent 100%);
+  /* Hover effects only for devices with hover capability */
+  @media (hover: hover) {
+    .navbar-link:hover {
+      border-left-color: var(--primary-blue);
+      background: linear-gradient(90deg, rgba(0, 102, 204, 0.05) 0%, transparent 100%);
+    }
   }
 
+  /* Active state for touch feedback */
   .navbar-link:active {
     background: linear-gradient(90deg, rgba(0, 102, 204, 0.1) 0%, transparent 100%);
   }
