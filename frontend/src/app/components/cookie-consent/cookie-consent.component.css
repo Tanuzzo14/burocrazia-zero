@@ -6,7 +6,7 @@
   background: white;
   box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
   padding: 1.5rem;
-  z-index: 9999;
+  z-index: 10000;
   animation: slideUp 0.3s ease-out;
   max-width: 100%;
   box-sizing: border-box;

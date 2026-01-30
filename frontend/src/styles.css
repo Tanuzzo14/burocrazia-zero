@@ -64,7 +64,11 @@
 
 /* Prevent horizontal overflow on mobile devices
    This is a safety net to prevent layout issues on small screens */
-html,
+html {
+  overflow-x: visible;
+  max-width: 100%;
+}
+
 body {
   overflow-x: hidden;
   max-width: 100%;
