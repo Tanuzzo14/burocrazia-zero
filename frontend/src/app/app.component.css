@@ -83,6 +83,19 @@ header::before {
   box-shadow: 0 15px 50px rgba(0, 102, 204, 0.35);
 }
 
+/* Respect user's reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .header-logo-container::before {
+    animation: none !important;
+  }
+  
+  .header-logo,
+  .header-logo:hover {
+    transform: none !important;
+    transition: none !important;
+  }
+}
+
 @media (max-width: 768px) {
   .header-logo {
     max-width: 140px;

@@ -19,4 +19,10 @@ export class NavbarComponent {
   closeMenu() {
     this.isMenuOpen = false;
   }
+
+  onKeydown(event: KeyboardEvent) {
+    if (event.key === 'Escape' && this.isMenuOpen) {
+      this.closeMenu();
+    }
+  }
 }
