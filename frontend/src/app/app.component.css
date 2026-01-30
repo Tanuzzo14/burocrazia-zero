@@ -33,6 +33,20 @@ header::before {
   background: var(--primary-gradient);
 }
 
+.header-logo {
+  max-width: 200px;
+  width: 100%;
+  height: auto;
+  margin: 0 auto var(--spacing-lg);
+  display: block;
+}
+
+@media (max-width: 768px) {
+  .header-logo {
+    max-width: 150px;
+  }
+}
+
 h1 {
   font-size: 2.5rem;
   color: var(--text-primary);
