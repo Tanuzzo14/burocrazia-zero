@@ -1,3 +1,6 @@
+<!-- Modern Navigation Bar -->
+<app-navbar></app-navbar>
+
 <div class="app-wrapper" *ngIf="isHomePage()" id="main-content">
   <!-- Loading Spinner Overlay -->
   <app-loading-spinner *ngIf="isIdentifying || isBooking" [text]="loadingMessage"></app-loading-spinner>
@@ -26,7 +29,9 @@
   
   <div class="container">
     <header>
-      <img src="assets/Burocrazia-zero-logo.png" alt="Burocrazia Zero Logo" width="200" height="200" class="header-logo">
+      <div class="header-logo-container">
+        <img src="assets/Burocrazia-zero-logo.png" alt="Burocrazia Zero Logo" class="header-logo">
+      </div>
       <h1>{{ title }}</h1>
       <p class="subtitle">Affida le tue pratiche statali a un sistema intelligente supervisionato da professionisti reali. Zero moduli da compilare, zero code, zero errori: pensiamo a tutto noi fino alla chiusura della pratica.</p>
     </header>
