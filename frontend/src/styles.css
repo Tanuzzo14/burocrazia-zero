@@ -62,6 +62,8 @@
   box-sizing: border-box;
 }
 
+/* Prevent horizontal overflow on mobile devices
+   This is a safety net to prevent layout issues on small screens */
 html,
 body {
   overflow-x: hidden;

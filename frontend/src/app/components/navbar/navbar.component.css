@@ -283,9 +283,12 @@
     touch-action: manipulation;
   }
 
-  .navbar-menu-close:hover {
-    background: rgba(0, 102, 204, 0.1);
-    color: var(--primary-blue);
+  /* Hover effects only for devices with hover capability */
+  @media (hover: hover) {
+    .navbar-menu-close:hover {
+      background: rgba(0, 102, 204, 0.1);
+      color: var(--primary-blue);
+    }
   }
 
   .navbar-menu-close:active {
