@@ -157,15 +157,6 @@
   }
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
 .navbar {
   animation: slideIn 0.4s ease-out;
 }
@@ -173,13 +164,9 @@
 /* Respect user's reduced motion preference */
 @media (prefers-reduced-motion: reduce) {
   .navbar,
-  .navbar-backdrop,
   .navbar-brand,
   .navbar-logo,
   .navbar-link,
-  .navbar-toggle-icon,
-  .navbar-toggle-icon::before,
-  .navbar-toggle-icon::after,
   .navbar-menu {
     animation: none !important;
     transition: none !important;
