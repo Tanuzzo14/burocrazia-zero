@@ -235,8 +235,6 @@
     bottom: 0;
     width: 280px;
     max-width: 85vw;
-    height: 100vh; /* Explicitly set viewport height */
-    height: 100dvh; /* Use dynamic viewport height for better mobile support */
     background: white;
     box-shadow: -4px 0 20px rgba(0, 0, 0, 0.15);
     flex-direction: column;
