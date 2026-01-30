@@ -32,10 +32,16 @@
   gap: 0.75rem;
   text-decoration: none;
   transition: transform 0.3s ease;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
 
 .navbar-brand:hover {
   transform: scale(1.02);
+}
+
+.navbar-brand:active {
+  transform: scale(0.98);
 }
 
 .navbar-logo {
@@ -80,10 +86,16 @@
   padding: 0.5rem;
   border-radius: 8px;
   transition: background 0.3s ease;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
 
 .navbar-toggle:hover {
   background: rgba(0, 102, 204, 0.1);
+}
+
+.navbar-toggle:active {
+  background: rgba(0, 102, 204, 0.15);
 }
 
 .navbar-toggle-icon {
@@ -194,6 +206,8 @@
     background: rgba(0, 0, 0, 0.5);
     z-index: 998;
     animation: fadeIn 0.3s ease;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: none;
   }
 
   .navbar-menu {
@@ -212,7 +226,9 @@
     transform: translateX(100%);
     transition: transform 0.3s ease;
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
     z-index: 999;
+    touch-action: pan-y;
   }
 
   .navbar-menu.active {
@@ -223,11 +239,17 @@
     padding: 1rem 1.5rem;
     border-radius: 0;
     border-left: 3px solid transparent;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
   }
 
   .navbar-link:hover {
     border-left-color: var(--primary-blue);
     background: linear-gradient(90deg, rgba(0, 102, 204, 0.05) 0%, transparent 100%);
+  }
+
+  .navbar-link:active {
+    background: linear-gradient(90deg, rgba(0, 102, 204, 0.1) 0%, transparent 100%);
   }
 }
 

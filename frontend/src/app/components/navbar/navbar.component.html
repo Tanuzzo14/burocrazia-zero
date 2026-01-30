@@ -9,7 +9,7 @@
       <span class="navbar-toggle-icon" [class.open]="isMenuOpen"></span>
     </button>
     
-    <div class="navbar-backdrop" *ngIf="isMenuOpen" (click)="closeMenu()"></div>
+    <div class="navbar-backdrop" *ngIf="isMenuOpen" (click)="closeMenu()" (touchstart)="closeMenu()"></div>
     
     <div class="navbar-menu" [class.active]="isMenuOpen" [attr.aria-hidden]="!isMenuOpen">
       <a routerLink="/" class="navbar-link" (click)="closeMenu()">
