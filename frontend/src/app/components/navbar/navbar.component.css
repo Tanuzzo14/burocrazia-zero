@@ -1,0 +1,248 @@
+.navbar {
+  position: sticky;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
+  border-bottom: 1px solid rgba(0, 102, 204, 0.1);
+}
+
+.navbar-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0.75rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2rem;
+}
+
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  text-decoration: none;
+  transition: transform 0.3s ease;
+}
+
+.navbar-brand:hover {
+  transform: scale(1.02);
+}
+
+.navbar-logo {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 4px 12px rgba(0, 102, 204, 0.2);
+  border: 3px solid white;
+  transition: all 0.3s ease;
+  background: white;
+}
+
+.navbar-brand:hover .navbar-logo {
+  box-shadow: 0 6px 20px rgba(0, 102, 204, 0.3);
+  transform: rotate(5deg);
+}
+
+.navbar-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #0066CC 0%, #004C99 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -0.5px;
+}
+
+/* Fallback for browsers that don't support background-clip: text */
+@supports not (-webkit-background-clip: text) {
+  .navbar-title {
+    color: var(--primary-blue);
+    background: none;
+  }
+}
+
+.navbar-toggle {
+  display: none;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 8px;
+  transition: background 0.3s ease;
+}
+
+.navbar-toggle:hover {
+  background: rgba(0, 102, 204, 0.1);
+}
+
+.navbar-toggle-icon {
+  display: block;
+  width: 28px;
+  height: 2px;
+  background: var(--primary-blue);
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.navbar-toggle-icon::before,
+.navbar-toggle-icon::after {
+  content: '';
+  position: absolute;
+  width: 28px;
+  height: 2px;
+  background: var(--primary-blue);
+  transition: all 0.3s ease;
+}
+
+.navbar-toggle-icon::before {
+  top: -8px;
+}
+
+.navbar-toggle-icon::after {
+  bottom: -8px;
+}
+
+.navbar-toggle-icon.open {
+  background: transparent;
+}
+
+.navbar-toggle-icon.open::before {
+  transform: rotate(45deg);
+  top: 0;
+}
+
+.navbar-toggle-icon.open::after {
+  transform: rotate(-45deg);
+  bottom: 0;
+}
+
+.navbar-menu {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.navbar-link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1rem;
+  border-radius: 8px;
+  text-decoration: none;
+  color: var(--text-primary);
+  font-weight: 500;
+  font-size: 0.9375rem;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.navbar-link svg {
+  flex-shrink: 0;
+  transition: transform 0.3s ease;
+}
+
+.navbar-link:hover {
+  background: linear-gradient(135deg, rgba(0, 102, 204, 0.1) 0%, rgba(0, 76, 153, 0.1) 100%);
+  color: var(--primary-blue);
+  transform: translateY(-1px);
+}
+
+.navbar-link:hover svg {
+  transform: scale(1.1);
+}
+
+.navbar-link:active {
+  transform: translateY(0);
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .navbar-container {
+    padding: 0.75rem 1rem;
+  }
+
+  .navbar-title {
+    font-size: 1.1rem;
+  }
+
+  .navbar-logo {
+    width: 45px;
+    height: 45px;
+  }
+
+  .navbar-toggle {
+    display: block;
+  }
+
+  .navbar-menu {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 280px;
+    max-width: 85vw;
+    background: white;
+    box-shadow: -4px 0 20px rgba(0, 0, 0, 0.15);
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    padding: 5rem 0 2rem;
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+    overflow-y: auto;
+  }
+
+  .navbar-menu.active {
+    transform: translateX(0);
+  }
+
+  .navbar-menu::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: -100vw;
+    right: 280px;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+
+  .navbar-menu.active::before {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .navbar-link {
+    padding: 1rem 1.5rem;
+    border-radius: 0;
+    border-left: 3px solid transparent;
+  }
+
+  .navbar-link:hover {
+    border-left-color: var(--primary-blue);
+    background: linear-gradient(90deg, rgba(0, 102, 204, 0.05) 0%, transparent 100%);
+  }
+}
+
+/* Smooth animations */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.navbar {
+  animation: slideIn 0.4s ease-out;
+}

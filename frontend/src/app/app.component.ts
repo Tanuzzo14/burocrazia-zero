@@ -6,10 +6,11 @@ import { ApiService, OperationIdentification } from './api.service';
 import { LoadingSpinnerComponent } from './components/loading-spinner/loading-spinner.component';
 import { CookieConsentComponent } from './components/cookie-consent/cookie-consent.component';
 import { FooterComponent } from './components/footer/footer.component';
+import { NavbarComponent } from './components/navbar/navbar.component';
 
 @Component({
     selector: 'app-root',
-    imports: [CommonModule, FormsModule, RouterModule, LoadingSpinnerComponent, CookieConsentComponent, FooterComponent],
+    imports: [CommonModule, FormsModule, RouterModule, LoadingSpinnerComponent, CookieConsentComponent, FooterComponent, NavbarComponent],
     templateUrl: './app.component.html',
     styleUrl: './app.component.css',
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
