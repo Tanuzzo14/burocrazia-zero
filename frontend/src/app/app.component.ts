@@ -15,7 +15,7 @@ import { FooterComponent } from './components/footer/footer.component';
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class AppComponent {
-  title = 'Burocrazia Zero - Gestione Pratiche con AI';
+  title = 'Burocrazia Zero: la nostra AI lavora, i nostri esperti risolvono. Al posto tuo.';
   
   // Step 1: Operation identification
   userQuery = '';
@@ -100,9 +100,7 @@ export class AppComponent {
   }
 
   handleOptionClick(option: OperationIdentification) {
-    if (!option.requiresCaf) {
-      this.selectOperation(option);
-    }
+    this.selectOperation(option);
   }
 
   bookOperation() {
