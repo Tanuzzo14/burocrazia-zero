@@ -31,17 +31,37 @@ export class NavbarComponent implements OnDestroy {
   /**
    * Updates body scroll behavior based on menu state.
    * Prevents background scrolling when mobile menu is open.
+   * Uses position:fixed to completely prevent nested scrolling on mobile.
    */
   private updateBodyScroll() {
     if (this.isMenuOpen) {
+      // Save current scroll position
+      const scrollY = window.scrollY;
+      // Apply styles to prevent scrolling
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.width = '100%';
       document.body.style.overflow = 'hidden';
     } else {
+      // Get the scroll position from the body top value
+      const scrollY = document.body.style.top;
+      // Remove the fixed positioning
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.width = '';
       document.body.style.overflow = '';
+      // Restore scroll position
+      if (scrollY) {
+        window.scrollTo(0, parseInt(scrollY || '0') * -1);
+      }
     }
   }
 
   ngOnDestroy() {
-    // Clean up body overflow when component is destroyed
+    // Clean up body styles when component is destroyed
+    document.body.style.position = '';
+    document.body.style.top = '';
+    document.body.style.width = '';
     document.body.style.overflow = '';
   }
 }
