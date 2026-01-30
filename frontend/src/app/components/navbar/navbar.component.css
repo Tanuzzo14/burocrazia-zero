@@ -232,7 +232,6 @@
     top: 0;
     right: 0;
     bottom: 0;
-    height: 100dvh; /* Modern dynamic viewport height for mobile */
     width: 280px;
     max-width: 85vw;
     background: white;
@@ -246,14 +245,9 @@
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
     overscroll-behavior: contain; /* Prevent scroll chaining */
+    touch-action: pan-y; /* Allow vertical scrolling only within the menu */
     z-index: 11010;
-  }
-
-  /* Fallback for browsers that don't support 100dvh */
-  @supports not (height: 100dvh) {
-    .navbar-menu {
-      height: 100vh;
-    }
+    /* Ensure menu takes full viewport height using top/bottom positioning */
   }
 
   .navbar-menu.active {
