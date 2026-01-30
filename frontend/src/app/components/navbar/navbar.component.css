@@ -229,6 +229,7 @@
 
   .navbar-menu {
     position: fixed;
+    /* Ensure menu takes full viewport height using top/bottom positioning */
     top: 0;
     right: 0;
     bottom: 0;
@@ -247,7 +248,6 @@
     overscroll-behavior: contain; /* Prevent scroll chaining */
     touch-action: pan-y; /* Allow vertical scrolling only within the menu */
     z-index: 11010;
-    /* Ensure menu takes full viewport height using top/bottom positioning */
   }
 
   .navbar-menu.active {
