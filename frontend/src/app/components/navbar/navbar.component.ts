@@ -52,7 +52,7 @@ export class NavbarComponent implements OnDestroy {
       document.body.style.overflow = '';
       // Restore scroll position
       if (scrollY) {
-        window.scrollTo(0, parseInt(scrollY || '0') * -1);
+        window.scrollTo(0, parseInt(scrollY) * -1);
       }
     }
   }
