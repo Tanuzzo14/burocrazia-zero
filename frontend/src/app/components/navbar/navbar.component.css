@@ -207,7 +207,6 @@
     z-index: 998;
     animation: fadeIn 0.3s ease;
     -webkit-tap-highlight-color: transparent;
-    touch-action: none;
   }
 
   .navbar-menu {
