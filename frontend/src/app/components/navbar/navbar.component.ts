@@ -40,19 +40,26 @@ export class NavbarComponent implements OnDestroy {
       // Apply styles to prevent scrolling
       document.body.style.position = 'fixed';
       document.body.style.top = `-${scrollY}px`;
+      document.body.style.left = '0';
+      document.body.style.right = '0';
       document.body.style.width = '100%';
       document.body.style.overflow = 'hidden';
+      // Also prevent scrolling on document element for better browser support
+      document.documentElement.style.overflow = 'hidden';
     } else {
       // Get the scroll position from the body top value
       const scrollY = document.body.style.top;
       // Remove the fixed positioning
       document.body.style.position = '';
       document.body.style.top = '';
+      document.body.style.left = '';
+      document.body.style.right = '';
       document.body.style.width = '';
       document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
       // Restore scroll position
       if (scrollY) {
-        window.scrollTo(0, parseInt(scrollY) * -1);
+        window.scrollTo(0, parseInt(scrollY || '0') * -1);
       }
     }
   }
@@ -61,7 +68,10 @@ export class NavbarComponent implements OnDestroy {
     // Clean up body styles when component is destroyed
     document.body.style.position = '';
     document.body.style.top = '';
+    document.body.style.left = '';
+    document.body.style.right = '';
     document.body.style.width = '';
     document.body.style.overflow = '';
+    document.documentElement.style.overflow = '';
   }
 }
