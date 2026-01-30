@@ -293,24 +293,6 @@ h1 {
   background: linear-gradient(90deg, #FFA500 0%, #FF8C00 100%);
 }
 
-.option-card.caf-required {
-  border-color: #DC3545;
-  background: linear-gradient(135deg, #FFF5F5 0%, #FFFFFF 100%);
-  opacity: 0.85;
-  cursor: not-allowed;
-}
-
-.option-card.caf-required::before {
-  background: linear-gradient(90deg, #DC3545 0%, #C82333 100%);
-  opacity: 1;
-}
-
-.option-card.caf-required:hover {
-  transform: none;
-  box-shadow: var(--box-shadow);
-  border-color: #DC3545;
-}
-
 .option-card.state-costs-found {
   border-color: #28A745;
   background: linear-gradient(135deg, #E8F5E9 0%, #FFFFFF 100%);
@@ -355,20 +337,6 @@ h1 {
   margin-left: var(--spacing-sm);
 }
 
-.caf-badge {
-  background: #DC3545;
-  color: white;
-  padding: var(--spacing-xs) var(--spacing-md);
-  border-radius: var(--border-radius);
-  font-size: 0.75rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  flex-shrink: 0;
-  margin-left: var(--spacing-sm);
-  box-shadow: 0 2px 4px rgba(220, 53, 69, 0.2);
-}
-
 .option-costs {
   background: white;
   padding: var(--spacing-md);
@@ -411,26 +379,6 @@ h1 {
 .option-note svg {
   flex-shrink: 0;
   margin-top: 2px;
-}
-
-.caf-warning {
-  background: #F8D7DA;
-  border: 1px solid #DC3545;
-  border-radius: var(--border-radius);
-  padding: var(--spacing-md);
-  margin-bottom: var(--spacing-lg);
-  font-size: 0.875rem;
-  color: #721C24;
-  display: flex;
-  align-items: flex-start;
-  gap: var(--spacing-sm);
-  line-height: 1.5;
-}
-
-.caf-warning svg {
-  flex-shrink: 0;
-  margin-top: 2px;
-  color: #DC3545;
 }
 
 .state-costs-warning {
