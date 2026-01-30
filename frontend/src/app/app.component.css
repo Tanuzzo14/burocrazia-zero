@@ -35,9 +35,16 @@ header::before {
 
 .header-logo {
   max-width: 200px;
+  width: 100%;
   height: auto;
   margin: 0 auto var(--spacing-lg);
   display: block;
+}
+
+@media (max-width: 768px) {
+  .header-logo {
+    max-width: 150px;
+  }
 }
 
 h1 {
