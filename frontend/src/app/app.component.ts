@@ -7,10 +7,12 @@ import { LoadingSpinnerComponent } from './components/loading-spinner/loading-sp
 import { CookieConsentComponent } from './components/cookie-consent/cookie-consent.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
+import { BookingFormComponent } from './components/booking-form/booking-form.component';
+import { GuidedOverlayComponent } from './components/guided-overlay/guided-overlay.component';
 
 @Component({
     selector: 'app-root',
-    imports: [CommonModule, FormsModule, RouterModule, LoadingSpinnerComponent, CookieConsentComponent, FooterComponent, NavbarComponent],
+    imports: [CommonModule, FormsModule, RouterModule, LoadingSpinnerComponent, CookieConsentComponent, FooterComponent, NavbarComponent, BookingFormComponent, GuidedOverlayComponent],
     templateUrl: './app.component.html',
     styleUrl: './app.component.css',
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
@@ -102,6 +104,58 @@ export class AppComponent {
 
   handleOptionClick(option: OperationIdentification) {
     this.selectOperation(option);
+  }
+
+  handleBookingSubmit(data: { nomeCognome: string; telefono: string }) {
+    if (!this.altchaVerified) {
+      this.errorMessage = 'Completa la verifica anti-robot prima di procedere';
+      return;
+    }
+
+    if (!this.selectedOperation) {
+      this.errorMessage = 'Devi prima selezionare un\'opzione';
+      return;
+    }
+
+    this.isBooking = true;
+    this.loadingMessage = 'Creazione prenotazione e reindirizzamento al pagamento...';
+    this.errorMessage = '';
+
+    // Validate and clean phone number
+    const cleanPhone = data.telefono.replace(/[\s\-\.]/g, '');
+    const phoneWithPrefix = '+39' + cleanPhone;
+
+    this.apiService.createBooking({
+      nome_cognome: data.nomeCognome,
+      telefono: phoneWithPrefix,
+      tipo_operazione: this.selectedOperation.operation,
+      totale_incassato: this.selectedOperation.totalCost,
+      guida_url: this.selectedOperation.guideUrl
+    }).subscribe({
+      next: (response) => {
+        this.isBooking = false;
+        this.loadingMessage = '';
+        // Redirect to PayPal checkout
+        window.location.href = response.paymentUrl;
+      },
+      error: (error) => {
+        this.errorMessage = 'Errore durante la prenotazione. Riprova.';
+        this.isBooking = false;
+        this.loadingMessage = '';
+        console.error('Error:', error);
+      }
+    });
+  }
+
+  onAltchaVerifiedChange(payload: string) {
+    if (payload) {
+      this.altchaVerified = true;
+      this.altchaPayload = payload;
+      console.log('ALTCHA verified:', this.altchaPayload);
+    } else {
+      this.altchaVerified = false;
+      this.altchaPayload = '';
+    }
   }
 
   bookOperation() {

@@ -1,6 +1,9 @@
 <!-- Modern Navigation Bar -->
 <app-navbar></app-navbar>
 
+<!-- Guided Overlay Component -->
+<app-guided-overlay></app-guided-overlay>
+
 <div class="app-wrapper" *ngIf="isHomePage()" id="main-content">
   <!-- Loading Spinner Overlay -->
   <app-loading-spinner *ngIf="isIdentifying || isBooking" [text]="loadingMessage"></app-loading-spinner>
@@ -139,153 +142,15 @@
 
     <!-- Step 2: Operation Result & Booking -->
     <div class="result-section" *ngIf="selectedOperation">
-      <div class="operation-card" [class.state-costs-found]="selectedOperation.stateCost > 0 && !selectedOperation.isGeneric">
-        <h2>
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--success);">
-            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-            <polyline points="22 4 12 14.01 9 11.01"></polyline>
-          </svg>
-          Operazione Selezionata
-        </h2>
-        <div class="operation-details">
-          <p class="operation-name">{{ selectedOperation.operation }}</p>
-          <div class="cost-breakdown">
-            <div class="cost-item">
-              <span>Costi statali:</span>
-              <span class="amount">€{{ selectedOperation.stateCost.toFixed(2) }}</span>
-            </div>
-            <div class="cost-item">
-              <span>Commissione servizio:</span>
-              <span class="amount">€{{ selectedOperation.commission.toFixed(2) }}</span>
-            </div>
-            <div class="cost-item total">
-              <span>Totale:</span>
-              <span class="amount">€{{ selectedOperation.totalCost.toFixed(2) }}</span>
-            </div>
-          </div>
-          <div class="state-costs-warning" *ngIf="selectedOperation.stateCost === 0 && !selectedOperation.isGeneric">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
-              <line x1="12" y1="9" x2="12" y2="13"></line>
-              <line x1="12" y1="17" x2="12.01" y2="17"></line>
-            </svg>
-            <strong>Attenzione:</strong> Non sono stati trovati costi statali, ma l'AI può sbagliare. L'operatore comunicherà eventuali costi statali.
-          </div>
-          <div class="generic-warning" *ngIf="selectedOperation.isGeneric">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
-              <line x1="12" y1="9" x2="12" y2="13"></line>
-              <line x1="12" y1="17" x2="12.01" y2="17"></line>
-            </svg>
-            <strong>Nota:</strong> Hai selezionato la consulenza generica. L'operatore ti contatterà per definire i costi esatti in base alla tua specifica richiesta.
-          </div>
-        </div>
-      </div>
-
-      <!-- Lead Data Collection Form -->
-      <div class="booking-form">
-        <h3>
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px; vertical-align: middle;">
-            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-            <circle cx="12" cy="7" r="4"></circle>
-          </svg>
-          I tuoi dati
-        </h3>
-        <div class="form-group">
-          <label for="nomeCognome">
-            Nome e Cognome
-            <span style="color: var(--error);">*</span>
-          </label>
-          <input 
-            type="text" 
-            id="nomeCognome"
-            [(ngModel)]="nomeCognome" 
-            placeholder="Mario Rossi"
-            [disabled]="isBooking"
-          />
-        </div>
-        <div class="form-group">
-          <label for="telefono">
-            Numero di Telefono
-            <span style="color: var(--error);">*</span>
-          </label>
-          <input 
-            type="tel" 
-            id="telefono"
-            [(ngModel)]="telefono" 
-            placeholder="333 123 4567"
-            [disabled]="isBooking"
-          />
-          <small>Inserisci il tuo numero di telefono italiano</small>
-        </div>
-        
-        <!-- ALTCHA Anti-Robot Widget -->
-        <div class="form-group altcha-wrapper">
-          <altcha-widget 
-            test="true"
-            language="it"
-            hidefooter="false"
-            hidelogo="false"
-            (verified)="onAltchaVerified($event)"
-            (statechange)="onAltchaStateChange($event)"
-          ></altcha-widget>
-        </div>
-        
-        <!-- Privacy and Terms Acceptance -->
-        <div class="form-group privacy-acceptance">
-          <label class="checkbox-label">
-            <input 
-              type="checkbox" 
-              [(ngModel)]="privacyAccepted"
-              [disabled]="isBooking"
-              id="privacy-checkbox"
-            />
-            <span>
-              Ho letto e accetto la 
-              <a routerLink="/privacy-policy" target="_blank" class="legal-link">Privacy Policy</a>, 
-              i <a routerLink="/terms-conditions" target="_blank" class="legal-link">Termini e Condizioni</a> 
-              e la <a routerLink="/cookie-policy" target="_blank" class="legal-link">Cookie Policy</a>
-              <span style="color: var(--error);">*</span>
-            </span>
-          </label>
-        </div>
-        
-        <!-- Garanzia di Rimborso Totale -->
-        <div class="refund-guarantee">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px; flex-shrink: 0;">
-            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-            <path d="m9 12 2 2 4-4"></path>
-          </svg>
-          <div>
-            <strong>Garanzia di Rimborso Totale:</strong> Se l'intelligenza artificiale dovesse commettere un errore e l'operazione richiesta non fosse effettivamente completabile online, riceverai il rimborso completo dell'importo pagato.
-          </div>
-        </div>
-        
-        <div class="button-group">
-          <button 
-            (click)="bookOperation()" 
-            [disabled]="isBooking || !nomeCognome.trim() || !telefono.trim() || !privacyAccepted || !altchaVerified"
-            class="btn-primary"
-          >
-            <svg *ngIf="!isBooking" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;">
-              <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
-              <line x1="1" y1="10" x2="23" y2="10"></line>
-            </svg>
-            {{ isBooking ? 'Elaborazione...' : 'Prenota e Paga' }}
-          </button>
-          <button 
-            (click)="resetForm()" 
-            [disabled]="isBooking"
-            class="btn-secondary"
-          >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;">
-              <line x1="18" y1="6" x2="6" y2="18"></line>
-              <line x1="6" y1="6" x2="18" y2="18"></line>
-            </svg>
-            Annulla
-          </button>
-        </div>
-      </div>
+      <!-- Use the new BookingFormComponent -->
+      <app-booking-form
+        [selectedOperation]="selectedOperation"
+        [isBooking]="isBooking"
+        [altchaVerified]="altchaVerified"
+        (submitBooking)="handleBookingSubmit($event)"
+        (cancel)="resetForm()"
+        (altchaVerifiedChange)="onAltchaVerifiedChange($event)"
+      ></app-booking-form>
     </div>
 
     <footer>
