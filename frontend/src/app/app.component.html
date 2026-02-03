@@ -1,5 +1,12 @@
 <!-- Modern Navigation Bar -->
-<app-navbar></app-navbar>
+<app-navbar (guidaClick)="onGuidaClick()"></app-navbar>
+
+<!-- Guided Overlay Component -->
+<app-guida-overlay 
+  [visible]="showOverlay" 
+  [position]="overlayPosition"
+  (close)="closeOverlay()">
+</app-guida-overlay>
 
 <div class="app-wrapper" *ngIf="isHomePage()" id="main-content">
   <!-- Loading Spinner Overlay -->
@@ -183,7 +190,7 @@
       </div>
 
       <!-- Lead Data Collection Form -->
-      <div class="booking-form">
+      <div class="booking-form" [formGroup]="bookingForm">
         <h3>
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px; vertical-align: middle;">
             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
@@ -199,9 +206,13 @@
           <input 
             type="text" 
             id="nomeCognome"
-            [(ngModel)]="nomeCognome" 
+            formControlName="nomeCognome"
             placeholder="Mario Rossi"
             [disabled]="isBooking"
+            appGuidedFocus
+            [guidedFocusName]="'nomeCognome'"
+            [guidedFocusHelp]="'Inserisci il tuo nome e cognome completo'"
+            (positionChange)="onFieldPositionChange($event)"
           />
         </div>
         <div class="form-group">
@@ -212,9 +223,13 @@
           <input 
             type="tel" 
             id="telefono"
-            [(ngModel)]="telefono" 
+            formControlName="telefono"
             placeholder="333 123 4567"
             [disabled]="isBooking"
+            appGuidedFocus
+            [guidedFocusName]="'telefono'"
+            [guidedFocusHelp]="'Inserisci un numero di telefono italiano valido (es. 333 123 4567)'"
+            (positionChange)="onFieldPositionChange($event)"
           />
           <small>Inserisci il tuo numero di telefono italiano</small>
         </div>
@@ -236,9 +251,13 @@
           <label class="checkbox-label">
             <input 
               type="checkbox" 
-              [(ngModel)]="privacyAccepted"
+              formControlName="privacy"
               [disabled]="isBooking"
               id="privacy-checkbox"
+              appGuidedFocus
+              [guidedFocusName]="'privacy'"
+              [guidedFocusHelp]="'Accetta la Privacy Policy e i Termini e Condizioni per procedere'"
+              (positionChange)="onFieldPositionChange($event)"
             />
             <span>
               Ho letto e accetto la 
