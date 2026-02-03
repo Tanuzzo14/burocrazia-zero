@@ -7,8 +7,9 @@ import { LoadingSpinnerComponent } from './components/loading-spinner/loading-sp
 import { CookieConsentComponent } from './components/cookie-consent/cookie-consent.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
-import { GuidaOverlayComponent, HighlightPosition } from './components/guida-overlay/guida-overlay.component';
+import { GuidaOverlayComponent, HighlightPosition, ScrollDirection } from './components/guida-overlay/guida-overlay.component';
 import { InactivityService } from './services/inactivity.service';
+import { GuidaService, GuidedField } from './services/guida.service';
 import { GuidedFocusDirective, FieldPosition } from './directives/guided-focus.directive';
 import { OnInit, OnDestroy } from '@angular/core';
 import { Subject } from 'rxjs';
@@ -52,6 +53,7 @@ export class AppComponent implements OnInit, OnDestroy {
   // Guided overlay system
   showOverlay = false;
   overlayPosition: HighlightPosition | null = null;
+  scrollDirection: ScrollDirection | null = null;
   private fieldPositions: Map<string, FieldPosition> = new Map();
   private currentFieldIndex = 0;
   private fieldOrder = ['nomeCognome', 'telefono', 'privacy'];
@@ -61,7 +63,8 @@ export class AppComponent implements OnInit, OnDestroy {
     private apiService: ApiService, 
     private router: Router,
     private inactivityService: InactivityService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private guidaService: GuidaService
   ) {}
 
   ngOnInit(): void {
@@ -82,6 +85,42 @@ export class AppComponent implements OnInit, OnDestroy {
     this.bookingForm.get('privacy')?.valueChanges.subscribe(value => {
       this.privacyAccepted = value;
     });
+    
+    // Set field order for guided navigation
+    this.guidaService.setFieldOrder(this.fieldOrder);
+    
+    // Subscribe to GuidaService observables
+    this.guidaService.active$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(active => {
+        this.showOverlay = active;
+        if (!active) {
+          this.overlayPosition = null;
+          this.scrollDirection = null;
+        }
+      });
+    
+    this.guidaService.currentField$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(field => {
+        if (field) {
+          this.overlayPosition = {
+            top: field.rect.top,
+            left: field.rect.left,
+            width: field.rect.width,
+            height: field.rect.height,
+            helpText: field.helpText
+          };
+        } else {
+          this.overlayPosition = null;
+        }
+      });
+    
+    this.guidaService.scrollDirection$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(direction => {
+        this.scrollDirection = direction;
+      });
     
     // Only start monitoring inactivity on home page
     if (this.isHomePage()) {
@@ -109,68 +148,26 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   activateGuidedOverlay(): void {
-    this.showOverlay = true;
-    this.currentFieldIndex = 0;
-    this.updateOverlayPosition();
+    this.guidaService.activate(0);
   }
 
   closeOverlay(): void {
-    this.showOverlay = false;
-    this.overlayPosition = null;
+    this.guidaService.deactivate();
   }
 
   onFieldPositionChange(position: FieldPosition): void {
     this.fieldPositions.set(position.controlName, position);
     
-    // Update overlay if it's currently showing this field
-    if (this.showOverlay && this.fieldOrder[this.currentFieldIndex] === position.controlName) {
-      this.updateOverlayPosition();
-    }
-
-    // Auto-advance to next invalid field when current becomes valid
-    if (this.showOverlay && position.isValid && this.fieldOrder[this.currentFieldIndex] === position.controlName) {
-      this.moveToNextInvalidField();
-    }
-  }
-
-  private updateOverlayPosition(): void {
-    const fieldName = this.fieldOrder[this.currentFieldIndex];
-    const position = this.fieldPositions.get(fieldName);
+    // Register/update field with GuidaService
+    const guidedField: GuidedField = {
+      element: position.element,
+      rect: position.rect,
+      controlName: position.controlName,
+      isValid: position.isValid,
+      helpText: position.helpText || this.getDefaultHelpText(position.controlName)
+    };
     
-    if (position && !position.isValid) {
-      this.overlayPosition = {
-        top: position.rect.top,
-        left: position.rect.left,
-        width: position.rect.width,
-        height: position.rect.height,
-        helpText: position.helpText || this.getDefaultHelpText(fieldName)
-      };
-    } else {
-      // Field is valid or not found, try next field
-      this.moveToNextInvalidField();
-    }
-  }
-
-  private moveToNextInvalidField(): void {
-    const startIndex = this.currentFieldIndex;
-    
-    // Find next invalid field
-    do {
-      this.currentFieldIndex = (this.currentFieldIndex + 1) % this.fieldOrder.length;
-      const fieldName = this.fieldOrder[this.currentFieldIndex];
-      const position = this.fieldPositions.get(fieldName);
-      
-      if (position && !position.isValid) {
-        this.updateOverlayPosition();
-        return;
-      }
-      
-      // If we've cycled through all fields, close the overlay
-      if (this.currentFieldIndex === startIndex) {
-        this.closeOverlay();
-        return;
-      }
-    } while (this.currentFieldIndex !== startIndex);
+    this.guidaService.updateField(guidedField);
   }
 
   private getDefaultHelpText(fieldName: string): string {

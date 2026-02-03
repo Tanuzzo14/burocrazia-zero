@@ -215,16 +215,16 @@
     display: none;
   }
 
-  /* Mobile/Tablet (< 1024px) - Button on right */
+  /* Mobile/Tablet (< 1024px) - Button on right with visible text */
   .guidami-button {
     grid-column: 2;
     justify-self: end;
-    padding: 0.625rem 1rem;
-    font-size: 0.875rem;
+    padding: 0.625rem 1.25rem;
+    font-size: 1rem; /* Minimum 16px as required */
   }
 
   .guidami-text {
-    display: none;
+    display: inline; /* Show text on mobile/tablet */
   }
 }
 
@@ -238,10 +238,15 @@
     display: none;
   }
 
-  /* Button on right for tablets */
+  /* Button on right for tablets with visible text */
   .guidami-button {
     grid-column: 2;
     justify-self: end;
+    font-size: 1rem; /* Minimum 16px as required */
+  }
+  
+  .guidami-text {
+    display: inline; /* Show text on tablet */
   }
 }
 

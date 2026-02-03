@@ -209,4 +209,127 @@
   .highlight-pulse {
     animation: none !important;
   }
+  
+  .scroll-arrow {
+    animation: none !important;
+  }
+  
+  .arrow-icon {
+    animation: none !important;
+  }
+}
+
+/* Giant Directional Arrows */
+.scroll-arrow-container {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10002;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.scroll-arrow {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  animation: bounce 2s ease-in-out infinite;
+}
+
+.scroll-arrow-down {
+  animation-name: bounceDown;
+}
+
+.scroll-arrow-up {
+  animation-name: bounceUp;
+}
+
+.arrow-icon {
+  filter: drop-shadow(0 8px 24px rgba(0, 102, 204, 0.4));
+  color: var(--primary-blue);
+  animation: arrowPulse 1.5s ease-in-out infinite;
+}
+
+.arrow-text {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: white;
+  text-shadow: 
+    0 4px 12px rgba(0, 0, 0, 0.6),
+    0 2px 4px rgba(0, 102, 204, 0.8);
+  text-align: center;
+  margin: 0;
+  padding: 1.25rem 2rem;
+  background: linear-gradient(135deg, #0066CC 0%, #004C99 100%);
+  border-radius: 16px;
+  letter-spacing: 1px;
+  white-space: nowrap;
+  box-shadow: 
+    0 8px 32px rgba(0, 102, 204, 0.5),
+    0 4px 16px rgba(0, 0, 0, 0.3);
+  border: 3px solid rgba(255, 255, 255, 0.3);
+}
+
+@keyframes bounceDown {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(20px);
+  }
+}
+
+@keyframes bounceUp {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+@keyframes arrowPulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.15);
+    opacity: 0.8;
+  }
+}
+
+/* Mobile responsive for arrows */
+@media (max-width: 768px) {
+  .arrow-icon {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .arrow-text {
+    font-size: 1.25rem;
+    padding: 1rem 1.5rem;
+    letter-spacing: 0.5px;
+  }
+  
+  .scroll-arrow {
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .arrow-icon {
+    width: 50px;
+    height: 50px;
+  }
+  
+  .arrow-text {
+    font-size: 1rem;
+    padding: 0.875rem 1.25rem;
+  }
 }
