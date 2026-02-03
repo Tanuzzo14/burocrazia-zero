@@ -28,10 +28,12 @@ export class GuidaService {
   private activeSubject = new BehaviorSubject<boolean>(false);
   private currentFieldSubject = new BehaviorSubject<GuidedField | null>(null);
   private scrollDirectionSubject = new BehaviorSubject<ScrollDirection>({ show: false, direction: 'down', message: '' });
+  private optionsGuideSubject = new BehaviorSubject<boolean>(false);
   
   public active$ = this.activeSubject.asObservable();
   public currentField$ = this.currentFieldSubject.asObservable();
   public scrollDirection$ = this.scrollDirectionSubject.asObservable();
+  public optionsGuide$ = this.optionsGuideSubject.asObservable();
 
   constructor() {
     // Listen to scroll events globally
@@ -92,6 +94,20 @@ export class GuidaService {
     this.activeSubject.next(false);
     this.currentFieldSubject.next(null);
     this.scrollDirectionSubject.next({ show: false, direction: 'down', message: '' });
+    this.optionsGuideSubject.next(false);
+  }
+
+  /**
+   * Activate options guide mode - shows scroll message for options selection
+   */
+  activateOptionsGuide(): void {
+    this.optionsGuideSubject.next(true);
+    this.activeSubject.next(true);
+    this.scrollDirectionSubject.next({
+      show: true,
+      direction: 'down',
+      message: 'Scorri in basso per selezionare la scelta più adatta a te'
+    });
   }
 
   /**

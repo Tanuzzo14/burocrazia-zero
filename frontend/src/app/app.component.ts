@@ -54,6 +54,7 @@ export class AppComponent implements OnInit, OnDestroy {
   showOverlay = false;
   overlayPosition: HighlightPosition | null = null;
   scrollDirection: ScrollDirection | null = null;
+  showOptionsGuide = false;
   private fieldPositions: Map<string, FieldPosition> = new Map();
   private currentFieldIndex = 0;
   private fieldOrder = ['nomeCognome', 'telefono', 'privacy'];
@@ -121,6 +122,12 @@ export class AppComponent implements OnInit, OnDestroy {
       .subscribe(direction => {
         this.scrollDirection = direction;
       });
+
+    this.guidaService.optionsGuide$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(active => {
+        this.showOptionsGuide = active;
+      });
     
     // Only start monitoring inactivity on home page
     if (this.isHomePage()) {
@@ -142,9 +149,42 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   onGuidaClick(): void {
-    if (this.isHomePage() && this.selectedOperation) {
+    if (!this.isHomePage()) {
+      return;
+    }
+
+    // Stage 1: Search bar - focus on search input
+    if (this.operationOptions.length === 0 && !this.selectedOperation) {
+      this.focusSearchBar();
+      return;
+    }
+
+    // Stage 2: Options selection - show scroll message
+    if (this.operationOptions.length > 0 && !this.selectedOperation) {
+      this.showOptionsScrollGuide();
+      return;
+    }
+
+    // Stage 3: Booking form - activate guided overlay
+    if (this.selectedOperation) {
       this.activateGuidedOverlay();
     }
+  }
+
+  private focusSearchBar(): void {
+    // Focus on the search input and activate keyboard
+    setTimeout(() => {
+      const searchInput = document.querySelector('.search-input-modern') as HTMLInputElement;
+      if (searchInput) {
+        searchInput.focus();
+        searchInput.click(); // Ensures keyboard activation on mobile
+      }
+    }, 100);
+  }
+
+  private showOptionsScrollGuide(): void {
+    // Show a message to scroll down for options
+    this.guidaService.activateOptionsGuide();
   }
 
   activateGuidedOverlay(): void {
