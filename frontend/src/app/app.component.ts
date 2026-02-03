@@ -58,6 +58,8 @@ export class AppComponent implements OnInit, OnDestroy {
   overlayPosition: HighlightPosition | null = null;
   scrollDirection: ScrollDirection | null = null;
   showOptionsGuide = false;
+  showSearchGuide = false;
+  showPayButtonGuide = false;
   private fieldPositions: Map<string, FieldPosition> = new Map();
   private currentFieldIndex = 0;
   private fieldOrder = ['nomeCognome', 'telefono', 'privacy'];
@@ -134,6 +136,18 @@ export class AppComponent implements OnInit, OnDestroy {
       .subscribe(active => {
         this.showOptionsGuide = active;
       });
+
+    this.guidaService.searchGuide$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(active => {
+        this.showSearchGuide = active;
+      });
+
+    this.guidaService.payButtonGuide$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(active => {
+        this.showPayButtonGuide = active;
+      });
     
     // Only start monitoring inactivity on home page
     if (this.isHomePage()) {
@@ -171,13 +185,25 @@ export class AppComponent implements OnInit, OnDestroy {
       return;
     }
 
-    // Stage 3: Booking form - activate guided overlay
+    // Stage 3: Booking form - check if all fields are filled
     if (this.selectedOperation) {
-      this.activateGuidedOverlay();
+      // Check if all required fields are filled and valid
+      const allFieldsFilled = this.bookingForm.valid && this.altchaVerified;
+      
+      if (allFieldsFilled) {
+        // All fields filled - guide user to confirm and pay button
+        this.highlightPayButton();
+      } else {
+        // Some fields need to be filled - activate guided overlay
+        this.activateGuidedOverlay();
+      }
     }
   }
 
   private focusSearchBar(): void {
+    // Activate search guide mode with blur overlay
+    this.guidaService.activateSearchGuide();
+    
     // Focus on the search input using ViewChild for Angular-idiomatic DOM access
     setTimeout(() => {
       if (this.searchInput) {
@@ -190,6 +216,11 @@ export class AppComponent implements OnInit, OnDestroy {
   private showOptionsScrollGuide(): void {
     // Show a message to scroll down for options
     this.guidaService.activateOptionsGuide();
+  }
+
+  private highlightPayButton(): void {
+    // Highlight the "Prenota e Paga" button
+    this.guidaService.activatePayButtonGuide();
   }
 
   activateGuidedOverlay(): void {
