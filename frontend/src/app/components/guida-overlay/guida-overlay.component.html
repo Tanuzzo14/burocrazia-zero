@@ -1,6 +1,6 @@
 <div class="overlay-container" *ngIf="visible" (click)="closeOverlay()">
   <!-- Backdrop with blur effect - conditionally applied based on mode -->
-  <div class="overlay-backdrop" [class.navbar-only-blur]="searchGuideMode" [class.no-blur]="optionsGuideMode || payButtonGuideMode || (position && !searchGuideMode)"></div>
+  <div class="overlay-backdrop" [class.navbar-only-blur]="searchGuideMode" [class.no-blur]="optionsGuideMode || payButtonGuideMode || position"></div>
   
   <!-- Search Guide Message (shown when search guide mode is active) -->
   <div class="search-guide-message" *ngIf="searchGuideMode" (click)="$event.stopPropagation()">
