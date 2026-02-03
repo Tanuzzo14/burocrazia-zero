@@ -28,8 +28,9 @@
   pointer-events: none;
 }
 
-/* No blur for options and pay button guide modes */
+/* No blur and no opacity for options, pay button, and form guide modes */
 .overlay-backdrop.no-blur {
+  background: transparent;
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
 }
