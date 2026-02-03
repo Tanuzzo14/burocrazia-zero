@@ -2,10 +2,31 @@
   <!-- Backdrop with blur effect -->
   <div class="overlay-backdrop"></div>
   
+  <!-- Giant Directional Arrows -->
+  <div class="scroll-arrow-container" *ngIf="scrollDirection?.show" (click)="$event.stopPropagation()">
+    <!-- Down Arrow -->
+    <div class="scroll-arrow scroll-arrow-down" *ngIf="scrollDirection.direction === 'down'">
+      <svg class="arrow-icon" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="12" y1="5" x2="12" y2="19"></line>
+        <polyline points="19 12 12 19 5 12"></polyline>
+      </svg>
+      <p class="arrow-text">{{ scrollDirection.message }}</p>
+    </div>
+    
+    <!-- Up Arrow -->
+    <div class="scroll-arrow scroll-arrow-up" *ngIf="scrollDirection.direction === 'up'">
+      <svg class="arrow-icon" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="12" y1="19" x2="12" y2="5"></line>
+        <polyline points="5 12 12 5 19 12"></polyline>
+      </svg>
+      <p class="arrow-text">{{ scrollDirection.message }}</p>
+    </div>
+  </div>
+  
   <!-- Highlight box around the focused element -->
   <div 
     class="highlight-box" 
-    *ngIf="position"
+    *ngIf="position && !scrollDirection?.show"
     [ngStyle]="highlightStyle"
     (click)="$event.stopPropagation()"
   >
@@ -16,7 +37,7 @@
   <!-- Tooltip with help text -->
   <div 
     class="tooltip-container" 
-    *ngIf="position && position.helpText"
+    *ngIf="position && position.helpText && !scrollDirection?.show"
     [ngStyle]="tooltipStyle"
     (click)="$event.stopPropagation()"
   >
