@@ -32,39 +32,35 @@
       <div class="header-logo-container">
         <img src="assets/Burocrazia-zero-logo.png" alt="Burocrazia Zero Logo" class="header-logo">
       </div>
-      <h1>{{ title }}</h1>
-      <p class="subtitle">Affida le tue pratiche statali a un sistema intelligente supervisionato da professionisti reali. Zero moduli da compilare, zero code, zero errori: pensiamo a tutto noi fino alla chiusura della pratica.</p>
-    </header>
 
-    <!-- Step 1: Operation Search -->
-    <div class="search-section" *ngIf="operationOptions.length === 0 && !selectedOperation">
-      <h2>
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="11" cy="11" r="8"></circle>
-          <path d="m21 21-4.35-4.35"></path>
-        </svg>
-        Cosa devi fare?
-      </h2>
-      <div class="search-box">
-        <textarea 
-          [(ngModel)]="userQuery" 
-          placeholder="Descrivi la tua pratica (es. 'Richiedere SPID digitale', 'Rinnovare carta d'identità elettronica', 'Richiesta passaporto online', 'Iscrizione concorsi pubblici')"
-          rows="4"
-          [disabled]="isIdentifying"
-        ></textarea>
-        <button 
-          (click)="searchOperation()" 
-          [disabled]="isIdentifying || !userQuery.trim()"
-          class="btn-primary"
-        >
-          <svg *ngIf="!isIdentifying" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;">
+      <!-- Step 1: Operation Search - Modern Search Bar -->
+      <div class="search-section-modern" *ngIf="operationOptions.length === 0 && !selectedOperation">
+        <div class="search-bar-modern">
+          <svg class="search-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="11" cy="11" r="8"></circle>
             <path d="m21 21-4.35-4.35"></path>
           </svg>
-          {{ isIdentifying ? 'Identificazione in corso...' : 'Identifica Operazione' }}
-        </button>
+          <input 
+            type="text"
+            [(ngModel)]="userQuery" 
+            (keydown.enter)="searchOperation()"
+            placeholder="Come possiamo aiutarti?"
+            [disabled]="isIdentifying"
+            class="search-input-modern"
+          />
+          <button 
+            (click)="searchOperation()" 
+            [disabled]="isIdentifying || !userQuery.trim()"
+            class="search-button-modern"
+          >
+            {{ isIdentifying ? 'In corso...' : 'Cerca' }}
+          </button>
+        </div>
       </div>
-    </div>
+
+      <h1>{{ title }}</h1>
+      <p class="subtitle">Affida le tue pratiche statali a un sistema intelligente supervisionato da professionisti reali. Zero moduli da compilare, zero code, zero errori: pensiamo a tutto noi fino alla chiusura della pratica.</p>
+    </header>
 
     <!-- Step 1.5: Multiple Options Display -->
     <div class="options-section" *ngIf="operationOptions.length > 0 && !selectedOperation">
