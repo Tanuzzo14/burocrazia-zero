@@ -1,4 +1,4 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
@@ -14,6 +14,9 @@ import { GuidedFocusDirective, FieldPosition } from './directives/guided-focus.d
 import { OnInit, OnDestroy } from '@angular/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+
+// Constants
+const SEARCH_INPUT_FOCUS_DELAY = 100; // Delay to ensure DOM is ready after Angular rendering
 
 @Component({
     selector: 'app-root',
@@ -59,6 +62,9 @@ export class AppComponent implements OnInit, OnDestroy {
   private currentFieldIndex = 0;
   private fieldOrder = ['nomeCognome', 'telefono', 'privacy'];
   private destroy$ = new Subject<void>();
+
+  // ViewChild for search input access
+  @ViewChild('searchInput') searchInput?: ElementRef<HTMLInputElement>;
 
   constructor(
     private apiService: ApiService, 
@@ -172,14 +178,13 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   private focusSearchBar(): void {
-    // Focus on the search input and activate keyboard
+    // Focus on the search input using ViewChild for Angular-idiomatic DOM access
     setTimeout(() => {
-      const searchInput = document.querySelector('.search-input-modern') as HTMLInputElement;
-      if (searchInput) {
-        searchInput.focus();
-        searchInput.click(); // Ensures keyboard activation on mobile
+      if (this.searchInput) {
+        this.searchInput.nativeElement.focus();
+        this.searchInput.nativeElement.click(); // Ensures keyboard activation on mobile
       }
-    }, 100);
+    }, SEARCH_INPUT_FOCUS_DELAY);
   }
 
   private showOptionsScrollGuide(): void {

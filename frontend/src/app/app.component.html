@@ -51,6 +51,7 @@
           </svg>
           <input 
             type="text"
+            #searchInput
             [(ngModel)]="userQuery" 
             (keydown.enter)="searchOperation()"
             placeholder="Come possiamo aiutarti?"
