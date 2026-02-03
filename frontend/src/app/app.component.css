@@ -105,8 +105,6 @@ header::before {
   transition: all var(--transition-normal);
   max-width: 800px;
   margin: 0 auto;
-  position: relative;
-  z-index: 10001; /* Ensure search bar is above overlay backdrop */
 }
 
 .search-bar-modern:hover {
