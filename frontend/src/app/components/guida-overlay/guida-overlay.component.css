@@ -417,7 +417,7 @@
 /* Mobile responsive for search guide */
 @media (max-width: 768px) {
   .search-guide-message {
-    top: 35%;
+    top: 20%;
   }
 
   .search-guide-arrow {
@@ -440,7 +440,7 @@
 
 @media (max-width: 480px) {
   .search-guide-message {
-    top: 40%;
+    top: 25%;
   }
 
   .search-guide-content {
