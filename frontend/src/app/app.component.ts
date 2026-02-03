@@ -282,6 +282,9 @@ export class AppComponent implements OnInit, OnDestroy {
       return;
     }
 
+    // Close the search guide overlay when search is initiated
+    this.guidaService.deactivate();
+
     this.isIdentifying = true;
     this.loadingMessage = 'Identificazione operazione in corso...';
     this.errorMessage = '';
