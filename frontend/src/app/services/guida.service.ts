@@ -29,11 +29,15 @@ export class GuidaService {
   private currentFieldSubject = new BehaviorSubject<GuidedField | null>(null);
   private scrollDirectionSubject = new BehaviorSubject<ScrollDirection>({ show: false, direction: 'down', message: '' });
   private optionsGuideSubject = new BehaviorSubject<boolean>(false);
+  private searchGuideSubject = new BehaviorSubject<boolean>(false);
+  private payButtonGuideSubject = new BehaviorSubject<boolean>(false);
   
   public active$ = this.activeSubject.asObservable();
   public currentField$ = this.currentFieldSubject.asObservable();
   public scrollDirection$ = this.scrollDirectionSubject.asObservable();
   public optionsGuide$ = this.optionsGuideSubject.asObservable();
+  public searchGuide$ = this.searchGuideSubject.asObservable();
+  public payButtonGuide$ = this.payButtonGuideSubject.asObservable();
 
   constructor() {
     // Listen to scroll events globally
@@ -95,6 +99,29 @@ export class GuidaService {
     this.currentFieldSubject.next(null);
     this.scrollDirectionSubject.next({ show: false, direction: 'down', message: '' });
     this.optionsGuideSubject.next(false);
+    this.searchGuideSubject.next(false);
+    this.payButtonGuideSubject.next(false);
+  }
+
+  /**
+   * Activate search guide mode - shows blur with search bar highlighted
+   */
+  activateSearchGuide(): void {
+    this.searchGuideSubject.next(true);
+    this.activeSubject.next(true);
+  }
+
+  /**
+   * Activate pay button guide mode - shows message to click confirm and pay
+   */
+  activatePayButtonGuide(): void {
+    this.payButtonGuideSubject.next(true);
+    this.activeSubject.next(true);
+    this.scrollDirectionSubject.next({
+      show: true,
+      direction: 'down',
+      message: 'Clicca su Prenota e Paga'
+    });
   }
 
   /**
@@ -106,7 +133,7 @@ export class GuidaService {
     this.scrollDirectionSubject.next({
       show: true,
       direction: 'down',
-      message: 'Scorri in basso per selezionare la scelta più adatta a te'
+      message: 'Scorri in basso per le opzioni'
     });
   }
 
