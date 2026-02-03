@@ -179,7 +179,7 @@ export class BookingFormComponent implements OnInit, OnDestroy, AfterViewInit {
     if (control.errors['required']) {
       return 'Questo campo è obbligatorio';
     }
-    if (control.errors['minLength']) {
+    if (control.errors['minlength']) {
       return 'Il nome deve avere almeno 3 caratteri';
     }
     if (control.errors['invalidPhone']) {

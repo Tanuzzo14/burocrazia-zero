@@ -41,13 +41,6 @@ export class InactivityMonitorService {
   }
 
   /**
-   * Get the inactivity observable
-   */
-  getInactivityObservable(): Observable<boolean> {
-    return this.inactivityDetected$.asObservable();
-  }
-
-  /**
    * Reset the inactivity timer
    */
   resetTimer(): void {
