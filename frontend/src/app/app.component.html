@@ -6,6 +6,7 @@
   [visible]="showOverlay" 
   [position]="overlayPosition"
   [scrollDirection]="scrollDirection"
+  [optionsGuideMode]="showOptionsGuide"
   (close)="closeOverlay()">
 </app-guida-overlay>
 
@@ -50,6 +51,7 @@
           </svg>
           <input 
             type="text"
+            #searchInput
             [(ngModel)]="userQuery" 
             (keydown.enter)="searchOperation()"
             placeholder="Come possiamo aiutarti?"

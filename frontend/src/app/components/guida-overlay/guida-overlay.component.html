@@ -2,10 +2,10 @@
   <!-- Backdrop with blur effect -->
   <div class="overlay-backdrop"></div>
   
-  <!-- Giant Directional Arrows -->
-  <div class="scroll-arrow-container" *ngIf="scrollDirection?.show" (click)="$event.stopPropagation()">
+  <!-- Giant Directional Arrows (shown in options guide mode or when scrolling needed) -->
+  <div class="scroll-arrow-container" *ngIf="scrollDirection?.show || optionsGuideMode" (click)="$event.stopPropagation()">
     <!-- Down Arrow -->
-    <div class="scroll-arrow scroll-arrow-down" *ngIf="scrollDirection?.direction === 'down'">
+    <div class="scroll-arrow scroll-arrow-down" *ngIf="scrollDirection?.direction === 'down' || optionsGuideMode">
       <svg class="arrow-icon" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
         <line x1="12" y1="5" x2="12" y2="19"></line>
         <polyline points="19 12 12 19 5 12"></polyline>
@@ -14,7 +14,7 @@
     </div>
     
     <!-- Up Arrow -->
-    <div class="scroll-arrow scroll-arrow-up" *ngIf="scrollDirection?.direction === 'up'">
+    <div class="scroll-arrow scroll-arrow-up" *ngIf="scrollDirection?.direction === 'up' && !optionsGuideMode">
       <svg class="arrow-icon" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
         <line x1="12" y1="19" x2="12" y2="5"></line>
         <polyline points="5 12 12 5 19 12"></polyline>
@@ -23,10 +23,10 @@
     </div>
   </div>
   
-  <!-- Highlight box around the focused element -->
+  <!-- Highlight box around the focused element (only in form guide mode) -->
   <div 
     class="highlight-box" 
-    *ngIf="position && !scrollDirection?.show"
+    *ngIf="position && !scrollDirection?.show && !optionsGuideMode"
     [ngStyle]="highlightStyle"
     (click)="$event.stopPropagation()"
   >
@@ -34,10 +34,10 @@
     <div class="highlight-pulse"></div>
   </div>
   
-  <!-- Tooltip with help text -->
+  <!-- Tooltip with help text (only in form guide mode) -->
   <div 
     class="tooltip-container" 
-    *ngIf="position && position.helpText && !scrollDirection?.show"
+    *ngIf="position && position.helpText && !scrollDirection?.show && !optionsGuideMode"
     [ngStyle]="tooltipStyle"
     (click)="$event.stopPropagation()"
   >

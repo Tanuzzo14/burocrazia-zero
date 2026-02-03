@@ -28,6 +28,7 @@ export class GuidaOverlayComponent implements OnInit, OnDestroy {
   @Input() visible = false;
   @Input() position: HighlightPosition | null = null;
   @Input() scrollDirection: ScrollDirection | null = null;
+  @Input() optionsGuideMode = false;
   @Output() close = new EventEmitter<void>();
   
   private destroy$ = new Subject<void>();

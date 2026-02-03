@@ -1,4 +1,4 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
@@ -14,6 +14,9 @@ import { GuidedFocusDirective, FieldPosition } from './directives/guided-focus.d
 import { OnInit, OnDestroy } from '@angular/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+
+// Constants
+const SEARCH_INPUT_FOCUS_DELAY = 100; // Delay to ensure DOM is ready after Angular rendering
 
 @Component({
     selector: 'app-root',
@@ -54,10 +57,14 @@ export class AppComponent implements OnInit, OnDestroy {
   showOverlay = false;
   overlayPosition: HighlightPosition | null = null;
   scrollDirection: ScrollDirection | null = null;
+  showOptionsGuide = false;
   private fieldPositions: Map<string, FieldPosition> = new Map();
   private currentFieldIndex = 0;
   private fieldOrder = ['nomeCognome', 'telefono', 'privacy'];
   private destroy$ = new Subject<void>();
+
+  // ViewChild for search input access
+  @ViewChild('searchInput') searchInput?: ElementRef<HTMLInputElement>;
 
   constructor(
     private apiService: ApiService, 
@@ -121,6 +128,12 @@ export class AppComponent implements OnInit, OnDestroy {
       .subscribe(direction => {
         this.scrollDirection = direction;
       });
+
+    this.guidaService.optionsGuide$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(active => {
+        this.showOptionsGuide = active;
+      });
     
     // Only start monitoring inactivity on home page
     if (this.isHomePage()) {
@@ -142,9 +155,41 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   onGuidaClick(): void {
-    if (this.isHomePage() && this.selectedOperation) {
+    if (!this.isHomePage()) {
+      return;
+    }
+
+    // Stage 1: Search bar - focus on search input
+    if (this.operationOptions.length === 0 && !this.selectedOperation) {
+      this.focusSearchBar();
+      return;
+    }
+
+    // Stage 2: Options selection - show scroll message
+    if (this.operationOptions.length > 0 && !this.selectedOperation) {
+      this.showOptionsScrollGuide();
+      return;
+    }
+
+    // Stage 3: Booking form - activate guided overlay
+    if (this.selectedOperation) {
       this.activateGuidedOverlay();
     }
+  }
+
+  private focusSearchBar(): void {
+    // Focus on the search input using ViewChild for Angular-idiomatic DOM access
+    setTimeout(() => {
+      if (this.searchInput) {
+        this.searchInput.nativeElement.focus();
+        this.searchInput.nativeElement.click(); // Ensures keyboard activation on mobile
+      }
+    }, SEARCH_INPUT_FOCUS_DELAY);
+  }
+
+  private showOptionsScrollGuide(): void {
+    // Show a message to scroll down for options
+    this.guidaService.activateOptionsGuide();
   }
 
   activateGuidedOverlay(): void {
