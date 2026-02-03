@@ -45,6 +45,10 @@ export class GuidaService {
       .pipe(debounceTime(100))
       .subscribe(() => {
         this.updateScrollDirection();
+        // Remove blur when scrolling in options guide mode
+        if (this.optionsGuideSubject.value && window.scrollY > 100) {
+          this.deactivate();
+        }
       });
   }
 

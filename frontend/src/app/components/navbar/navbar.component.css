@@ -9,6 +9,13 @@
   border-bottom: 1px solid rgba(0, 102, 204, 0.1);
   width: 100%;
   overflow-x: hidden;
+  transition: filter 0.3s ease;
+}
+
+/* Blur navbar when overlay is active in search guide mode */
+.navbar.navbar-blurred {
+  filter: blur(5px);
+  pointer-events: none;
 }
 
 /* Enhanced glass effect for modern browsers */
