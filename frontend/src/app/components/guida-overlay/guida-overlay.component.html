@@ -4,14 +4,14 @@
   
   <!-- Search Guide Message (shown when search guide mode is active) -->
   <div class="search-guide-message" *ngIf="searchGuideMode" (click)="$event.stopPropagation()">
+    <div class="search-guide-content">
+      <p class="search-guide-text">Scrivi il servizio che desideri</p>
+    </div>
     <div class="search-guide-arrow">
       <svg class="arrow-icon-down" width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
         <line x1="12" y1="5" x2="12" y2="19"></line>
         <polyline points="19 12 12 19 5 12"></polyline>
       </svg>
-    </div>
-    <div class="search-guide-content">
-      <p class="search-guide-text">Scrivi il servizio che desideri</p>
     </div>
   </div>
   
