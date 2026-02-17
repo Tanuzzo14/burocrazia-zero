@@ -150,7 +150,7 @@ export default {
             
             // In PAYMENT.CAPTURE.COMPLETED, the resource is a capture object
             // The custom_id is in the capture object directly
-            const leadId = capture.custom_id as string | undefined;
+            const leadId = capture.custom_id;
 
             if (!leadId) {
               console.error('No custom_id in webhook data');
