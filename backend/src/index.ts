@@ -144,20 +144,16 @@ export default {
         try {
           const event = await verifyWebhookSignature(body, request.headers, env);
 
-          // Handle successful payment - PayPal event: CHECKOUT.ORDER.APPROVED
-          if (event.event_type === 'CHECKOUT.ORDER.APPROVED') {
-            const order = event.resource;
+          // Handle successful payment - PayPal event: PAYMENT.CAPTURE.COMPLETED
+          if (event.event_type === 'PAYMENT.CAPTURE.COMPLETED') {
+            const capture = event.resource;
             
-            // Validate purchase_units exists and has at least one element
-            if (!order.purchase_units || order.purchase_units.length === 0) {
-              console.error('No purchase_units in webhook data');
-              return errorResponse('Invalid webhook data', 400);
-            }
-            
-            const leadId = order.purchase_units[0].reference_id;
+            // In PAYMENT.CAPTURE.COMPLETED, the resource is a capture object
+            // The custom_id is in the capture object directly
+            const leadId = capture.custom_id as string | undefined;
 
             if (!leadId) {
-              console.error('No reference_id in webhook data');
+              console.error('No custom_id in webhook data');
               return errorResponse('Invalid webhook data', 400);
             }
 

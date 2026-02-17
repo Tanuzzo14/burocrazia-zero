@@ -129,7 +129,7 @@
 **Request Body**: PayPal event payload
 
 **Events Handled**:
-- `CHECKOUT.ORDER.APPROVED`: Payment approved
+- `PAYMENT.CAPTURE.COMPLETED`: Payment captured and completed
 
 **Response**:
 ```json
@@ -140,8 +140,8 @@
 
 **Process Flow**:
 1. Verify webhook signature
-2. Extract lead ID from session metadata
-3. Update lead status to "PAID"
+2. Extract lead ID from custom_id in the capture event
+3. Update lead status to "PAID" only after payment is captured
 4. Send email to operator with:
    - Customer name and phone
    - Operation type
