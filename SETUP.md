@@ -90,7 +90,7 @@ npm run deploy:backend
 1. Dopo il deploy, ottieni l'URL del worker (es. `https://burocrazia-zero-worker.your-subdomain.workers.dev`)
 2. Vai su PayPal Developer Dashboard → Apps & Credentials → Webhooks
 3. Aggiungi un nuovo endpoint: `https://your-worker-url.workers.dev/api/webhook/paypal`
-4. Seleziona gli eventi: `CHECKOUT.ORDER.APPROVED` e `PAYMENT.CAPTURE.COMPLETED`
+4. Seleziona l'evento: `PAYMENT.CAPTURE.COMPLETED`
 5. Copia il Webhook ID e configuralo come secret:
 
 ```bash

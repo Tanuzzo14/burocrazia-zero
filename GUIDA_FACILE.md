@@ -437,9 +437,8 @@ Ora che abbiamo l'URL del backend online, configuriamo PayPal per ricevere notif
    ```
    ⚠️ **IMPORTANTE**: Sostituisci `YOUR-SUBDOMAIN` con il TUO URL del backend che hai copiato nella Parte 6!
    
-   **Event types**: Scorri la lista e seleziona questi eventi:
-   - ✅ `CHECKOUT.ORDER.APPROVED` - Quando l'ordine viene approvato
-   - ✅ `PAYMENT.CAPTURE.COMPLETED` - Quando il pagamento viene catturato
+   **Event types**: Scorri la lista e seleziona questo evento:
+   - ✅ `PAYMENT.CAPTURE.COMPLETED` - Quando il pagamento viene catturato (l'unico evento necessario)
    
 7. Clicca **"Save"**
 
@@ -672,7 +671,7 @@ Cloudflare inizierà la build. Aspetta qualche minuto (3-5 minuti circa).
 **Soluzione**:
 1. Verifica di aver configurato il `PAYPAL_WEBHOOK_ID` correttamente nel Worker
 2. Assicurati che l'URL del webhook in PayPal punti esattamente al tuo worker: `https://tuoworker.workers.dev/api/webhook/paypal`
-3. Ricontrolla di aver selezionato gli eventi giusti: `CHECKOUT.ORDER.APPROVED` e `PAYMENT.CAPTURE.COMPLETED`
+3. Ricontrolla di aver selezionato l'evento giusto: `PAYMENT.CAPTURE.COMPLETED`
 4. Assicurati che il `PAYPAL_API_BASE` sia impostato correttamente (`https://api-m.sandbox.paypal.com` per sandbox)
 
 ---

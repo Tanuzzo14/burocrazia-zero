@@ -10,6 +10,7 @@ interface PayPalPurchaseUnit {
   description: string;
   amount: PayPalAmount;
   reference_id?: string;
+  custom_id?: string;
 }
 
 interface PayPalApplicationContext {
@@ -46,6 +47,7 @@ interface PayPalWebhookEvent {
 
 interface PayPalWebhookResource {
   id?: string;
+  custom_id?: string;
   purchase_units?: Array<{
     reference_id?: string;
     [key: string]: unknown;
@@ -121,6 +123,7 @@ export async function createPaymentLink(
           value: amount.toFixed(2),
         },
         reference_id: leadId,
+        custom_id: leadId,
       },
     ],
     application_context: {
